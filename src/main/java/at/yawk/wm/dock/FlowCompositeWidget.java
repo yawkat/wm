@@ -1,0 +1,55 @@
+package at.yawk.wm.dock;
+
+import at.yawk.wm.x.Graphics;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Getter;
+
+/**
+ * @author yawkat
+ */
+public class FlowCompositeWidget extends Widget {
+    private final List<Widget> widgets = new ArrayList<>();
+
+    @Getter
+    private final Anchor anchor = new Anchor();
+
+    @Override
+    public void setOrigin(Origin origin) {
+        super.setOrigin(origin);
+        for (Widget widget : widgets) {
+            widget.setOrigin(origin);
+        }
+    }
+
+    public void addWidget(Widget widget) {
+        widget.setOrigin(getOrigin());
+        widgets.add(widget);
+        widget.owner = this;
+    }
+
+    public void removeWidget(Widget widget) {
+        widgets.remove(widget);
+        widget.owner = null;
+    }
+
+    @Override
+    protected void render(Graphics graphics) {
+        anchor.setX(getX());
+        anchor.setY(getY());
+
+        for (Widget widget : widgets) {
+            widget.render(graphics);
+        }
+
+        int width = 0;
+        int height = 0;
+        for (Widget widget : widgets) {
+            width = Math.max(width, Math.max(Math.abs(getX() - widget.getX()), Math.abs(getX() - widget.getX2())));
+            height = Math.max(height, Math.max(Math.abs(getY() - widget.getY()), Math.abs(getY() - widget.getY2())));
+        }
+
+        setWidth(width);
+        setHeight(height);
+    }
+}

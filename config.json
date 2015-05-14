@@ -1,0 +1,17 @@
+{
+  "dock": {
+    "height": 16,
+    "background": "#002b36",
+    "time": {
+      "color": "#93a1a1"
+    },
+    "batteryTime": {
+      "color": "#93a1a1"
+    },
+    "batteryPercentageColorLow": "#dc322f",
+    "batteryPercentageColorHigh": "#859900"
+  },
+  "font": {
+    "name": "Source Code Pro"
+  }
+}
