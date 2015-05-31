@@ -29,15 +29,15 @@ public class NetworkWidget extends FlowCompositeWidget {
 
     @Inject
     void init(DockConfig config, FontSource fontSource) {
-        down = new TextWidget();
-        down.setFont(fontSource.getFont(config.getNetDownFont()));
-        down.after(getAnchor(), Direction.HORIZONTAL);
-        addWidget(down);
-
         up = new TextWidget();
         up.setFont(fontSource.getFont(config.getNetUpFont()));
-        up.after(down, Direction.HORIZONTAL);
+        up.after(getAnchor(), Direction.HORIZONTAL);
         addWidget(up);
+
+        down = new TextWidget();
+        down.setFont(fontSource.getFont(config.getNetDownFont()));
+        down.after(up, Direction.HORIZONTAL);
+        addWidget(down);
     }
 
     @Periodic(value = 1, render = true)
