@@ -68,7 +68,8 @@ public abstract class Widget implements Positioned {
             if (!getOrigin().isTop()) {
                 cy -= lastHeight;
             }
-            pass.graphics.clearRect(cx, cy, lastWidth, lastHeight);
+            // TODO
+            //pass.graphics.clearRect(cx, cy, lastWidth, lastHeight);
         }
         first = false;
     }
@@ -80,10 +81,14 @@ public abstract class Widget implements Positioned {
             lastWidth = getWidth();
             lastHeight = getHeight();
 
+            layout(pass.graphics);
+
             render(pass.graphics);
             dirty = false;
         }
     }
+
+    protected void layout(Graphics graphics) {}
 
     protected void render(Graphics graphics) {}
 

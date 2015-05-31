@@ -34,12 +34,12 @@ public class FlowCompositeWidget extends Widget {
     }
 
     @Override
-    protected void render(Graphics graphics) {
+    protected void layout(Graphics graphics) {
         anchor.setX(getX());
         anchor.setY(getY());
 
         for (Widget widget : widgets) {
-            widget.render(graphics);
+            widget.layout(graphics);
         }
 
         int width = 0;
@@ -51,5 +51,12 @@ public class FlowCompositeWidget extends Widget {
 
         setWidth(width);
         setHeight(height);
+    }
+
+    @Override
+    protected void render(Graphics graphics) {
+        for (Widget widget : widgets) {
+            widget.render(graphics);
+        }
     }
 }
