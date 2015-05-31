@@ -5,6 +5,7 @@ import at.yawk.wm.dock.FlowCompositeWidget;
 import at.yawk.wm.dock.TextWidget;
 import at.yawk.wm.dock.module.*;
 import at.yawk.wm.x.font.FontStyle;
+import at.yawk.yarn.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,10 +19,11 @@ import javax.inject.Inject;
 /**
  * @author yawkat
  */
-@DockWidget(position = DockWidget.Position.RIGHT)
+@Component
+@DockWidget(position = DockWidget.Position.RIGHT, priority = -100)
 public class BatteryWidget extends FlowCompositeWidget {
     private static final Pattern PATTERN_DURATION =
-            Pattern.compile("\\s*time to empty:\\s*([\\d,\\.]*) (hours|minutes|seconds)");
+            Pattern.compile("\\s*time to (empty|full):\\s*([\\d,\\.]*) (hours|minutes|seconds)");
     private static final Pattern PATTERN_PERCENTAGE =
             Pattern.compile("\\s*percentage:\\s*(\\d*)%");
 
@@ -30,8 +32,7 @@ public class BatteryWidget extends FlowCompositeWidget {
 
     private final List<TextWidget> widgets = new ArrayList<>();
 
-    @Periodic(1)
-        // todo
+    @Periodic(20)
     void updateBattery() throws IOException {
         int i = 0;
         Process process = new ProcessBuilder()
@@ -46,8 +47,8 @@ public class BatteryWidget extends FlowCompositeWidget {
 
                 Matcher durationMatcher = PATTERN_DURATION.matcher(line);
                 if (durationMatcher.matches()) {
-                    float durationF = Float.parseFloat(durationMatcher.group(1).replace(',', '.'));
-                    switch (durationMatcher.group(2)) {
+                    float durationF = Float.parseFloat(durationMatcher.group(2).replace(',', '.'));
+                    switch (durationMatcher.group(3)) {
                     case "hours":
                         durationF *= 60;
                         // FALL-THROUGH
@@ -62,10 +63,10 @@ public class BatteryWidget extends FlowCompositeWidget {
                     StringBuilder builder = new StringBuilder();
                     if (hours > 0) { builder.append(hours).append('h'); }
                     builder.append(minutes).append('m');
+                    builder.append(durationMatcher.group(1).equals("empty") ? '\u2193' : '\u2191');
                     text = builder.toString();
                     style = config.getBatteryTime();
                 } else {
-
                     Matcher percentageMatcher = PATTERN_PERCENTAGE.matcher(line);
                     if (percentageMatcher.matches()) {
                         int percentage = Integer.parseInt(percentageMatcher.group(1));

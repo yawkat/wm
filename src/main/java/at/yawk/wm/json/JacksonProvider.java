@@ -1,5 +1,7 @@
 package at.yawk.wm.json;
 
+import at.yawk.yarn.Component;
+import at.yawk.yarn.Provides;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -9,16 +11,13 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.datatype.jdk7.Jdk7Module;
-import dagger.Module;
-import dagger.Provides;
 import java.awt.*;
 import java.io.IOException;
-import javax.inject.Singleton;
 
 /**
  * @author yawkat
  */
-@Module(library = true)
+@Component
 public class JacksonProvider {
     private static final char[] ZEROES = { '0', '0', '0', '0', '0', '0' };
 
@@ -70,7 +69,6 @@ public class JacksonProvider {
     }
 
     @Provides
-    @Singleton
     public ObjectMapper objectMapper() {
         return objectMapper;
     }

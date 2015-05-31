@@ -10,6 +10,8 @@ import lombok.Getter;
  * @author yawkat
  */
 public abstract class Widget implements Positioned {
+    private static final boolean OPTIMIZE_REPAINT = false;
+
     @Getter Origin origin = Origin.TOP_LEFT;
     @Getter private int x;
     @Getter private int y;
@@ -22,6 +24,7 @@ public abstract class Widget implements Positioned {
     int lastHeight = 0;
 
     boolean dirty;
+    private boolean first = true;
     Widget owner = null;
 
     final Set<Runnable> geometryListeners = Collections.synchronizedSet(new HashSet<>());
@@ -56,13 +59,22 @@ public abstract class Widget implements Positioned {
      */
 
     final void preRender(RenderPass pass) {
-        if (dirty || pass.exposePass) {
-            pass.graphics.clearRect(lastX, lastY, lastWidth, lastHeight);
+        if (!first && (dirty || pass.exposePass)) {
+            int cx = lastX;
+            int cy = lastY;
+            if (!getOrigin().isLeft()) {
+                cx -= lastWidth;
+            }
+            if (!getOrigin().isTop()) {
+                cy -= lastHeight;
+            }
+            pass.graphics.clearRect(cx, cy, lastWidth, lastHeight);
         }
+        first = false;
     }
 
     final void internalRender(RenderPass pass) {
-        if (dirty || pass.exposePass) {
+        if (!OPTIMIZE_REPAINT || dirty || pass.exposePass) {
             lastX = getX();
             lastY = getY();
             lastWidth = getWidth();

@@ -9,7 +9,35 @@
       "color": "#93a1a1"
     },
     "batteryPercentageColorLow": "#dc322f",
-    "batteryPercentageColorHigh": "#859900"
+    "batteryPercentageColorHigh": "#859900",
+    "cpuColorHigh": "#dc322f",
+    "cpuColorLow": "#859900",
+    "memoryColorHigh": "#dc322f",
+    "memoryColorLow": "#859900",
+    "swapColorHigh": "#dc322f",
+    "swapColorLow": "#859900",
+    "clockFont": {
+      "color": "#93a1a1"
+    },
+    "clockFormat": "uuuu-MM-dd HH:mm:ss",
+    "netUpFont": {
+      "color": "#b58900"
+    },
+    "netDownFont": {
+      "color": "#dc322f"
+    },
+    "activeFont": {
+      "color": "#fdf6e3"
+    },
+    "runningFont": {
+      "color": "#93a1a1"
+    },
+    "emptyFont": {
+      "color": "#586e75"
+    },
+    "windowTitleFont": {
+      "color": "#93a1a1"
+    }
   },
   "font": {
     "name": "Source Code Pro"

@@ -45,13 +45,13 @@ public class GlyphFont {
     }
 
     GlyphFile resolveGlyphFile(char c) {
-        GlyphFile loaded = glyphFiles[c];
+        GlyphFile loaded = glyphFiles[c / GLYPH_FILE_LENGTH];
         if (loaded != null) { return loaded; }
         return loadGlyphFile(c);
     }
 
     private synchronized GlyphFile loadGlyphFile(char c) {
-        GlyphFile loaded = glyphFiles[c];
+        GlyphFile loaded = glyphFiles[c / GLYPH_FILE_LENGTH];
         if (loaded != null) { return loaded; }
         char startInclusive = (char) (c / GLYPH_FILE_LENGTH * GLYPH_FILE_LENGTH);
         char endInclusive = (char) (startInclusive + GLYPH_FILE_LENGTH - 1);
@@ -72,7 +72,7 @@ public class GlyphFont {
                 }
             }
         }
-        for (char i = startInclusive; i <= endInclusive; i++) {
+        for (int i = startInclusive / GLYPH_FILE_LENGTH; i <= endInclusive / GLYPH_FILE_LENGTH; i++) {
             glyphFiles[i] = loaded;
         }
         return loaded;

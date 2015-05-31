@@ -1,7 +1,7 @@
 package at.yawk.wm.x;
 
-import dagger.Module;
-import dagger.Provides;
+import at.yawk.yarn.Component;
+import at.yawk.yarn.Provides;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import javax.inject.Singleton;
@@ -11,7 +11,7 @@ import xcb4j.LibXcbLoader;
 /**
  * @author yawkat
  */
-@Module(library = true)
+@Component
 public class XcbConnector implements Resource {
     static { LibXcbLoader.load(); }
 
@@ -89,7 +89,6 @@ public class XcbConnector implements Resource {
     }
 
     @Provides
-    @Singleton
     public GlobalResourceRegistry globalResourceRegistry() {
         return globalResourceRegistry;
     }

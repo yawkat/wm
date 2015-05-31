@@ -5,40 +5,47 @@ import at.yawk.wm.dock.Dock;
 import at.yawk.wm.dock.Origin;
 import at.yawk.wm.dock.TextWidget;
 import at.yawk.wm.dock.Widget;
-import at.yawk.wm.dock.module.widget.BatteryWidget;
-import at.yawk.wm.dock.module.widget.TimeWidget;
 import at.yawk.wm.x.GlobalResourceRegistry;
 import at.yawk.wm.x.Screen;
 import at.yawk.wm.x.font.ConfiguredFont;
 import at.yawk.wm.x.font.FontStyle;
 import at.yawk.wm.x.font.GlyphFont;
-import java.lang.reflect.Field;
+import at.yawk.yarn.AnnotatedWith;
+import at.yawk.yarn.Component;
+import at.yawk.yarn.Provides;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import lombok.SneakyThrows;
 
 /**
  * @author yawkat
  */
+@Component
 public class DockBuilder implements FontSource, RenderElf {
     @Inject Config config;
     @Inject Screen screen;
     @Inject GlobalResourceRegistry globalResourceRegistry;
     @Inject ScheduledExecutorService scheduler;
 
+    @AnnotatedWith(DockWidget.class)
+    @Inject Provider<List<Widget>> widgets;
+
     private final Map<FontStyle, GlyphFont> fontStyleMap = new HashMap<>();
-    private DockConfig dockConfig;
     private Dock dock;
 
+    @Provides
+    DockConfig dockConfig() {
+        return config.getDock();
+    }
+
     public void start() {
-        dockConfig = config.getDock();
-        dock = new Dock(screen, dockConfig.getBackground());
+        dock = new Dock(screen, dockConfig().getBackground());
         globalResourceRegistry.register(dock);
-        dock.setBounds(0, 20, screen.getWidth(), dockConfig.getHeight());
+        dock.setBounds(0, 20, screen.getWidth(), dockConfig().getHeight());
 
         setupWidgets();
 
@@ -47,7 +54,7 @@ public class DockBuilder implements FontSource, RenderElf {
 
     private void decorate(Widget widget) {
         if (widget instanceof TextWidget) {
-            ((TextWidget) widget).setTextHeight(dockConfig.getHeight());
+            ((TextWidget) widget).setTextHeight(dockConfig().getHeight());
         }
     }
 
@@ -72,7 +79,9 @@ public class DockBuilder implements FontSource, RenderElf {
 
     @Override
     public void render() {
-        dock.render();
+        if (dock != null) {
+            dock.render();
+        }
     }
 
     //////// SETUP ////////
@@ -82,13 +91,12 @@ public class DockBuilder implements FontSource, RenderElf {
     private void setupWidgets() {
         PeriodBuilder periodBuilder = new PeriodBuilder(this);
 
-        for (Widget widget : new Widget[]{
-                new TimeWidget(),
-                new BatteryWidget()
-        }) {
+        List<Widget> widgetList = widgets.get();
+        Collections.sort(widgetList, Comparator.comparingInt(
+                w -> w.getClass().getAnnotation(DockWidget.class).priority()));
+        for (Widget widget : widgetList) {
             Class<? extends Widget> widgetClass = widget.getClass();
             DockWidget annotation = widgetClass.getAnnotation(DockWidget.class);
-            if (annotation == null) { continue; }
 
             DockWidget.Position position = annotation.position();
             if (position == DockWidget.Position.LEFT) {
@@ -97,35 +105,9 @@ public class DockBuilder implements FontSource, RenderElf {
                 addRight(widget);
             }
 
-            // dependency injection
-            for (Field field : widgetClass.getDeclaredFields()) {
-                if (field.isAnnotationPresent(Inject.class)) {
-                    field.setAccessible(true);
-                    Class<?> type = field.getType();
-                    Object v;
-                    if (type == Config.class) {
-                        v = config;
-                    } else if (type == DockConfig.class) {
-                        v = config.getDock();
-                    } else if (type == FontSource.class) {
-                        v = this;
-                    } else if (type == RenderElf.class) {
-                        v = this;
-                    } else {
-                        throw new AssertionError("Cannot inject field of type " + type.getName());
-                    }
-                    field.set(widget, v);
-                }
-            }
-
             // hook methods
             for (Method method : widgetClass.getDeclaredMethods()) {
                 method.setAccessible(true);
-
-                // post construct
-                if (method.isAnnotationPresent(PostConstruct.class)) {
-                    method.invoke(widget);
-                }
 
                 // periodic tasks
                 periodBuilder.scan(widget, method);

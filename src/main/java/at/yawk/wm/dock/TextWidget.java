@@ -26,14 +26,12 @@ public class TextWidget extends Widget {
 
     @Override
     protected void render(Graphics graphics) {
-        System.out.println("Rendering " + text + " " + getX() + " " + getY());
-
         // local copy
         String text = this.text;
 
         graphics.setFont(font);
         Dimension bounds = font.getStringBounds(text);
-        setWidth((int) bounds.getWidth() + padding * 2);
+        setWidth(bounds.width + padding * 2);
         if (textHeight == 0) {
             setHeight((int) bounds.getHeight());
         } else {
@@ -43,7 +41,7 @@ public class TextWidget extends Widget {
         int y = Math.min(getY(), getY2());
         if (textHeight != 0) {
             // center text vertically
-            y += (textHeight - bounds.getHeight()) / 2;
+            y += (textHeight - bounds.height) / 2;
         }
         graphics.drawText(x, y, text);
     }
