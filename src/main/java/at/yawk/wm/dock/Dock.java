@@ -52,6 +52,8 @@ public class Dock extends AbstractResource {
     }
 
     private synchronized void doRender(RenderPass pass) {
+        graphics.clearRect(leftAnchor.getX(), leftAnchor.getY(),
+                           rightAnchor.getX() - leftAnchor.getX(), rightAnchor.getY() - leftAnchor.getY());
         layoutManager.render(pass);
         graphics.flush();
     }
