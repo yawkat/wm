@@ -1,9 +1,6 @@
 package at.yawk.wm.dock;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import javax.annotation.concurrent.NotThreadSafe;
 
 /**
@@ -47,6 +44,8 @@ final class LayoutManager implements WidgetSet {
                 visited.add(toVisit);
             }
         }
+
+        Arrays.sort(bakedWidgets, Comparator.comparingInt(widget -> widget.getZ()));
     }
 
     public void render(RenderPass pass) {

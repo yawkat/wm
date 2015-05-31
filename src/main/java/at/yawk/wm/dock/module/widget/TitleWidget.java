@@ -15,6 +15,9 @@ import javax.inject.Inject;
 @Component
 @DockWidget(position = DockWidget.Position.LEFT, priority = 100)
 public class TitleWidget extends TextWidget {
+    {
+        setZ(-1000);
+    }
 
     @Inject
     void init(DockConfig config, FontSource fontSource) {

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author yawkat
@@ -15,6 +16,7 @@ public abstract class Widget implements Positioned {
     @Getter Origin origin = Origin.TOP_LEFT;
     @Getter private int x;
     @Getter private int y;
+    @Getter @Setter private int z;
     @Getter private int width;
     @Getter private int height;
 
