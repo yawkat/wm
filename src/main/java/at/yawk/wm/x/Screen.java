@@ -1,5 +1,6 @@
 package at.yawk.wm.x;
 
+import java.util.function.Consumer;
 import javax.annotation.concurrent.ThreadSafe;
 import org.freedesktop.xcb.xcb_screen_t;
 
@@ -42,5 +43,11 @@ public class Screen {
 
     public int getHeight() {
         return screen.getWidth_in_pixels();
+    }
+
+    public <E> Screen addListener(Class<E> eventType, Consumer<E> handler) {
+        connector.getEventManager().addEventHandler(
+                eventType, new EventManager.WindowContext(screen.getRoot()), handler);
+        return this;
     }
 }

@@ -1,7 +1,10 @@
 package at.yawk.wm.dock.module;
 
 import at.yawk.wm.Config;
-import at.yawk.wm.dock.*;
+import at.yawk.wm.dock.Dock;
+import at.yawk.wm.dock.Origin;
+import at.yawk.wm.dock.TextWidget;
+import at.yawk.wm.dock.Widget;
 import at.yawk.wm.x.GlobalResourceRegistry;
 import at.yawk.wm.x.Screen;
 import at.yawk.wm.x.font.ConfiguredFont;
@@ -23,7 +26,7 @@ import lombok.SneakyThrows;
  * @author yawkat
  */
 @Component
-public class DockBuilder implements FontSource, RenderElf, EventProvider {
+public class DockBuilder implements FontSource, RenderElf {
     @Inject Config config;
     @Inject Screen screen;
     @Inject GlobalResourceRegistry globalResourceRegistry;
@@ -46,7 +49,7 @@ public class DockBuilder implements FontSource, RenderElf, EventProvider {
     public void start() {
         dock = new Dock(screen, dockConfig().getBackground());
         globalResourceRegistry.register(dock);
-        dock.setBounds(0, 20, screen.getWidth(), dockConfig().getHeight());
+        dock.setBounds(0, 0, screen.getWidth(), dockConfig().getHeight());
 
         setupWidgets();
 
@@ -120,8 +123,7 @@ public class DockBuilder implements FontSource, RenderElf, EventProvider {
         periodBuilder.flush(scheduler);
     }
 
-    @Override
-    public <E> void addListener(Class<E> eventType, Consumer<E> handler) {
+    public <E> void addWindowListener(Class<E> eventType, Consumer<E> handler) {
         dock.getWindow().addListener(eventType, handler);
     }
 }
