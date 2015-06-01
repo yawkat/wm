@@ -96,4 +96,8 @@ public class HerbstClient {
             return tag;
         }).collect(Collectors.toList());
     }
+
+    public void advanceTag(int tagsToAdvance) {
+        dispatch("use_index", (tagsToAdvance < 0 ? "-" : "+") + Math.abs(tagsToAdvance));
+    }
 }

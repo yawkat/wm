@@ -1,22 +1,20 @@
 package at.yawk.wm.dock.module;
 
 import at.yawk.wm.Config;
-import at.yawk.wm.dock.Dock;
-import at.yawk.wm.dock.Origin;
-import at.yawk.wm.dock.TextWidget;
-import at.yawk.wm.dock.Widget;
+import at.yawk.wm.dock.*;
 import at.yawk.wm.x.GlobalResourceRegistry;
 import at.yawk.wm.x.Screen;
 import at.yawk.wm.x.font.ConfiguredFont;
 import at.yawk.wm.x.font.FontStyle;
 import at.yawk.wm.x.font.GlyphFont;
+import at.yawk.yarn.AcceptMethods;
 import at.yawk.yarn.AnnotatedWith;
 import at.yawk.yarn.Component;
 import at.yawk.yarn.Provides;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
-import javax.annotation.PostConstruct;
+import java.util.function.Consumer;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import lombok.SneakyThrows;
@@ -25,7 +23,7 @@ import lombok.SneakyThrows;
  * @author yawkat
  */
 @Component
-public class DockBuilder implements FontSource, RenderElf {
+public class DockBuilder implements FontSource, RenderElf, EventProvider {
     @Inject Config config;
     @Inject Screen screen;
     @Inject GlobalResourceRegistry globalResourceRegistry;
@@ -33,6 +31,9 @@ public class DockBuilder implements FontSource, RenderElf {
 
     @AnnotatedWith(DockWidget.class)
     @Inject Provider<List<Widget>> widgets;
+    @AnnotatedWith(DockStart.class)
+    @AcceptMethods
+    @Inject Provider<List<Runnable>> dockStartHandlers;
 
     private final Map<FontStyle, GlyphFont> fontStyleMap = new HashMap<>();
     private Dock dock;
@@ -48,6 +49,8 @@ public class DockBuilder implements FontSource, RenderElf {
         dock.setBounds(0, 20, screen.getWidth(), dockConfig().getHeight());
 
         setupWidgets();
+
+        dockStartHandlers.get().forEach(java.lang.Runnable::run);
 
         dock.show();
     }
@@ -115,5 +118,10 @@ public class DockBuilder implements FontSource, RenderElf {
         }
 
         periodBuilder.flush(scheduler);
+    }
+
+    @Override
+    public <E> void addListener(Class<E> eventType, Consumer<E> handler) {
+        dock.getWindow().addListener(eventType, handler);
     }
 }

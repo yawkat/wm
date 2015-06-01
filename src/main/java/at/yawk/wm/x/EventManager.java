@@ -1,5 +1,6 @@
 package at.yawk.wm.x;
 
+import at.yawk.wm.x.event.ButtonPressEvent;
 import at.yawk.wm.x.event.ExposeEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +51,13 @@ class EventManager implements Runnable {
             ));
             break;
         case LibXcbConstants.XCB_NO_EXPOSURE:
+            break;
+        case LibXcbConstants.XCB_BUTTON_PRESS:
+            xcb_button_press_event_t press = cast(evt, xcb_button_press_event_t::new);
+            submitEvent(new WindowContext(press.getEvent()), new ButtonPressEvent(
+                    press.getEvent_x(), press.getEvent_y(),
+                    press.getDetail()
+            ));
             break;
         default:
             System.out.println("Unhandled event " + evt.getResponse_type());

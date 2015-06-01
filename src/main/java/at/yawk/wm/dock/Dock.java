@@ -13,7 +13,7 @@ import lombok.Getter;
  */
 @ThreadSafe
 public class Dock extends AbstractResource {
-    private final Window window;
+    @Getter private final Window window;
     private final Graphics windowGraphics;
     private PixMap buffer = null;
     @Getter private Graphics graphics;

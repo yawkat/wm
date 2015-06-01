@@ -30,7 +30,9 @@ public class Window extends AbstractResource {
         resources.register(colorMap);
 
         windowId = LibXcb.xcb_generate_id(screen.connector.connection);
-        attributes.set(xcb_cw_t.XCB_CW_EVENT_MASK, xcb_event_mask_t.XCB_EVENT_MASK_EXPOSURE);
+        attributes.set(xcb_cw_t.XCB_CW_EVENT_MASK,
+                       xcb_event_mask_t.XCB_EVENT_MASK_EXPOSURE |
+                       xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_PRESS);
         MaskAttributeSet.Diff diff = attributes.flush();
         LibXcb.xcb_create_window(
                 screen.connector.connection,
