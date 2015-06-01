@@ -6,6 +6,7 @@ import java.awt.*;
 import javax.annotation.concurrent.NotThreadSafe;
 import org.freedesktop.xcb.LibXcb;
 import org.freedesktop.xcb.xcb_gc_t;
+import org.freedesktop.xcb.xcb_rectangle_t;
 
 /**
  * @author yawkat
@@ -121,6 +122,22 @@ class GraphicsImpl extends AbstractResource implements Graphics {
         } else {
             fontRenderer.render(contextId, text, x, y);
         }
+        return this;
+    }
+
+    @Override
+    public GraphicsImpl fillRect(int x, int y, int width, int height) {
+        xcb_rectangle_t rect = new xcb_rectangle_t();
+        rect.setX((short) x);
+        rect.setY((short) y);
+        rect.setWidth(width);
+        rect.setHeight(height);
+        LibXcb.xcb_poly_fill_rectangle(
+                connector.connection,
+                containerDrawableId,
+                contextId,
+                1, rect
+        );
         return this;
     }
 

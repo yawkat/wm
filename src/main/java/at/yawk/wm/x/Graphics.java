@@ -17,6 +17,8 @@ public interface Graphics extends Resource {
 
     Graphics drawText(int x, int y, String text);
 
+    Graphics fillRect(int x, int y, int width, int height);
+
     Graphics clearRect(int x, int y, int width, int height);
 
     Graphics drawPixMap(PixMap pixMap, int srcX, int srcY, int destX, int destY, int width, int height);

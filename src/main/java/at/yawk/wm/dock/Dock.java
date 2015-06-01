@@ -15,6 +15,7 @@ import lombok.Getter;
 public class Dock extends AbstractResource {
     @Getter private final Window window;
     private final Graphics windowGraphics;
+    private final Color backgroundColor;
     private PixMap buffer = null;
     @Getter private Graphics graphics;
 
@@ -37,6 +38,7 @@ public class Dock extends AbstractResource {
                 .setBackgroundColor(backgroundColor);
         windowGraphics = window.createGraphics();
         window.addListener(ExposeEvent.class, evt -> doRender(new RenderPass(graphics, true)));
+        this.backgroundColor = backgroundColor;
     }
 
     public void setBounds(int x, int y, int width, int height) {
@@ -59,6 +61,8 @@ public class Dock extends AbstractResource {
     }
 
     private synchronized void doRender(RenderPass pass) {
+        graphics.setForegroundColor(backgroundColor);
+        graphics.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
         layoutManager.render(pass);
         windowGraphics.drawPixMap(buffer, 0, 0, 0, 0, buffer.getWidth(), buffer.getHeight());
         windowGraphics.flush();
