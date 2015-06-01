@@ -1,13 +1,8 @@
 package at.yawk.wm.x;
 
-import at.yawk.wm.x.font.FontRenderer;
-import at.yawk.wm.x.font.GlyphFont;
 import java.awt.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Collections;
-import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.function.Consumer;
 import javax.annotation.concurrent.ThreadSafe;
 import lombok.Getter;
@@ -23,9 +18,6 @@ public class Window extends AbstractResource {
 
     final ResourceSet resources = new ResourceSet();
     ColorMap colorMap;
-
-    final Map<GlyphFont, FontRenderer> fontRenderers =
-            Collections.synchronizedMap(new WeakHashMap<>());
 
     @Getter boolean visible = false;
 
@@ -60,14 +52,16 @@ public class Window extends AbstractResource {
 
         LibXcb.xcb_destroy_window(screen.connector.connection, windowId);
         screen.connector.getEventManager().destroyContext(new EventManager.WindowContext(windowId));
-        synchronized (fontRenderers) {
-            fontRenderers.values().forEach(FontRenderer::close);
-            fontRenderers.clear();
-        }
+    }
+
+    public PixMap createPixMap(int width, int height) {
+        PixMap pixMap = new PixMap(screen.connector, windowId, colorMap, width, height);
+        resources.register(pixMap);
+        return pixMap;
     }
 
     public Graphics createGraphics() {
-        GraphicsImpl graphics = new GraphicsImpl(this, colorMap);
+        GraphicsImpl graphics = new GraphicsImpl(this);
         resources.register(graphics);
         return graphics;
     }

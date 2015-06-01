@@ -1,9 +1,14 @@
 package at.yawk.wm.x;
 
+import at.yawk.wm.x.font.FontRenderer;
+import at.yawk.wm.x.font.GlyphFont;
 import at.yawk.yarn.Component;
 import at.yawk.yarn.Provides;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
 import javax.inject.Singleton;
 import org.freedesktop.xcb.*;
 import xcb4j.LibXcbLoader;
@@ -25,6 +30,9 @@ public class XcbConnector implements Resource {
     private EventManager eventManager;
     private BasicFontRegistry basicFontRegistry;
     private Thread eventThread;
+
+    final Map<GlyphFont, FontRenderer> fontRenderers =
+            Collections.synchronizedMap(new WeakHashMap<>());
 
     public XcbConnector() {
         open();
@@ -61,6 +69,11 @@ public class XcbConnector implements Resource {
 
     @Override
     public void close() {
+        synchronized (fontRenderers) {
+            fontRenderers.values().forEach(FontRenderer::close);
+            fontRenderers.clear();
+        }
+
         if (connection == null) { return; }
         basicFontRegistry.close();
 

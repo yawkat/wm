@@ -12,7 +12,8 @@ import org.freedesktop.xcb.xcb_gc_t;
  */
 @NotThreadSafe
 class GraphicsImpl extends AbstractResource implements Graphics {
-    private final Window window;
+    private final int containerDrawableId;
+    private final XcbConnector connector;
     private int contextId;
     private ColorMap colorMap;
 
@@ -22,9 +23,16 @@ class GraphicsImpl extends AbstractResource implements Graphics {
 
     private FontRenderer fontRenderer;
 
-    GraphicsImpl(Window window, ColorMap colorMap) {
-        this.window = window;
-        this.colorMap = colorMap;
+    GraphicsImpl(Window window) {
+        this.colorMap = window.colorMap;
+        this.connector = window.screen.connector;
+        this.containerDrawableId = window.windowId;
+    }
+
+    GraphicsImpl(PixMap pixMap) {
+        this.colorMap = pixMap.colorMap;
+        this.connector = pixMap.connector;
+        this.containerDrawableId = pixMap.id;
     }
 
     private void flushFlags() {
@@ -32,17 +40,17 @@ class GraphicsImpl extends AbstractResource implements Graphics {
         if (created) {
             if (!diff.isEmpty()) {
                 LibXcb.xcb_change_gc(
-                        window.screen.connector.connection,
+                        connector.connection,
                         contextId,
                         diff.getMask(), diff.getValues()
                 );
             }
         } else {
-            contextId = LibXcb.xcb_generate_id(window.screen.connector.connection);
+            contextId = LibXcb.xcb_generate_id(connector.connection);
             LibXcb.xcb_create_gc(
-                    window.screen.connector.connection,
+                    connector.connection,
                     contextId,
-                    window.windowId,
+                    containerDrawableId,
                     diff.getMask(), diff.getValues()
             );
             created = true;
@@ -51,13 +59,13 @@ class GraphicsImpl extends AbstractResource implements Graphics {
 
     @Override
     public void flush() {
-        window.screen.connector.flush();
+        connector.flush();
     }
 
     @Override
     public void close() {
         if (created) {
-            LibXcb.xcb_free_gc(window.screen.connector.connection, contextId);
+            LibXcb.xcb_free_gc(connector.connection, contextId);
         }
     }
 
@@ -67,7 +75,7 @@ class GraphicsImpl extends AbstractResource implements Graphics {
 
     @Override
     public GraphicsImpl setFont(String font) {
-        flags.set(xcb_gc_t.XCB_GC_FONT, window.screen.connector.getBasicFontRegistry().get(font));
+        flags.set(xcb_gc_t.XCB_GC_FONT, connector.getBasicFontRegistry().get(font));
         return this;
     }
 
@@ -85,13 +93,15 @@ class GraphicsImpl extends AbstractResource implements Graphics {
 
     @Override
     public GraphicsImpl setFont(GlyphFont font) {
-        this.fontRenderer = window.fontRenderers.computeIfAbsent(
+        this.fontRenderer = connector.fontRenderers.computeIfAbsent(
                 font,
-                f -> new FontRenderer(f,
-                                      window.screen.connector.connection,
-                                      window.screen.connector.format,
-                                      window.windowId,
-                                      (short) window.screen.screen.getRoot_depth())
+                f -> new FontRenderer(
+                        f,
+                        connector.connection,
+                        connector.format,
+                        containerDrawableId,
+                        (short) connector.getScreen().screen.getRoot_depth()
+                )
         );
         return this;
     }
@@ -101,9 +111,9 @@ class GraphicsImpl extends AbstractResource implements Graphics {
         flushFlags();
         if (fontRenderer == null) {
             LibXcb.xcb_image_text_8(
-                    window.screen.connector.connection,
+                    connector.connection,
                     (short) text.length(),
-                    window.windowId,
+                    containerDrawableId,
                     contextId,
                     (short) x, (short) y,
                     text
@@ -117,10 +127,28 @@ class GraphicsImpl extends AbstractResource implements Graphics {
     @Override
     public GraphicsImpl clearRect(int x, int y, int width, int height) {
         LibXcb.xcb_clear_area(
-                window.screen.connector.connection,
+                connector.connection,
                 (short) 0,
-                window.windowId,
+                containerDrawableId,
                 (short) x, (short) y, width, height
+        );
+        return this;
+    }
+
+    @Override
+    public Graphics drawPixMap(PixMap pixMap, int srcX, int srcY, int destX, int destY, int width, int height) {
+        flushFlags();
+        LibXcb.xcb_copy_area(
+                connector.connection,
+                pixMap.id,
+                this.containerDrawableId,
+                this.contextId,
+                (short) srcX,
+                (short) srcY,
+                (short) destX,
+                (short) destY,
+                width,
+                height
         );
         return this;
     }

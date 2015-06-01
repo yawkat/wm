@@ -7,17 +7,19 @@ import java.awt.*;
  * @author yawkat
  */
 public interface Graphics extends Resource {
-    GraphicsImpl setFont(String font);
+    Graphics setFont(String font);
 
-    GraphicsImpl setForegroundColor(Color color);
+    Graphics setForegroundColor(Color color);
 
-    GraphicsImpl setBackgroundColor(Color color);
+    Graphics setBackgroundColor(Color color);
 
-    GraphicsImpl setFont(GlyphFont font);
+    Graphics setFont(GlyphFont font);
 
-    GraphicsImpl drawText(int x, int y, String text);
+    Graphics drawText(int x, int y, String text);
 
-    GraphicsImpl clearRect(int x, int y, int width, int height);
+    Graphics clearRect(int x, int y, int width, int height);
+
+    Graphics drawPixMap(PixMap pixMap, int srcX, int srcY, int destX, int destY, int width, int height);
 
     void flush();
 }

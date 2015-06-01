@@ -1,8 +1,7 @@
 package at.yawk.wm.dock;
 
-import at.yawk.wm.x.AbstractResource;
+import at.yawk.wm.x.*;
 import at.yawk.wm.x.Graphics;
-import at.yawk.wm.x.Screen;
 import at.yawk.wm.x.Window;
 import at.yawk.wm.x.event.ExposeEvent;
 import java.awt.*;
@@ -15,7 +14,9 @@ import lombok.Getter;
 @ThreadSafe
 public class Dock extends AbstractResource {
     private final Window window;
-    @Getter private final Graphics graphics;
+    private final Graphics windowGraphics;
+    private PixMap buffer = null;
+    @Getter private Graphics graphics;
 
     private final LayoutManager layoutManager = new LayoutManager();
 
@@ -34,13 +35,19 @@ public class Dock extends AbstractResource {
         window = screen.createWindow()
                 .setDock()
                 .setBackgroundColor(backgroundColor);
-        graphics = window.createGraphics();
+        windowGraphics = window.createGraphics();
         window.addListener(ExposeEvent.class, evt -> doRender(new RenderPass(graphics, true)));
     }
 
     public void setBounds(int x, int y, int width, int height) {
         window.setBounds(x, y, width, height);
         rightAnchor.setX(width);
+
+        if (buffer != null) {
+            buffer.close();
+        }
+        buffer = window.createPixMap(width, height);
+        graphics = buffer.createGraphics();
     }
 
     public WidgetSet getWidgets() {
@@ -53,12 +60,13 @@ public class Dock extends AbstractResource {
 
     private synchronized void doRender(RenderPass pass) {
         layoutManager.render(pass);
-        graphics.flush();
+        windowGraphics.drawPixMap(buffer, 0, 0, 0, 0, buffer.getWidth(), buffer.getHeight());
+        windowGraphics.flush();
     }
 
     @Override
     public synchronized void close() {
-        graphics.close();
+        // should close all other stuff
         window.close();
     }
 
