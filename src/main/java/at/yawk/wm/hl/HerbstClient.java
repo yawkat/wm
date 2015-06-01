@@ -100,4 +100,9 @@ public class HerbstClient {
     public void advanceTag(int tagsToAdvance) {
         dispatch("use_index", (tagsToAdvance < 0 ? "-" : "+") + Math.abs(tagsToAdvance));
     }
+
+    public void pad(int pixels) {
+        // todo: other monitors
+        dispatch("pad", "0", String.valueOf(pixels));
+    }
 }
