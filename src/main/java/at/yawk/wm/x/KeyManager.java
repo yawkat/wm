@@ -2,7 +2,6 @@ package at.yawk.wm.x;
 
 import java.nio.ByteBuffer;
 import org.freedesktop.xcb.LibXcb;
-import org.freedesktop.xcb.LibXcbConstants;
 import org.freedesktop.xcb.SWIGTYPE_p__XCBKeySymbols;
 
 /**

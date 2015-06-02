@@ -75,7 +75,7 @@ class REPL {
     }
 
     private Result doWrite(String command) throws IOException, InterruptedException {
-        String code = "print(eval('" + command.replace("\\", "\\\\").replace("'", "\\") + "'))";
+        String code = "print(" + command + ")";
         ProcessBuilder builder = new ProcessBuilder("python", "-c", code);
         Process process = builder.start();
         ByteArrayOutputStream buf = new ByteArrayOutputStream();

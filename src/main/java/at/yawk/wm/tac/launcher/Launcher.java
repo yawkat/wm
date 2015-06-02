@@ -9,6 +9,7 @@ import at.yawk.wm.tac.TextFieldFeature;
 import at.yawk.wm.x.XcbConnector;
 import at.yawk.yarn.Component;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -61,6 +62,7 @@ public class Launcher {
         final LauncherEntry rehash;
 
         boolean replMode = false;
+        String replResult;
 
         public Instance(TacUI ui) {
             this.ui = ui;
@@ -82,14 +84,16 @@ public class Launcher {
                 @Override
                 protected void onUpdate() {
                     replMode = getText().startsWith(REPL_PREFIX);
+                    if (replMode) {
+                        replResult = repl.run(getText().substring(REPL_PREFIX.length()));
+                    }
                     refresh();
                 }
 
                 @Override
                 protected String format(String text) {
                     if (replMode) {
-                        text = text.substring(REPL_PREFIX.length());
-                        return "# " + text + " = " + repl.run(text);
+                        return "# " + text.substring(REPL_PREFIX.length());
                     } else {
                         return "> " + text;
                     }
@@ -99,7 +103,8 @@ public class Launcher {
 
         private void refresh() {
             if (replMode) {
-                ui.setEntries(Stream.empty());
+                ui.setEntries(Arrays.stream(replResult.split("\n"))
+                                      .map(ReplLineEntry::new));
                 return;
             }
 
