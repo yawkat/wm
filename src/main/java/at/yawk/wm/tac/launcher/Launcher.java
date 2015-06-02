@@ -1,15 +1,12 @@
 package at.yawk.wm.tac.launcher;
 
 import at.yawk.wm.Config;
-import at.yawk.wm.dock.module.DockBuilder;
-import at.yawk.wm.dock.module.DockStart;
+import at.yawk.wm.hl.HerbstClient;
 import at.yawk.wm.tac.CycleFeature;
 import at.yawk.wm.tac.ModalRegistry;
 import at.yawk.wm.tac.TacUI;
 import at.yawk.wm.tac.TextFieldFeature;
 import at.yawk.wm.x.XcbConnector;
-import at.yawk.wm.x.event.Button;
-import at.yawk.wm.x.event.ButtonPressEvent;
 import at.yawk.yarn.Component;
 import java.io.IOException;
 import java.util.HashMap;
@@ -26,17 +23,11 @@ public class Launcher {
     @Inject XcbConnector connector;
     @Inject ModalRegistry modalRegistry;
 
-    @Inject DockBuilder dockBuilder;
-
     private final PathScanner pathScanner = new PathScanner();
 
-    @DockStart
-    public void init() {
-        dockBuilder.getWindow().addListener(ButtonPressEvent.class, evt -> {
-            if (evt.contains(Button.LEFT)) {
-                open();
-            }
-        });
+    @Inject
+    public void bind(HerbstClient herbstClient) {
+        herbstClient.addKeyHandler("Mod4-plus", this::open);
     }
 
     public void open() {

@@ -1,5 +1,6 @@
 package at.yawk.wm.x;
 
+import java.nio.ByteBuffer;
 import org.freedesktop.xcb.LibXcb;
 import org.freedesktop.xcb.LibXcbConstants;
 import org.freedesktop.xcb.SWIGTYPE_p__XCBKeySymbols;
@@ -14,8 +15,13 @@ class KeyManager extends AbstractResource {
         symbols = LibXcb.xcb_key_symbols_alloc(connector.connection);
     }
 
-    public int getKeyChar(int code) {
+    public int getKeySymbol(int code) {
         return LibXcb.xcb_key_symbols_get_keysym(symbols, (short) code, 0);
+    }
+
+    public short getKeyCode(int symbol) {
+        ByteBuffer buf = LibXcb.xcb_key_symbols_get_keycode(symbols, symbol);
+        return buf.getShort();
     }
 
     @Override

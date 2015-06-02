@@ -69,7 +69,7 @@ class EventManager implements Runnable {
             xcb_key_press_event_t keyPress = cast(evt, xcb_key_press_event_t::new);
             submitEvent(new WindowContext(keyPress.getEvent()), new KeyPressEvent(
                     keyPress.getEvent_x(), keyPress.getEvent_y(),
-                    keyPress.getDetail(), connector.keyManager.getKeyChar(keyPress.getDetail())
+                    keyPress.getDetail(), connector.keyManager.getKeySymbol(keyPress.getDetail())
             ));
             break;
         case LibXcbConstants.XCB_FOCUS_IN:

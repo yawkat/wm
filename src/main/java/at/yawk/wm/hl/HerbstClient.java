@@ -4,13 +4,13 @@ import at.yawk.wm.Util;
 import at.yawk.yarn.Component;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.xml.bind.DatatypeConverter;
 import lombok.SneakyThrows;
 
 /**
@@ -19,6 +19,8 @@ import lombok.SneakyThrows;
 @Component
 public class HerbstClient {
     @Inject Provider<HerbstEventBus> eventBus;
+
+    private Map<String, Runnable> keyHandlers = new HashMap<>();
 
     private Process openProcess(String... action) throws IOException {
         List<String> command = new ArrayList<>(action.length + 1);
@@ -72,6 +74,12 @@ public class HerbstClient {
                     case "quit_panel":
                         eventBus.get().post(new ShutdownEvent());
                         break;
+                    case "_key_handler":
+                        Runnable handler = keyHandlers.get(components.get(1));
+                        if (handler != null) {
+                            handler.run();
+                        }
+                        break;
                     }
                 }
             } catch (IOException e) {
@@ -113,5 +121,13 @@ public class HerbstClient {
     public void pad(int pixels) {
         // todo: other monitors
         send("pad", "0", String.valueOf(pixels));
+    }
+
+    public void addKeyHandler(String key, Runnable task) {
+        byte[] rb = new byte[32];
+        ThreadLocalRandom.current().nextBytes(rb);
+        String token = DatatypeConverter.printHexBinary(rb).toLowerCase();
+        keyHandlers.put(token, task);
+        send("keybind", key, "emit_hook", "_key_handler", token);
     }
 }
