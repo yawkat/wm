@@ -32,7 +32,8 @@ public class Window extends AbstractResource {
         windowId = LibXcb.xcb_generate_id(screen.connector.connection);
         attributes.set(xcb_cw_t.XCB_CW_EVENT_MASK,
                        xcb_event_mask_t.XCB_EVENT_MASK_EXPOSURE |
-                       xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_PRESS);
+                       xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_PRESS |
+                       xcb_event_mask_t.XCB_EVENT_MASK_KEY_PRESS);
         MaskAttributeSet.Diff diff = attributes.flush();
         LibXcb.xcb_create_window(
                 screen.connector.connection,
@@ -148,6 +149,16 @@ public class Window extends AbstractResource {
         config.set(xcb_config_window_t.XCB_CONFIG_WINDOW_WIDTH, width);
         config.set(xcb_config_window_t.XCB_CONFIG_WINDOW_HEIGHT, height);
         if (visible) { flushAttributes(); }
+        return this;
+    }
+
+    public Window acquireFocus() {
+        LibXcb.xcb_set_input_focus(
+                screen.connector.connection,
+                (short) xcb_input_focus_t.XCB_INPUT_FOCUS_POINTER_ROOT,
+                windowId,
+                LibXcbConstants.XCB_CURRENT_TIME
+        );
         return this;
     }
 }

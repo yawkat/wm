@@ -4,6 +4,7 @@ import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.tac.TacConfig;
 import at.yawk.wm.x.font.FontFactory;
 import java.nio.file.Path;
+import java.util.Map;
 import lombok.Data;
 
 /**
@@ -15,4 +16,5 @@ public class Config {
     private TacConfig tac;
     private Path fontCacheDir;
     private FontFactory font;
+    private Map<String, String> shortcuts;
 }

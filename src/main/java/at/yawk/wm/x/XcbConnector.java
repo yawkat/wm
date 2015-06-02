@@ -30,6 +30,7 @@ public class XcbConnector implements Resource {
     private EventManager eventManager;
     private BasicFontRegistry basicFontRegistry;
     private Thread eventThread;
+    KeyManager keyManager;
 
     final Map<GlyphFont, FontRenderer> fontRenderers =
             Collections.synchronizedMap(new WeakHashMap<>());
@@ -65,6 +66,9 @@ public class XcbConnector implements Resource {
 
         this.setup = LibXcb.xcb_get_setup(connection);
         this.format = LibXcb.xcb_setup_pixmap_formats(setup);
+
+        keyManager = new KeyManager(this);
+        globalResourceRegistry.register(keyManager);
     }
 
     @Override

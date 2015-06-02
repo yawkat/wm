@@ -3,9 +3,6 @@ package at.yawk.wm.x.font;
 import java.awt.*;
 import java.awt.font.LineMetrics;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 /**
  * @author yawkat
@@ -89,12 +86,6 @@ class GlyphFileFactory {
             data[pos] = (byte) (pixel >> 16); // r
             data[pos + 1] = (byte) (pixel >> 8); // g
             data[pos + 2] = (byte) pixel; // b
-        }
-
-        try {
-            ImageIO.write(image, "png", new File("test.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         glyphFile.setData(data);

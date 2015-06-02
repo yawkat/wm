@@ -15,6 +15,6 @@ public class ConfiguredFont {
 
     @JsonIgnore
     String getDescriptor() {
-        return String.format("%s-%06x-%06x", font.getDescriptor(), style.getColor().getRGB(), background.getRGB());
+        return String.format("%s-%s-%06x", font.getDescriptor(), style.getDescriptor(), background.getRGB());
     }
 }

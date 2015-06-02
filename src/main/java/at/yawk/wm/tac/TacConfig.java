@@ -14,4 +14,6 @@ public class TacConfig {
 
     private Color colorBackground;
     private Color colorSelected;
+
+    private int width;
 }

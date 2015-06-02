@@ -127,6 +127,7 @@ class GraphicsImpl extends AbstractResource implements Graphics {
 
     @Override
     public GraphicsImpl fillRect(int x, int y, int width, int height) {
+        flushFlags();
         xcb_rectangle_t rect = new xcb_rectangle_t();
         rect.setX((short) x);
         rect.setY((short) y);
