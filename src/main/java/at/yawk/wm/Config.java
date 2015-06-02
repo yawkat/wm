@@ -1,6 +1,7 @@
 package at.yawk.wm;
 
 import at.yawk.wm.dock.module.DockConfig;
+import at.yawk.wm.tac.TacConfig;
 import at.yawk.wm.x.font.FontFactory;
 import java.nio.file.Path;
 import lombok.Data;
@@ -11,6 +12,7 @@ import lombok.Data;
 @Data
 public class Config {
     private DockConfig dock;
+    private TacConfig tac;
     private Path cacheDir;
     private FontFactory font;
 }
