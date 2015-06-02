@@ -27,7 +27,11 @@ public class Launcher {
 
     @Inject
     public void bind(HerbstClient herbstClient) {
-        herbstClient.addKeyHandler("Mod4-plus", this::open);
+        herbstClient.addKeyHandler("Mod4-plus", () -> {
+            if (!modalRegistry.closeCurrent()) {
+                open();
+            }
+        });
     }
 
     public void open() {

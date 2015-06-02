@@ -10,11 +10,18 @@ public class ModalRegistry {
     private Modal currentModal = null;
 
     public void onOpen(Modal modal) {
-        if (currentModal != null) {
-            currentModal.close();
-        }
+        closeCurrent();
         modal.addCloseListener(() -> {
             if (currentModal == modal) { currentModal = null; }
         });
+    }
+
+    public boolean closeCurrent() {
+        if (currentModal != null) {
+            currentModal.close();
+            return true;
+        } else {
+            return false;
+        }
     }
 }
