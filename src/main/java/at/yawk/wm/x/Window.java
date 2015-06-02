@@ -68,6 +68,10 @@ public class Window extends AbstractResource {
         return graphics;
     }
 
+    public TrayServer createTrayServer() {
+        return new TrayServer(this);
+    }
+
     public void setColorMap(ColorMap colorMap) {
         this.colorMap = colorMap;
     }
@@ -99,7 +103,7 @@ public class Window extends AbstractResource {
         );
     }
 
-    private void setPropertyAtom(String key, String atom) {
+    void setPropertyAtom(String key, String atom) {
         int i = screen.connector.internAtom(atom);
         setProperty(
                 key,

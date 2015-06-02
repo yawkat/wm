@@ -22,14 +22,18 @@ class EventManager implements Runnable {
         put(16, "Expected different data length from arguments");
     }};
 
-    private final SWIGTYPE_p_xcb_connection_t connection;
+    private final XcbConnector connector;
 
     private final Map<Class<?>, Map<Context, List<Consumer<?>>>> eventHandlers = new HashMap<>();
 
+    private int atomNetSystemTrayOpcode = 0;
+
     @Override
     public void run() {
+        atomNetSystemTrayOpcode = connector.internAtom("_NET_SYSTEM_TRAY_OPCODE");
+
         while (!Thread.interrupted()) {
-            xcb_generic_event_t evt = LibXcb.xcb_wait_for_event(connection);
+            xcb_generic_event_t evt = LibXcb.xcb_wait_for_event(connector.connection);
             if (evt == null) { break; }
             handleGenericEvent(evt);
         }
@@ -58,6 +62,13 @@ class EventManager implements Runnable {
                     press.getEvent_x(), press.getEvent_y(),
                     press.getDetail()
             ));
+            break;
+        case LibXcbConstants.XCB_CLIENT_MESSAGE:
+            xcb_client_message_event_t clientMessage = cast(evt, xcb_client_message_event_t::new);
+            if (clientMessage.getType() == atomNetSystemTrayOpcode) {
+                UCharArray arr = UCharArray.frompointer(clientMessage.getData().getData8());
+                System.out.printf("Received DOCK: %02x\n", arr.getitem(0));
+            }
             break;
         default:
             System.out.println("Unhandled event " + evt.getResponse_type());

@@ -57,7 +57,7 @@ public class XcbConnector implements Resource {
 
         basicFontRegistry = new BasicFontRegistry(this);
 
-        eventManager = new EventManager(connection);
+        eventManager = new EventManager(this);
         eventThread = new Thread(eventManager);
         eventThread.setDaemon(true);
         eventThread.setName("XCB event handler");

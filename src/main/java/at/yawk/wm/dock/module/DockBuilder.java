@@ -7,6 +7,7 @@ import at.yawk.wm.dock.TextWidget;
 import at.yawk.wm.dock.Widget;
 import at.yawk.wm.x.GlobalResourceRegistry;
 import at.yawk.wm.x.Screen;
+import at.yawk.wm.x.Window;
 import at.yawk.wm.x.font.ConfiguredFont;
 import at.yawk.wm.x.font.FontStyle;
 import at.yawk.wm.x.font.GlyphFont;
@@ -123,7 +124,7 @@ public class DockBuilder implements FontSource, RenderElf {
         periodBuilder.flush(scheduler);
     }
 
-    public <E> void addWindowListener(Class<E> eventType, Consumer<E> handler) {
-        dock.getWindow().addListener(eventType, handler);
+    public Window getWindow() {
+        return dock.getWindow();
     }
 }

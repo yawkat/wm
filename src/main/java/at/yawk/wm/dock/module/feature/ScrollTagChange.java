@@ -6,6 +6,7 @@ import at.yawk.wm.hl.HerbstClient;
 import at.yawk.wm.x.event.Button;
 import at.yawk.wm.x.event.ButtonPressEvent;
 import at.yawk.yarn.Component;
+import java.util.function.Consumer;
 import javax.inject.Inject;
 
 /**
@@ -18,16 +19,13 @@ public class ScrollTagChange {
 
     @DockStart
     public void listen() {
-        dockBuilder.addWindowListener(
-                ButtonPressEvent.class,
-                evt -> {
-                    if (evt.contains(Button.SCROLL_UP)) {
-                        herbstClient.advanceTag(-1);
-                    }
-                    if (evt.contains(Button.SCROLL_DOWN)) {
-                        herbstClient.advanceTag(+1);
-                    }
-                }
-        );
+        dockBuilder.getWindow().addListener(ButtonPressEvent.class, evt -> {
+            if (evt.contains(Button.SCROLL_UP)) {
+                herbstClient.advanceTag(-1);
+            }
+            if (evt.contains(Button.SCROLL_DOWN)) {
+                herbstClient.advanceTag(+1);
+            }
+        });
     }
 }
