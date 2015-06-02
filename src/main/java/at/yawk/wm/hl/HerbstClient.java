@@ -20,17 +20,26 @@ import lombok.SneakyThrows;
 public class HerbstClient {
     @Inject Provider<HerbstEventBus> eventBus;
 
-    private InputStream open(String... action) throws IOException {
+    private Process openProcess(String... action) throws IOException {
         List<String> command = new ArrayList<>(action.length + 1);
         command.add("herbstclient");
         command.addAll(Arrays.asList(action));
-        Process process = new ProcessBuilder(command).start();
+        return new ProcessBuilder(command).start();
+    }
+
+    @SneakyThrows
+    private void send(String... action) {
+        openProcess(action);
+    }
+
+    private InputStream stream(String... action) throws IOException {
+        Process process = openProcess(action);
         return process.getInputStream();
     }
 
     @SneakyThrows
     private String dispatch(String... action) {
-        InputStream in = open(action);
+        InputStream in = stream(action);
         ByteArrayOutputStream buf = new ByteArrayOutputStream();
         byte[] bytes = new byte[256];
         int len;
@@ -44,7 +53,7 @@ public class HerbstClient {
     void listen() {
         Thread thread = new Thread(() -> {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(
-                    open("--idle"), StandardCharsets.UTF_8))) {
+                    stream("--idle"), StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = in.readLine()) != null) {
                     List<String> components = Util.split(line, '\t', 4);
@@ -98,11 +107,11 @@ public class HerbstClient {
     }
 
     public void advanceTag(int tagsToAdvance) {
-        dispatch("use_index", (tagsToAdvance < 0 ? "-" : "+") + Math.abs(tagsToAdvance));
+        send("use_index", (tagsToAdvance < 0 ? "-" : "+") + Math.abs(tagsToAdvance));
     }
 
     public void pad(int pixels) {
         // todo: other monitors
-        dispatch("pad", "0", String.valueOf(pixels));
+        send("pad", "0", String.valueOf(pixels));
     }
 }
