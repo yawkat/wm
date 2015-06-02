@@ -38,7 +38,7 @@ public class TacUI extends AbstractResource {
         this.width = width;
         this.x = x;
         this.y = y;
-        fontMap = new TacFontMap(config.getCacheDir(), config.getFont());
+        fontMap = new TacFontMap(config.getFontCacheDir(), config.getFont());
     }
 
     public void setEntries(List<Entry> entries) {

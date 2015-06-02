@@ -80,7 +80,7 @@ public class DockBuilder implements FontSource, RenderElf {
     public GlyphFont getFont(FontStyle style) {
         return fontStyleMap.computeIfAbsent(style, s ->
                 new GlyphFont(new ConfiguredFont(s, config.getDock().getBackground(), config.getFont()),
-                              config.getCacheDir()));
+                              config.getFontCacheDir()));
     }
 
     @Override

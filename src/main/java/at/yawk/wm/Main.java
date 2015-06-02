@@ -24,7 +24,7 @@ import javax.inject.Inject;
 @Component
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        Yarn.build(EntryPoint.class).dockBuilder().start();
+        start();
 
         // wait until interrupt
         Object o = new Object();
@@ -32,6 +32,10 @@ public class Main {
         synchronized (o) {
             o.wait();
         }
+    }
+
+    private static void start() {
+        Yarn.build(EntryPoint.class).dockBuilder().start();
     }
 
     @ComponentScan

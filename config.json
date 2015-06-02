@@ -1,4 +1,5 @@
 {
+  "fontCacheDir": ".cache/font/",
   "dock": {
     "height": 16,
     "background": "#002b36",

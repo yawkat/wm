@@ -126,6 +126,7 @@ class GlyphRenderer extends AbstractResource {
             // done
 
             pixmapLoaded = true;
+            file.freeData(); // don't need to do that again
         }
     }
 

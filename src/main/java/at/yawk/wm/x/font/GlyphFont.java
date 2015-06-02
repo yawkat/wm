@@ -66,6 +66,9 @@ public class GlyphFont {
             Path cacheFolder = getCacheFolder();
             if (cacheFolder != null) {
                 try {
+                    if (!Files.exists(cacheFolder)) {
+                        Files.createDirectories(cacheFolder);
+                    }
                     Files.write(getCacheFile(cacheFolder, startInclusive), loaded.getData());
                 } catch (IOException e) {
                     throw new UncheckedIOException(e);

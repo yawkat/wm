@@ -1,5 +1,6 @@
 package at.yawk.wm.x.font;
 
+import java.util.Arrays;
 import lombok.Data;
 
 /**
@@ -34,22 +35,43 @@ class GlyphFile {
     private char endInclusive;
     private byte[] data;
 
+    private byte[] meta;
+
     public int getCharCount() {
         return endInclusive - startInclusive + 1;
     }
 
+    private byte getMeta(char c, int headerIndex) {
+        int i = (c - startInclusive) * GLYPH_HEADER_LENGTH + headerIndex;
+
+        byte[] localData = data;
+        if (localData != null) {
+            return localData[i];
+        } else {
+            return meta[i];
+        }
+    }
+
     int getWidth(char c) {
-        int i = c - startInclusive;
-        return data[i * GLYPH_HEADER_LENGTH];
+        return getMeta(c, 0);
     }
 
     int getHeight(char c) {
-        int i = c - startInclusive;
-        return data[i * GLYPH_HEADER_LENGTH + 1];
+        return getMeta(c, 1);
     }
 
     int getAscent(char c) {
-        int i = c - startInclusive;
-        return data[i * GLYPH_HEADER_LENGTH + 2];
+        return getMeta(c, 2);
+    }
+
+    /**
+     * Free glyph pixels. Glyph pixels will be null after this call but metadata will stay available.
+     */
+    public void freeData() {
+        byte[] localData = data;
+        if (localData != null) {
+            meta = Arrays.copyOf(localData, GLYPH_HEADER_LENGTH * getCharCount());
+            data = null;
+        }
     }
 }

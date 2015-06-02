@@ -13,6 +13,6 @@ import lombok.Data;
 public class Config {
     private DockConfig dock;
     private TacConfig tac;
-    private Path cacheDir;
+    private Path fontCacheDir;
     private FontFactory font;
 }
