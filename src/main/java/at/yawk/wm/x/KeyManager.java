@@ -15,8 +15,8 @@ class KeyManager extends AbstractResource {
         symbols = LibXcb.xcb_key_symbols_alloc(connector.connection);
     }
 
-    public int getKeySymbol(int code) {
-        return LibXcb.xcb_key_symbols_get_keysym(symbols, (short) code, 0);
+    public int getKeySymbol(int code, int mod) {
+        return LibXcb.xcb_key_symbols_get_keysym(symbols, (short) code, mod);
     }
 
     public short getKeyCode(int symbol) {
