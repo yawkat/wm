@@ -19,11 +19,13 @@ import javax.inject.Inject;
  */
 @Component
 public class Launcher {
+
     @Inject Config config;
     @Inject XcbConnector connector;
     @Inject ModalRegistry modalRegistry;
 
     private final PathScanner pathScanner = new PathScanner();
+    private final REPL repl = new REPL();
 
     @Inject
     public void bind(HerbstClient herbstClient) {
@@ -58,6 +60,8 @@ public class Launcher {
         final TextFieldFeature textFieldFeature;
         final LauncherEntry rehash;
 
+        boolean replMode = false;
+
         public Instance(TacUI ui) {
             this.ui = ui;
             this.entries = new HashMap<>();
@@ -73,19 +77,32 @@ public class Launcher {
                 }
             };
             this.textFieldFeature = new TextFieldFeature() {
+                private static final String REPL_PREFIX = "#";
+
                 @Override
                 protected void onUpdate() {
+                    replMode = getText().startsWith(REPL_PREFIX);
                     refresh();
                 }
 
                 @Override
                 protected String format(String text) {
-                    return "> " + text;
+                    if (replMode) {
+                        text = text.substring(REPL_PREFIX.length());
+                        return "# " + text + " = " + repl.run(text);
+                    } else {
+                        return "> " + text;
+                    }
                 }
             };
         }
 
         private void refresh() {
+            if (replMode) {
+                ui.setEntries(Stream.empty());
+                return;
+            }
+
             Stream<EntryDescriptor> shortcuts = config.getShortcuts().entrySet().stream()
                     .map(e -> new EntryDescriptor(e.getKey(), e.getValue(), true));
             Stream<EntryDescriptor> normal = pathScanner.getApplications().stream()
