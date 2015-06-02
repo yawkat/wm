@@ -2,6 +2,7 @@ package at.yawk.wm.x;
 
 import at.yawk.wm.x.event.ButtonPressEvent;
 import at.yawk.wm.x.event.ExposeEvent;
+import at.yawk.wm.x.event.FocusLostEvent;
 import at.yawk.wm.x.event.KeyPressEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,6 +71,13 @@ class EventManager implements Runnable {
                     keyPress.getEvent_x(), keyPress.getEvent_y(),
                     keyPress.getDetail(), connector.keyManager.getKeyChar(keyPress.getDetail())
             ));
+            break;
+        case LibXcbConstants.XCB_FOCUS_IN:
+            // ignored
+            break;
+        case LibXcbConstants.XCB_FOCUS_OUT:
+            xcb_focus_in_event_t focusOut = cast(evt, xcb_focus_in_event_t::new);
+            submitEvent(new WindowContext(focusOut.getEvent()), new FocusLostEvent());
             break;
         case LibXcbConstants.XCB_CLIENT_MESSAGE:
             xcb_client_message_event_t clientMessage = cast(evt, xcb_client_message_event_t::new);

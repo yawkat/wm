@@ -6,6 +6,7 @@ import at.yawk.wm.x.Graphics;
 import at.yawk.wm.x.Window;
 import at.yawk.wm.x.XcbConnector;
 import at.yawk.wm.x.event.ExposeEvent;
+import at.yawk.wm.x.event.FocusLostEvent;
 import at.yawk.wm.x.event.KeyPressEvent;
 import at.yawk.wm.x.font.GlyphFont;
 import java.awt.*;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Getter;
+import sun.awt.X11.XKeySymConstants;
 
 /**
  * @author yawkat
@@ -71,6 +73,12 @@ public class TacUI extends AbstractResource implements Modal {
             window.addListener(KeyPressEvent.class, evt -> {
                 for (Feature feature : features) {
                     feature.onKeyPress(evt);
+                }
+            });
+            window.addListener(FocusLostEvent.class, evt -> close());
+            window.addListener(KeyPressEvent.class, evt -> {
+                if (evt.getSymbol() == XKeySymConstants.XK_Escape) {
+                    close();
                 }
             });
             graphics = window.createGraphics();

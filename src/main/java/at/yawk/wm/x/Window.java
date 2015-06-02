@@ -33,7 +33,8 @@ public class Window extends AbstractResource {
         attributes.set(xcb_cw_t.XCB_CW_EVENT_MASK,
                        xcb_event_mask_t.XCB_EVENT_MASK_EXPOSURE |
                        xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_PRESS |
-                       xcb_event_mask_t.XCB_EVENT_MASK_KEY_PRESS);
+                       xcb_event_mask_t.XCB_EVENT_MASK_KEY_PRESS |
+                       xcb_event_mask_t.XCB_EVENT_MASK_FOCUS_CHANGE);
         MaskAttributeSet.Diff diff = attributes.flush();
         LibXcb.xcb_create_window(
                 screen.connector.connection,
@@ -55,6 +56,7 @@ public class Window extends AbstractResource {
 
         LibXcb.xcb_destroy_window(screen.connector.connection, windowId);
         screen.connector.getEventManager().destroyContext(new EventManager.WindowContext(windowId));
+        screen.connector.flush();
     }
 
     public PixMap createPixMap(int width, int height) {
