@@ -23,7 +23,7 @@ class LauncherEntry extends Entry {
     public void onUsed() {
         ui.close();
         try {
-            new ProcessBuilder(descriptor.getCommand().split(" "))
+            new ProcessBuilder("bash", "-c", descriptor.getCommand())
                     .redirectError(ProcessBuilder.Redirect.INHERIT)
                     .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                     .start();
