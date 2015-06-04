@@ -67,8 +67,8 @@ public class TacUI extends AbstractResource implements Modal {
         if (window == null) {
             window = connector.getScreen().createWindow();
             window.addListener(ExposeEvent.class, evt -> {
-                render(true);
                 window.acquireFocus();
+                render(true);
             });
             window.addListener(KeyPressEvent.class, evt -> {
                 for (Feature feature : features) {
