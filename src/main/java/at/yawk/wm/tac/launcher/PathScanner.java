@@ -41,6 +41,7 @@ class PathScanner {
                             .collect(Collectors.toList())
             );
         }
+        Collections.sort(apps);
         applications = apps;
     }
 
