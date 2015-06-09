@@ -32,4 +32,49 @@ public class Util {
         }
         return found;
     }
+
+    /**
+     * Taken from guava, this returns 0 for a/A, 25 for z/Z and a larger value for any non-letter.
+     */
+    public static int alphabetIndex(char c) {
+        return (char) ((c | 0x20) - 'a');
+    }
+
+    public static boolean startsWithIgnoreCaseAscii(String s, String prefix) {
+        if (prefix.length() > s.length()) { return false; }
+        for (int i = 0; i < prefix.length(); i++) {
+            char o = s.charAt(i);
+            char p = prefix.charAt(i);
+            if (o != p) {
+                int ao = alphabetIndex(o);
+                if (ao > 26 || ao != alphabetIndex(p)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean containsIgnoreCaseAscii(String haystack, String needle) {
+        if (needle.length() > haystack.length()) { return false; }
+
+        outer:
+        for (int i = 0; i <= haystack.length() - needle.length(); i++) {
+            for (int j = 0; j < needle.length(); j++) {
+                char ch = haystack.charAt(i + j);
+                char cn = needle.charAt(j);
+                if (ch != cn) {
+                    int ih = alphabetIndex(ch);
+                    int in = alphabetIndex(cn);
+                    if (ih != in || ih >= 26) {
+                        // no match
+                        continue outer;
+                    }
+                }
+            }
+            // match, return
+            return true;
+        }
+        return false;
+    }
 }

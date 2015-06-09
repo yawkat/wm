@@ -69,14 +69,6 @@ public class CycleFeature extends Feature {
         if (evt.getSymbol() == XKeySymConstants.XK_downarrow) { // arrow down
             cycle(-1);
         }
-        if (evt.getSymbol() == XKeySymConstants.XK_Return) { // enter
-            for (Entry entry : ui.getEntries()) {
-                if (entry.state.isSelected()) {
-                    entry.onUsed();
-                    break;
-                }
-            }
-        }
     }
 
     private void cycle(int delta) {

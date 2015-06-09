@@ -1,11 +1,9 @@
 package at.yawk.wm.tac.launcher;
 
 import at.yawk.wm.Config;
+import at.yawk.wm.Util;
 import at.yawk.wm.hl.HerbstClient;
-import at.yawk.wm.tac.CycleFeature;
-import at.yawk.wm.tac.ModalRegistry;
-import at.yawk.wm.tac.TacUI;
-import at.yawk.wm.tac.TextFieldFeature;
+import at.yawk.wm.tac.*;
 import at.yawk.wm.x.XcbConnector;
 import at.yawk.yarn.Component;
 import java.io.IOException;
@@ -49,6 +47,7 @@ public class Launcher {
                 config.getDock().getHeight()
         );
         ui.addFeature(new CycleFeature());
+        ui.addFeature(new UseFeature());
         Instance instance = new Instance(ui);
         ui.addFeature(instance.textFieldFeature);
         modalRegistry.onOpen(ui);
@@ -122,30 +121,8 @@ public class Launcher {
 
             String filter = textFieldFeature.getText();
             ui.setEntries(entryStream.filter(
-                    e -> startsWithIgnoreCaseAscii(e.getDescriptor().getTitle(), filter)));
+                    e -> Util.startsWithIgnoreCaseAscii(e.getDescriptor().getTitle(), filter)));
         }
-    }
-
-    private static boolean startsWithIgnoreCaseAscii(String s, String prefix) {
-        if (prefix.length() > s.length()) { return false; }
-        for (int i = 0; i < prefix.length(); i++) {
-            char o = s.charAt(i);
-            char p = prefix.charAt(i);
-            if (o != p) {
-                int ao = alphabetIndex(o);
-                if (ao > 26 || ao != alphabetIndex(p)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Taken from guava, this returns 0 for a/A, 25 for z/Z and a larger value for any non-letter.
-     */
-    private static int alphabetIndex(char c) {
-        return (char) ((c | 0x20) - 'a');
     }
 
     private void rescan() {

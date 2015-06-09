@@ -11,8 +11,6 @@ public class StandardFontFactory implements FontFactory {
     private static final int DEFAULT_SIZE = 12;
 
     private String name = Font.MONOSPACED;
-    private boolean bold = false;
-    private boolean italic = false;
     private int size = DEFAULT_SIZE;
 
     @Override
@@ -23,8 +21,6 @@ public class StandardFontFactory implements FontFactory {
     @Override
     public String getDescriptor() {
         StringBuilder builder = new StringBuilder(name);
-        if (bold) { builder.append("-bold"); }
-        if (italic) { builder.append("-italic"); }
         if (size != DEFAULT_SIZE) { builder.append("-size").append(size); }
         return builder.toString();
     }

@@ -18,6 +18,11 @@ public class TextFieldFeature extends Feature {
         this.ui = ui;
     }
 
+    public void clear() {
+        text = "";
+        update0();
+    }
+
     @Override
     public Stream<? extends Entry> setEntries(Stream<? extends Entry> entries, int entryLimit) {
         updateState();
@@ -30,6 +35,7 @@ public class TextFieldFeature extends Feature {
     @Override
     public void onKeyPress(KeyPressEvent evt) {
         if (evt.getSymbol() <= Character.MAX_VALUE / 2) {
+            System.out.println(evt.getDetail());
             text += (char) evt.getSymbol();
             update0();
         } else if (evt.getSymbol() == XKeySymConstants.XK_BackSpace) {
