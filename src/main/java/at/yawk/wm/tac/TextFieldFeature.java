@@ -34,15 +34,14 @@ public class TextFieldFeature extends Feature {
 
     @Override
     public void onKeyPress(KeyPressEvent evt) {
-        if (evt.getSymbol() <= Character.MAX_VALUE / 2) {
-            System.out.println(evt.getDetail());
-            text += (char) evt.getSymbol();
-            update0();
-        } else if (evt.getSymbol() == XKeySymConstants.XK_BackSpace) {
+        if (evt.getSymbol() == XKeySymConstants.XK_BackSpace) {
             if (!text.isEmpty()) {
                 text = text.substring(0, text.length() - 1);
                 update0();
             }
+        } else if (evt.getKeyChar() != 0) {
+            text += (char) evt.getKeyChar();
+            update0();
         }
     }
 

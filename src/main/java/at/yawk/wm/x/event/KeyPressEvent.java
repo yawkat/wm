@@ -11,4 +11,5 @@ public class KeyPressEvent {
     private int y;
     private int detail;
     private int symbol;
+    private char keyChar;
 }

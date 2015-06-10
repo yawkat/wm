@@ -29,10 +29,18 @@ class EventManager implements Runnable {
     private final Map<Class<?>, Map<Context, List<Consumer<?>>>> eventHandlers = new HashMap<>();
 
     private int atomNetSystemTrayOpcode = 0;
+    private short xkbEventCode;
 
     @Override
     public void run() {
         atomNetSystemTrayOpcode = connector.internAtom("_NET_SYSTEM_TRAY_OPCODE");
+
+        xcb_query_extension_reply_t extensionReply = LibXcb.xcb_get_extension_data(
+                connector.connection, LibXcb.getXcb_xkb_id());
+        if (extensionReply.getPresent() == 0) {
+            throw new IllegalStateException("Could not load XKB extension");
+        }
+        xkbEventCode = extensionReply.getFirst_event();
 
         while (!Thread.interrupted()) {
             xcb_generic_event_t evt = LibXcb.xcb_wait_for_event(connector.connection);
@@ -42,7 +50,8 @@ class EventManager implements Runnable {
     }
 
     private void handleGenericEvent(xcb_generic_event_t evt) {
-        switch (evt.getResponse_type()) {
+        short type = evt.getResponse_type();
+        switch (type) {
         case 0: // error
             xcb_generic_error_t error = cast(evt, xcb_generic_error_t::new);
             int errorCode = error.getError_code();
@@ -67,9 +76,12 @@ class EventManager implements Runnable {
             break;
         case LibXcbConstants.XCB_KEY_PRESS:
             xcb_key_press_event_t keyPress = cast(evt, xcb_key_press_event_t::new);
+            connector.keyManager.updateState(keyPress.getState());
             submitEvent(new WindowContext(keyPress.getEvent()), new KeyPressEvent(
                     keyPress.getEvent_x(), keyPress.getEvent_y(),
-                    keyPress.getDetail(), connector.keyManager.getKeySymbol(keyPress.getDetail(), keyPress.getState())
+                    keyPress.getDetail(),
+                    connector.keyManager.getKeySym(keyPress.getDetail()),
+                    connector.keyManager.getKeyChar(keyPress.getDetail())
             ));
             break;
         case LibXcbConstants.XCB_FOCUS_IN:
@@ -87,12 +99,17 @@ class EventManager implements Runnable {
             }
             break;
         default:
-            System.out.println("Unhandled event " + evt.getResponse_type());
+            if (type == xkbEventCode) {
+                // todo: this is never called, fix that
+                connector.keyManager.onEvent(evt);
+            } else {
+                System.out.println("Unhandled event " + evt.getResponse_type());
+            }
             break;
         }
     }
 
-    private static <E> E cast(xcb_generic_event_t generic, BiFunction<Long, Boolean, E> constructor) {
+    static <E> E cast(xcb_generic_event_t generic, BiFunction<Long, Boolean, E> constructor) {
         return constructor.apply(xcb_generic_event_t.getCPtr(generic), false);
     }
 
