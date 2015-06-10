@@ -23,7 +23,6 @@ class KeyManager extends AbstractResource {
 
         context = LibXcb.xkb_context_new(xkb_context_flags.XKB_CONTEXT_NO_FLAGS);
         int coreDeviceId = LibXcb.xkb_x11_get_core_keyboard_device_id(connector.connection);
-        System.out.println("CDI " + coreDeviceId);
         keymap = LibXcb.xkb_x11_keymap_new_from_device(
                 context,
                 connector.connection,

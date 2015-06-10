@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 import lombok.Value;
 
 /**
@@ -78,6 +79,10 @@ class REPL {
         String code = "print(" + command + ")";
         ProcessBuilder builder = new ProcessBuilder("python", "-c", code);
         Process process = builder.start();
+        if (!process.waitFor(1, TimeUnit.SECONDS)) {
+            process.destroyForcibly();
+            return new Result(-1, "Timeout");
+        }
         ByteArrayOutputStream buf = new ByteArrayOutputStream();
         copy(process.getInputStream(), buf);
         copy(process.getErrorStream(), buf);
