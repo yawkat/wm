@@ -15,7 +15,18 @@ class TextEditorWindow {
     private final JTextArea field;
 
     public TextEditorWindow(PasswordConfig config, String text) {
-        field = new JTextArea();
+        Dimension size = new Dimension(config.getEditorWidth(), config.getEditorHeight());
+
+        field = new JTextArea() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                if (g instanceof Graphics2D) {
+                    ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                                                      RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HBGR);
+                }
+                super.paintComponent(g);
+            }
+        };
         field.setText(text);
         field.setBackground(config.getEditorBackground());
         field.setFont(config.getEditorFont().createFont(config.getEditorFontStyle()));
@@ -23,14 +34,10 @@ class TextEditorWindow {
         field.setSelectedTextColor(config.getEditorBackground());
         field.setSelectionColor(config.getEditorFontStyle().getColor());
         field.setCaretColor(config.getEditorFontStyle().getColor());
-        Graphics graphics = field.getGraphics();
-        if (graphics instanceof Graphics2D) {
-            ((Graphics2D) graphics).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                                                     RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HBGR);
-        }
+        field.setLineWrap(true);
 
         window = new JDialog();
-        window.setSize(config.getEditorWidth(), config.getEditorHeight());
+        window.setSize(size);
         window.setBackground(config.getEditorBackground());
         window.setLayout(new BorderLayout());
         window.add(field, BorderLayout.CENTER);
