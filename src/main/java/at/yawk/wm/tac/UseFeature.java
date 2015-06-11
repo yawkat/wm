@@ -18,6 +18,7 @@ public class UseFeature extends Feature {
     public void onKeyPress(KeyPressEvent evt) {
         if (evt.getSymbol() == XKeySymConstants.XK_Return) { // enter
             onEnter();
+            evt.cancel();
         }
     }
 

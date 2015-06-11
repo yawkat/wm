@@ -1,9 +1,6 @@
 package at.yawk.wm.x;
 
-import at.yawk.wm.x.event.ButtonPressEvent;
-import at.yawk.wm.x.event.ExposeEvent;
-import at.yawk.wm.x.event.FocusLostEvent;
-import at.yawk.wm.x.event.KeyPressEvent;
+import at.yawk.wm.x.event.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -121,6 +118,9 @@ class EventManager implements Runnable {
             if (l != null) {
                 for (Consumer handler : l) {
                     handler.accept(event);
+                    if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
+                        break;
+                    }
                 }
             }
         }

@@ -46,8 +46,8 @@ public class Launcher {
                 connector.getScreen().getWidth() - config.getTac().getWidth(),
                 config.getDock().getHeight()
         );
-        ui.addFeature(new CycleFeature());
         ui.addFeature(new UseFeature());
+        ui.addFeature(new CycleFeature());
         Instance instance = new Instance(ui);
         ui.addFeature(instance.textFieldFeature);
         modalRegistry.onOpen(ui);

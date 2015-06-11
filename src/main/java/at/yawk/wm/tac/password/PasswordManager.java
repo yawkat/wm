@@ -66,7 +66,6 @@ public class PasswordManager {
         );
         ui.addFeature(new CycleFeature());
         Instance instance = new Instance(ui);
-        ui.addFeature(instance.textFieldFeature);
         modalRegistry.onOpen(ui);
         instance.refresh();
     }
@@ -127,7 +126,6 @@ public class PasswordManager {
                 protected void onUpdate() {
                     if (!passwordPrompt) {
                         search = getText();
-                        System.out.println(search);
                         if (getText().indexOf('+') != -1) {
                             action = Action.ADD;
                             search = search.replaceFirst("\\+", "");
@@ -160,6 +158,7 @@ public class PasswordManager {
                     }
                 }
             };
+            ui.addFeature(textFieldFeature);
         }
 
         void refresh() {

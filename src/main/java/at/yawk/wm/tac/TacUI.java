@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Getter;
-import sun.awt.X11.XKeySymConstants;
 
 /**
  * @author yawkat
@@ -49,6 +48,8 @@ public class TacUI extends AbstractResource implements Modal {
         this.x = x;
         this.y = y;
         fontMap = new TacFontMap(config.getFontCacheDir(), config.getFont());
+
+        addFeature(new CloseFeature());
     }
 
     public void setEntries(Stream<? extends Entry> entries) {
@@ -73,14 +74,10 @@ public class TacUI extends AbstractResource implements Modal {
             window.addListener(KeyPressEvent.class, evt -> {
                 for (Feature feature : features) {
                     feature.onKeyPress(evt);
+                    if (evt.isCancelled()) { break; }
                 }
             });
             window.addListener(FocusLostEvent.class, evt -> close());
-            window.addListener(KeyPressEvent.class, evt -> {
-                if (evt.getSymbol() == XKeySymConstants.XK_Escape) {
-                    close();
-                }
-            });
             graphics = window.createGraphics();
             window.setBackgroundColor(config.getColorBackground())
                     .setBounds(x, y, width, newHeight)

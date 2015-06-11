@@ -14,7 +14,7 @@ class PasswordEntry extends Entry {
         this.instance = instance;
         this.name = name;
 
-        setState(new EntryState(name, false, false));
+        setState(new EntryState("  " + name, false, false));
     }
 
     @Override

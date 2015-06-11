@@ -39,9 +39,11 @@ public class TextFieldFeature extends Feature {
                 text = text.substring(0, text.length() - 1);
                 update0();
             }
+            evt.cancel();
         } else if (evt.getKeyChar() != 0) {
             text += (char) evt.getKeyChar();
             update0();
+            evt.cancel();
         }
     }
 
