@@ -27,8 +27,15 @@ class PasswordEditorWindow extends TextEditorWindow {
                     save();
                     e.consume();
                 }
+                updateTitle();
             }
         });
+        updateTitle();
+    }
+
+    private void updateTitle() {
+        boolean modified = !entry.getValue().equals(getText());
+        setTitle(entry.getName() + (modified ? "*" : ""));
     }
 
     private void save() {

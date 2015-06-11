@@ -54,4 +54,12 @@ class TextEditorWindow {
         field.setText(""); // clear text
         window.dispose();
     }
+
+    public void setTitle(String title) {
+        if (window instanceof Frame) {
+            ((Frame) window).setTitle(title);
+        } else if (window instanceof Dialog) {
+            ((Dialog) window).setTitle(title);
+        }
+    }
 }
