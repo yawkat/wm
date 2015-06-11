@@ -41,6 +41,6 @@ public class PixMap extends AbstractResource {
     public Graphics createGraphics() {
         GraphicsImpl graphics = new GraphicsImpl(this);
         resources.register(graphics);
-        return graphics;
+        return connector.wrapGraphics(graphics);
     }
 }

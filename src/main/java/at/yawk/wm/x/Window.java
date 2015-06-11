@@ -68,7 +68,7 @@ public class Window extends AbstractResource {
     public Graphics createGraphics() {
         GraphicsImpl graphics = new GraphicsImpl(this);
         resources.register(graphics);
-        return graphics;
+        return screen.connector.wrapGraphics(graphics);
     }
 
     public TrayServer createTrayServer() {

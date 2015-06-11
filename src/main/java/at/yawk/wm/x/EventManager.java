@@ -17,6 +17,9 @@ import org.freedesktop.xcb.*;
 @RequiredArgsConstructor
 class EventManager implements Runnable {
     private static final Map<Integer, String> ERROR_MESSAGES = new HashMap<Integer, String>() {{
+        put(3, "Argument is not a window");
+        put(4, "Argument is not a pixmap");
+        put(12, "Argument is not a color map");
         put(13, "Argument is not a graphics context");
         put(16, "Expected different data length from arguments");
     }};
@@ -27,6 +30,8 @@ class EventManager implements Runnable {
 
     private int atomNetSystemTrayOpcode = 0;
     private short xkbEventCode;
+
+    Throwable lastFlushStackTrace = null;
 
     @Override
     public void run() {
@@ -54,6 +59,10 @@ class EventManager implements Runnable {
             int errorCode = error.getError_code();
             System.err.println("X Error: " + errorCode + " " +
                                ERROR_MESSAGES.getOrDefault(errorCode, "Unknown"));
+            if (lastFlushStackTrace != null) {
+                System.err.println("Last flush:");
+                lastFlushStackTrace.printStackTrace();
+            }
             break;
         case LibXcbConstants.XCB_EXPOSE:
             xcb_expose_event_t expose = cast(evt, xcb_expose_event_t::new);

@@ -4,12 +4,12 @@ import at.yawk.wm.x.font.FontRenderer;
 import at.yawk.wm.x.font.GlyphFont;
 import at.yawk.yarn.Component;
 import at.yawk.yarn.Provides;
+import java.lang.reflect.Proxy;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
-import javax.inject.Singleton;
 import org.freedesktop.xcb.*;
 import xcb4j.LibXcbLoader;
 
@@ -18,6 +18,8 @@ import xcb4j.LibXcbLoader;
  */
 @Component
 public class XcbConnector implements Resource {
+    private static final boolean DEBUG_ERRORS = false;
+
     static { LibXcbLoader.load(); }
 
     private final GlobalResourceRegistry globalResourceRegistry = new GlobalResourceRegistry();
@@ -119,6 +121,9 @@ public class XcbConnector implements Resource {
     }
 
     void flush() {
+        if (DEBUG_ERRORS) {
+            eventManager.lastFlushStackTrace = new Throwable("Flush");
+        }
         LibXcb.xcb_flush(connection);
     }
 
@@ -142,5 +147,29 @@ public class XcbConnector implements Resource {
                     .getAtom();
         }
         return ids;
+    }
+
+    public void checkError() {
+        if (DEBUG_ERRORS) {
+            flush();
+        }
+    }
+
+    Graphics wrapGraphics(Graphics graphics) {
+        if (DEBUG_ERRORS) {
+            return (Graphics) Proxy.newProxyInstance(
+                    XcbConnector.class.getClassLoader(),
+                    new Class[]{ Graphics.class },
+                    (proxy, method, args) -> {
+                        Object result = method.invoke(graphics, args);
+                        if (DEBUG_ERRORS) {
+                            graphics.flush();
+                        }
+                        return result == graphics ? proxy : result;
+                    }
+            );
+        } else {
+            return graphics;
+        }
     }
 }
