@@ -2,6 +2,9 @@ package at.yawk.wm.tac.password;
 
 import at.yawk.wm.tac.Entry;
 import at.yawk.wm.tac.EntryState;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 
 /**
  * @author yawkat
@@ -21,19 +24,23 @@ class PasswordEntry extends Entry {
     public void onUsed() {
         switch (instance.action) {
         case COPY:
-            // todo
+            String lines = findEntry().getValue();
+            int firstLn = lines.indexOf('\n');
+            StringSelection selection = new StringSelection(firstLn == -1 ? lines : lines.substring(0, firstLn));
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
+            instance.ui.close();
             break;
         case VIEW:
-            new PasswordEditorWindow(
-                    instance.getManager(),
-                    instance.getManager().holder.getPasswords().getPasswords().stream()
-                            .filter(e -> e.getName().equals(name))
-                            .findAny().get(),
-                    false
-            ).show();
+            new PasswordEditorWindow(instance.getManager(), findEntry(), false).show();
             break;
         default:
             throw new IllegalStateException();
         }
+    }
+
+    private at.yawk.password.model.PasswordEntry findEntry() {
+        return instance.getManager().holder.getPasswords().getPasswords().stream()
+                .filter(e -> e.getName().equals(name))
+                .findAny().get();
     }
 }
