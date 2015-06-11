@@ -117,6 +117,13 @@ class PasswordHolder {
         return holder.blob;
     }
 
+    public synchronized boolean isFromLocalStorage() {
+        if (!claimed) {
+            throw new IllegalStateException();
+        }
+        return holder.fromLocalStorage;
+    }
+
     public synchronized void save() throws Exception {
         if (!claimed) {
             throw new IllegalStateException();

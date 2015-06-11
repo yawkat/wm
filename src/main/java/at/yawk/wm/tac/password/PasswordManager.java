@@ -154,7 +154,7 @@ public class PasswordManager {
                     case VIEW:
                         return "~ " + text;
                     default:
-                        return "> " + text;
+                        return (holder.isFromLocalStorage() ? "! " : "> ") + text;
                     }
                 }
             };
