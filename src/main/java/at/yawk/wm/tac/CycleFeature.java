@@ -63,11 +63,12 @@ public class CycleFeature extends Feature {
 
     @Override
     public void onKeyPress(KeyPressEvent evt) {
-        if (evt.getSymbol() == XKeySymConstants.XK_uparrow) { // arrow up
-            cycle(+1);
-        }
-        if (evt.getSymbol() == XKeySymConstants.XK_downarrow) { // arrow down
+        if (evt.getSymbol() == XKeySymConstants.XK_Up) { // arrow up
             cycle(-1);
+            evt.cancel();
+        } else if (evt.getSymbol() == XKeySymConstants.XK_Down) { // arrow down
+            cycle(+1);
+            evt.cancel();
         }
     }
 
