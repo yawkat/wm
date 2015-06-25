@@ -23,6 +23,9 @@ public class Animator extends AbstractResource {
 
     private Future<?> currentRunningTask = null;
 
+    private int canvasWidth;
+    private int canvasHeight;
+
     public Animator(AnimatedWallpaper wallpaper, Color backgroundColor, ScheduledExecutorService scheduler,
                     Window window) {
         this.backgroundColor = backgroundColor;
@@ -31,6 +34,8 @@ public class Animator extends AbstractResource {
         this.window = window;
 
         graphics = window.createGraphics();
+        canvasWidth = wallpaper.getBaseFrame().getWidth();
+        canvasHeight = wallpaper.getBaseFrame().getHeight();
     }
 
     private void drawBase() {
@@ -73,20 +78,24 @@ public class Animator extends AbstractResource {
 
         Iterator<Frame> frameIterator = animation.getFrames().iterator();
         return currentRunningTask = scheduler.scheduleAtFixedRate(() -> {
-            if (frameIterator.hasNext()) {
-                Frame nextFrame = frameIterator.next();
-                if (!nextFrame.isEmpty()) {
-                    graphics.putImage(
-                            (window.getWidth() - nextFrame.getWidth()) / 2 + nextFrame.getX(),
-                            (window.getHeight() - nextFrame.getHeight()) / 2 + nextFrame.getY(),
-                            nextFrame.getWidth(), nextFrame.getHeight(),
-                            nextFrame.getData(), 0, 3
-                    );
-                    graphics.flush();
+            try {
+                if (frameIterator.hasNext()) {
+                    Frame nextFrame = frameIterator.next();
+                    if (!nextFrame.isEmpty()) {
+                        graphics.putImage(
+                                (window.getWidth() - canvasWidth) / 2 + nextFrame.getX(),
+                                (window.getHeight() - canvasHeight) / 2 + nextFrame.getY(),
+                                nextFrame.getWidth(), nextFrame.getHeight(),
+                                nextFrame.getData(), 0, 3
+                        );
+                        graphics.flush();
+                    }
+                    frameIterator.remove(); // remove from iterator to allow GC
+                } else {
+                    stopTask();
                 }
-                frameIterator.remove(); // remove from iterator to allow GC
-            } else {
-                stopTask();
+            } catch (Throwable t) {
+                t.printStackTrace();
             }
         }, 0, animation.getInterval(), TimeUnit.MILLISECONDS);
     }

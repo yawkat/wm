@@ -95,16 +95,21 @@ class AnimationBuilder {
         Frame screen = new Frame(background);
         for (ImageHolder image : images) {
             Frame diff = diffFrame(screen, image.getImage());
-            
-            int i = (int) (image.time / animation.getInterval());
-            // fill up with empty frames
-            for (int j = animation.getFrames().size(); j <= i; j++) {
-                animation.getFrames().add(EMPTY_FRAME);
-            }
-            // add our frame
-            animation.getFrames().set(i, diff);
 
-            paint(screen, diff);
+            if (!diff.isEmpty()) {
+                System.out.println("put");
+
+                int i = (int) (image.time / animation.getInterval());
+                // fill up with empty frames
+                for (int j = animation.getFrames().size(); j <= i; j++) {
+                    animation.getFrames().add(EMPTY_FRAME);
+                }
+
+                // add our frame
+                animation.getFrames().set(i, diff);
+
+                paint(screen, diff);
+            }
         }
 
         return animation;
@@ -127,16 +132,16 @@ class AnimationBuilder {
     private static Frame diffFrame(Frame back, BufferedImage front) {
         int minX = back.getWidth();
         int minY = back.getHeight();
-        int maxX = 0;
-        int maxY = 0;
+        int maxX = -1;
+        int maxY = -1;
         for (int x = 0; x < back.getWidth(); x++) {
             for (int y = 0; y < back.getHeight(); y++) {
                 int f = front.getRGB(x, y);
                 if (f >>> 24 != 0) {
                     int bgOffset = (x + y * back.getWidth()) * 3;
-                    boolean write = ((f >> 16) & 0xff) == (back.getData()[bgOffset] & 0xff);
-                    write |= ((f >> 8) & 0xff) == (back.getData()[bgOffset + 1] & 0xff);
-                    write |= (f & 0xff) == (back.getData()[bgOffset + 2] & 0xff);
+                    boolean write = ((f >> 16) & 0xff) != (back.getData()[bgOffset] & 0xff);
+                    write |= ((f >> 8) & 0xff) != (back.getData()[bgOffset + 1] & 0xff);
+                    write |= (f & 0xff) != (back.getData()[bgOffset + 2] & 0xff);
 
                     if (write) {
                         minX = Math.min(minX, x);
@@ -149,7 +154,7 @@ class AnimationBuilder {
             }
         }
 
-        if (maxX == 0 || maxY == 0) {
+        if (maxX < minX || maxY < minY) {
             // no pixels to copy
             return EMPTY_FRAME;
         } else {
@@ -210,7 +215,7 @@ class AnimationBuilder {
         for (int y = 0; y < frame.getHeight(); y++) {
             int frontOffset = (y * frame.getWidth()) * 3;
             int backOffset = ((frame.getX() - canvas.getX()) +
-                              (y + frame.getY() - canvas.getY()) * frame.getWidth()) * 3;
+                              (y + frame.getY() - canvas.getY()) * canvas.getWidth()) * 3;
             System.arraycopy(frame.getData(), frontOffset, canvas.getData(), backOffset, 3 * frame.getWidth());
         }
     }
