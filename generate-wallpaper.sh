@@ -2,18 +2,18 @@
 
 set -e
 
-#rm -rf wallpaper
-#mkdir -p wallpaper
-#
-#ffmpeg -i "http://i.imgur.com/ilAQEm3.gif" "wallpaper/%d.png"
-#
-#for f in $(ls -1 wallpaper/); do
-#    echo "Transforming $f..."
-#    convert wallpaper/$f \
-#        -colorspace gray -contrast-stretch 90%x0% \
-#        -size 1x2 gradient:'rgb(131,148,150)-rgb(0,43,54)' -fx 'v.p{0,0}*u+v.p{0,1}*(1-u)' \
-#        wallpaper/$f
-#done
+rm -rf wallpaper
+mkdir -p wallpaper
+
+ffmpeg -i "http://i.imgur.com/ilAQEm3.gif" "wallpaper/%d.png"
+
+for f in $(ls -1 wallpaper/); do
+    echo "Transforming $f..."
+    convert wallpaper/$f \
+        -colorspace gray -contrast-stretch 90%x0% \
+        -size 1x2 gradient:'rgb(131,148,150)-rgb(0,43,54)' -fx 'v.p{0,0}*u+v.p{0,1}*(1-u)' \
+        wallpaper/$f
+done
 
 fps=25
 base_frame=36
