@@ -37,12 +37,16 @@ public class Screen {
         return window;
     }
 
+    public Window getRootWindow() {
+        return new RootWindow(this);
+    }
+
     public int getWidth() {
         return screen.getWidth_in_pixels();
     }
 
     public int getHeight() {
-        return screen.getWidth_in_pixels();
+        return screen.getHeight_in_pixels();
     }
 
     public <E> Screen addListener(Class<E> eventType, Consumer<E> handler) {
@@ -50,4 +54,5 @@ public class Screen {
                 eventType, new EventManager.WindowContext(screen.getRoot()), handler);
         return this;
     }
+
 }

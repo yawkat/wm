@@ -39,7 +39,6 @@ class PasswordEditorWindow extends TextEditorWindow {
     }
 
     private void save() {
-        System.out.println("Saving password DB");
         entry.setValue(getText());
         if (needsInsert) {
             manager.holder.getPasswords().getPasswords().add(entry);

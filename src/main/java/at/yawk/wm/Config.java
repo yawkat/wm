@@ -3,6 +3,7 @@ package at.yawk.wm;
 import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.tac.TacConfig;
 import at.yawk.wm.tac.password.PasswordConfig;
+import at.yawk.wm.wallpaper.animate.AnimatedWallpaperConfig;
 import at.yawk.wm.x.font.FontFactory;
 import java.nio.file.Path;
 import java.util.Map;
@@ -19,4 +20,5 @@ public class Config {
     private FontFactory font;
     private Map<String, String> shortcuts;
     private PasswordConfig password;
+    private AnimatedWallpaperConfig wallpaper;
 }

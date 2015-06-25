@@ -30,6 +30,7 @@ public class PixMap extends AbstractResource {
                 width,
                 height
         );
+        connector.checkError();
     }
 
     @Override

@@ -59,17 +59,17 @@
     "thunderbird": "thunderbird",
     "quasselclient": "quasselclient",
     "subl": "subl",
-    "intellij": "~/Applications/IntelliJ/bin/idea.sh",
+    "intellij": "idea.sh",
     "intellij-android": "~/Applications/Android/studio/bin/studio.sh",
     "genpw16": "< /dev/urandom tr -dc A-Za-z0-9 | head -c${1:-16} | xclip -selection c",
     "genpw32": "< /dev/urandom tr -dc A-Za-z0-9 | head -c${1:-16} | xclip -selection c",
     "lock": "gnome-screensaver-command -l && xset dpms force off",
-    "shutdown": "dbus-send --system --print-reply --dest=org.freedesktop.ConsoleKit /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Stop",
-    "standby": "dbus-send --system --print-reply --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend",
-    "hibernate": "dbus-send --system --print-reply --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Hibernate",
+    "shutdown": "systemctl shutdown",
     "nautilus": "nautilus --no-desktop",
     "minecraft yawkat": "minecraft yawkat",
     "minecraft jonalu": "minecraft jonas.konrad@googlemail.com",
+    "steven yawkat": "steven yawkat",
+    "steven jonalu": "steven jonas.konrad@googlemail.com",
     "hostup": "/etc/hosts.sh on",
     "hostdown": "/etc/hosts.sh off"
   },
@@ -86,5 +86,10 @@
     },
     "editorWidth": 400,
     "editorHeight": 400
+  },
+  "wallpaper": {
+    "cache": ".cache/wallpaper",
+    "input": "wallpaper",
+    "backgroundColor": "#002b36"
   }
 }

@@ -1,13 +1,12 @@
 package at.yawk.wm.x.font;
 
 import at.yawk.wm.x.AbstractResource;
+import at.yawk.wm.x.XUtil;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import lombok.RequiredArgsConstructor;
 import org.freedesktop.xcb.LibXcb;
 import org.freedesktop.xcb.SWIGTYPE_p_xcb_connection_t;
 import org.freedesktop.xcb.xcb_format_t;
-import org.freedesktop.xcb.xcb_image_format_t;
 
 /**
  * @author yawkat
@@ -91,33 +90,15 @@ class GlyphRenderer extends AbstractResource {
             byte[] data = file.getData();
             int headerLength = charCount * GlyphFile.GLYPH_HEADER_LENGTH;
 
-            ByteBuffer buffer = ByteBuffer.allocateDirect((rowWidth * 4) * cellHeight)
-                    .order(ByteOrder.nativeOrder());
-            for (int y = 0; y < cellHeight; y++) {
-                for (int x = 0; x < rowWidth; x++) {
-                    int pos = headerLength + (y * rowWidth + x) * 3;
-                    byte r = data[pos];
-                    byte g = data[pos + 1];
-                    byte b = data[pos + 2];
-                    buffer.put(b);
-                    buffer.put(g);
-                    buffer.put(r);
-                    buffer.put((byte) 0);
-                }
-            }
-            LibXcb.xcb_put_image(
+            XUtil.putImage(
                     connection,
-                    (short) xcb_image_format_t.XCB_IMAGE_FORMAT_Z_PIXMAP,
                     pixmapId,
                     gcId,
-                    rowWidth,
-                    cellHeight,
-                    (short) 0,
-                    (short) 0,
-                    (short) 0,
                     depth,
-                    buffer.capacity(),
-                    buffer
+                    0, 0, rowWidth, cellHeight,
+                    data,
+                    headerLength,
+                    3
             );
 
             // FREE GRAPHICS CONTEXT

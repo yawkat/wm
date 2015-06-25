@@ -19,6 +19,7 @@ class EventManager implements Runnable {
     private static final Map<Integer, String> ERROR_MESSAGES = new HashMap<Integer, String>() {{
         put(3, "Argument is not a window");
         put(4, "Argument is not a pixmap");
+        put(9, "Argument is not a drawable (window or pixmap)");
         put(12, "Argument is not a color map");
         put(13, "Argument is not a graphics context");
         put(16, "Expected different data length from arguments");

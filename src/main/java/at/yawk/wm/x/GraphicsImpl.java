@@ -67,6 +67,7 @@ class GraphicsImpl extends AbstractResource implements Graphics {
     public void close() {
         if (created) {
             LibXcb.xcb_free_gc(connector.connection, contextId);
+            created = false;
         }
     }
 
@@ -144,13 +145,18 @@ class GraphicsImpl extends AbstractResource implements Graphics {
 
     @Override
     public GraphicsImpl clearRect(int x, int y, int width, int height) {
+        flushFlags();
+        clear(connector, containerDrawableId, x, y, width, height);
+        return this;
+    }
+
+    static void clear(XcbConnector connector, int drawable, int x, int y, int width, int height) {
         LibXcb.xcb_clear_area(
                 connector.connection,
                 (short) 0,
-                containerDrawableId,
+                drawable,
                 (short) x, (short) y, width, height
         );
-        return this;
     }
 
     @Override
@@ -167,6 +173,22 @@ class GraphicsImpl extends AbstractResource implements Graphics {
                 (short) destY,
                 width,
                 height
+        );
+        return this;
+    }
+
+    @Override
+    public Graphics putImage(int x, int y, int width, int height, byte[] data, int offset, int pixelOffset) {
+        flushFlags();
+        XUtil.putImage(
+                connector.connection,
+                containerDrawableId,
+                contextId,
+                connector.getScreen().screen.getRoot_depth(),
+                x, y, width, height,
+                data,
+                offset,
+                pixelOffset
         );
         return this;
     }

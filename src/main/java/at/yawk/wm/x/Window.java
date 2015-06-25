@@ -13,7 +13,7 @@ import org.freedesktop.xcb.*;
  */
 @ThreadSafe
 public class Window extends AbstractResource {
-    final Screen screen;
+    @Getter final Screen screen;
     final int windowId;
 
     final ResourceSet resources = new ResourceSet();
@@ -23,6 +23,19 @@ public class Window extends AbstractResource {
 
     private final MaskAttributeSet attributes = new MaskAttributeSet();
     private final MaskAttributeSet config = new MaskAttributeSet();
+
+    @Getter private int width;
+    @Getter private int height;
+
+    /**
+     * @see RootWindow
+     */
+    protected Window(Screen screen, int id) {
+        this.screen = screen;
+        this.windowId = id;
+        this.colorMap = new LazyColorMap(screen);
+        resources.register(colorMap);
+    }
 
     Window(Screen screen, int parent, int visual) {
         this.screen = screen;
@@ -54,9 +67,18 @@ public class Window extends AbstractResource {
     public void close() {
         resources.close();
 
-        LibXcb.xcb_destroy_window(screen.connector.connection, windowId);
-        screen.connector.getEventManager().destroyContext(new EventManager.WindowContext(windowId));
+        destroy();
         screen.connector.flush();
+    }
+
+    public void clear() {
+        flushAttributes();
+        GraphicsImpl.clear(screen.connector, windowId, 0, 0, getWidth(), getHeight());
+    }
+
+    protected void destroy() {
+        screen.connector.getEventManager().destroyContext(new EventManager.WindowContext(windowId));
+        LibXcb.xcb_destroy_window(screen.connector.connection, windowId);
     }
 
     public PixMap createPixMap(int width, int height) {
@@ -131,6 +153,11 @@ public class Window extends AbstractResource {
         return this;
     }
 
+    public Window setBackgroundPixMap(PixMap map) {
+        setAttribute(xcb_cw_t.XCB_CW_BACK_PIXMAP, map.id);
+        return this;
+    }
+
     public <E> Window addListener(Class<E> eventType, Consumer<E> handler) {
         screen.connector.getEventManager().addEventHandler(
                 eventType, new EventManager.WindowContext(windowId), handler);
@@ -146,11 +173,19 @@ public class Window extends AbstractResource {
     }
 
     public Window setBounds(int x, int y, int width, int height) {
+        this.width = width;
+        this.height = height;
         config.set(xcb_config_window_t.XCB_CONFIG_WINDOW_X, x);
         config.set(xcb_config_window_t.XCB_CONFIG_WINDOW_Y, y);
         config.set(xcb_config_window_t.XCB_CONFIG_WINDOW_WIDTH, width);
         config.set(xcb_config_window_t.XCB_CONFIG_WINDOW_HEIGHT, height);
         if (visible) { flushAttributes(); }
+        return this;
+    }
+
+    public Window flush() {
+        flushAttributes();
+        screen.connector.checkError();
         return this;
     }
 
