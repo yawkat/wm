@@ -18,7 +18,7 @@ import xcb4j.LibXcbLoader;
  */
 @Component
 public class XcbConnector implements Resource {
-    private static final boolean DEBUG_ERRORS = true;
+    private static final boolean DEBUG_ERRORS = false;
 
     static { LibXcbLoader.load(); }
 
