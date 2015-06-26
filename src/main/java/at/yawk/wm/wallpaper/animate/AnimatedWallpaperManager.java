@@ -8,6 +8,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -56,7 +57,7 @@ public class AnimatedWallpaperManager {
         animator.start();
     }
 
-    public void stop() {
-        animator.stop();
+    public Future<?> stop() {
+        return animator.stop();
     }
 }

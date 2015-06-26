@@ -4,11 +4,13 @@ import at.yawk.wm.Config;
 import at.yawk.wm.Util;
 import at.yawk.wm.hl.HerbstClient;
 import at.yawk.wm.tac.*;
+import at.yawk.wm.wallpaper.animate.AnimatedWallpaperManager;
 import at.yawk.wm.x.XcbConnector;
 import at.yawk.yarn.Component;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import javax.inject.Inject;
@@ -22,6 +24,7 @@ public class Launcher {
     @Inject Config config;
     @Inject XcbConnector connector;
     @Inject ModalRegistry modalRegistry;
+    @Inject AnimatedWallpaperManager animatedWallpaper;
 
     private final PathScanner pathScanner = new PathScanner();
     private final REPL repl = new REPL();
@@ -58,7 +61,7 @@ public class Launcher {
         final TacUI ui;
         final Map<EntryDescriptor, LauncherEntry> entries;
         final TextFieldFeature textFieldFeature;
-        final LauncherEntry rehash;
+        final List<LauncherEntry> customEntries;
 
         boolean replMode = false;
         String replResult;
@@ -66,17 +69,6 @@ public class Launcher {
         public Instance(TacUI ui) {
             this.ui = ui;
             this.entries = new HashMap<>();
-            this.rehash = new LauncherEntry(this.ui, new EntryDescriptor("rehash", null, false)) {
-                @Override
-                public void onUsed() {
-                    ui.close();
-                    try {
-                        pathScanner.scan();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
             this.textFieldFeature = new TextFieldFeature() {
                 private static final String REPL_PREFIX = "#";
 
@@ -98,6 +90,32 @@ public class Launcher {
                     }
                 }
             };
+            customEntries = Arrays.asList(
+                    new LauncherEntry(this.ui, new EntryDescriptor(
+                            "shutdown", config.getShutdownCommand(), true)) {
+                        @Override
+                        public void onUsed() {
+                            ui.close();
+                            try {
+                                animatedWallpaper.stop().get();
+                                // wait for animation to finish
+                            } catch (Exception ignored) {}
+                            super.onUsed();
+                        }
+                    },
+
+                    new LauncherEntry(this.ui, new EntryDescriptor("rehash", null, false)) {
+                        @Override
+                        public void onUsed() {
+                            ui.close();
+                            try {
+                                pathScanner.scan();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+            );
         }
 
         private void refresh() {
@@ -111,17 +129,20 @@ public class Launcher {
                     .map(e -> new EntryDescriptor(e.getKey(), e.getValue(), true));
             Stream<EntryDescriptor> normal = pathScanner.getApplications().stream()
                     .map(s -> new EntryDescriptor(s, s, false));
-            Stream<LauncherEntry> rehash = Stream.of(this.rehash);
 
             Stream<LauncherEntry> entryStream = Stream.concat(
-                    Stream.concat(shortcuts, normal).map(
-                            d -> entries.computeIfAbsent(d, t -> new LauncherEntry(ui, t))),
-                    rehash
+                    Stream.concat(shortcuts.map(this::getLauncherEntry),
+                                  customEntries.stream()),
+                    normal.map(this::getLauncherEntry)
             );
 
             String filter = textFieldFeature.getText();
             ui.setEntries(entryStream.filter(
                     e -> Util.startsWithIgnoreCaseAscii(e.getDescriptor().getTitle(), filter)));
+        }
+
+        private LauncherEntry getLauncherEntry(EntryDescriptor d) {
+            return entries.computeIfAbsent(d, t -> new LauncherEntry(ui, t));
         }
     }
 

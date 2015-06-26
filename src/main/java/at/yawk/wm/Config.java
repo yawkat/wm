@@ -21,4 +21,5 @@ public class Config {
     private Map<String, String> shortcuts;
     private PasswordConfig password;
     private AnimatedWallpaperConfig wallpaper;
+    private String shutdownCommand;
 }

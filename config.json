@@ -64,7 +64,6 @@
     "genpw16": "< /dev/urandom tr -dc A-Za-z0-9 | head -c${1:-16} | xclip -selection c",
     "genpw32": "< /dev/urandom tr -dc A-Za-z0-9 | head -c${1:-16} | xclip -selection c",
     "lock": "gnome-screensaver-command -l && xset dpms force off",
-    "shutdown": "systemctl shutdown",
     "nautilus": "nautilus --no-desktop",
     "minecraft yawkat": "minecraft yawkat",
     "minecraft jonalu": "minecraft jonas.konrad@googlemail.com",
@@ -73,6 +72,7 @@
     "hostup": "/etc/hosts.sh on",
     "hostdown": "/etc/hosts.sh off"
   },
+  "shutdownCommand": "systemctl poweroff",
   "password": {
     "cacheDir": "/home/yawkat/.local/share/password",
     "timeout": 600,
