@@ -9,10 +9,12 @@ import java.util.Iterator;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
+@Slf4j
 public class Animator extends AbstractResource {
     private final Color backgroundColor;
     private final AnimatedWallpaper wallpaper;
@@ -95,7 +97,7 @@ public class Animator extends AbstractResource {
                     stopTask();
                 }
             } catch (Throwable t) {
-                t.printStackTrace();
+                log.error("Exception in animator", t);
             }
         }, 0, animation.getInterval(), TimeUnit.MILLISECONDS);
     }

@@ -9,10 +9,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
+@Slf4j
 class PathScanner {
     private final List<Path> path;
     private List<String> applications;
@@ -34,6 +36,7 @@ class PathScanner {
     }
 
     public void scan() throws IOException {
+        log.info("Scanning PATH for applications...");
         List<String> apps = new ArrayList<>();
         for (Path p : path) {
             apps.addAll(
@@ -42,6 +45,7 @@ class PathScanner {
             );
         }
         Collections.sort(apps);
+        log.info("Found {} applications.", apps.size());
         applications = apps;
     }
 

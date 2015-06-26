@@ -97,8 +97,6 @@ class AnimationBuilder {
             Frame diff = diffFrame(screen, image.getImage());
 
             if (!diff.isEmpty()) {
-                System.out.println("put");
-
                 int i = (int) (image.time / animation.getInterval());
                 // fill up with empty frames
                 for (int j = animation.getFrames().size(); j <= i; j++) {

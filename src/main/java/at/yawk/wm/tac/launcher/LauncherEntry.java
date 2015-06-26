@@ -5,10 +5,12 @@ import at.yawk.wm.tac.EntryState;
 import at.yawk.wm.tac.TacUI;
 import java.io.IOException;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
+@Slf4j
 class LauncherEntry extends Entry {
     protected final TacUI ui;
     @Getter private final EntryDescriptor descriptor;
@@ -22,13 +24,14 @@ class LauncherEntry extends Entry {
     @Override
     public void onUsed() {
         ui.close();
+        log.info("Executing command '{}'", descriptor.getCommand());
         try {
             new ProcessBuilder("bash", "-c", descriptor.getCommand())
                     .redirectError(ProcessBuilder.Redirect.INHERIT)
                     .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                     .start();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warn("Failed to execute command", e);
         }
     }
 }

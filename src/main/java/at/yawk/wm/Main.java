@@ -17,14 +17,23 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
 @Component
+@Slf4j
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        start();
+        log.info("Logging initialized, starting up...");
+        try {
+            start();
+            log.info("Startup complete.");
+        } catch (Throwable t) {
+            log.error("Error during startup", t);
+            return;
+        }
 
         // wait until interrupt
         Object o = new Object();

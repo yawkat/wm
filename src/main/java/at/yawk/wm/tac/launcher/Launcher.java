@@ -14,11 +14,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import javax.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
 @Component
+@Slf4j
 public class Launcher {
 
     @Inject Config config;
@@ -108,11 +110,8 @@ public class Launcher {
                         @Override
                         public void onUsed() {
                             ui.close();
-                            try {
-                                pathScanner.scan();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                            log.info("Requested rehash");
+                            rescan();
                         }
                     }
             );
@@ -150,7 +149,7 @@ public class Launcher {
         try {
             pathScanner.scan();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error in path scanner", e);
         }
     }
 }

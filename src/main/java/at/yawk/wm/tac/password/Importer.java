@@ -1,6 +1,5 @@
 package at.yawk.wm.tac.password;
 
-import at.yawk.password.LocalStorageProvider;
 import at.yawk.password.MultiFileLocalStorageProvider;
 import at.yawk.password.client.PasswordClient;
 import at.yawk.password.model.PasswordBlob;

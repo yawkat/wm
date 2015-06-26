@@ -9,11 +9,13 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.freedesktop.xcb.*;
 
 /**
  * @author yawkat
  */
+@Slf4j
 @RequiredArgsConstructor
 class EventManager implements Runnable {
     private static final Map<Integer, String> ERROR_MESSAGES = new HashMap<Integer, String>() {{
@@ -58,11 +60,11 @@ class EventManager implements Runnable {
         case 0: // error
             xcb_generic_error_t error = cast(evt, xcb_generic_error_t::new);
             int errorCode = error.getError_code();
-            System.err.println("X Error: " + errorCode + " " +
-                               ERROR_MESSAGES.getOrDefault(errorCode, "Unknown"));
+            if (log.isWarnEnabled()) {
+                log.warn("X Error {} {}", errorCode, ERROR_MESSAGES.getOrDefault(errorCode, "Unknown"));
+            }
             if (lastFlushStackTrace != null) {
-                System.err.println("Last flush:");
-                lastFlushStackTrace.printStackTrace();
+                log.debug("Last flush:", lastFlushStackTrace);
             }
             break;
         case LibXcbConstants.XCB_EXPOSE:
@@ -110,7 +112,7 @@ class EventManager implements Runnable {
                 // todo: this is never called, fix that
                 connector.keyManager.onEvent(evt);
             } else {
-                System.out.println("Unhandled event " + evt.getResponse_type());
+                log.debug("Unhandled event {}", evt.getResponse_type());
             }
             break;
         }

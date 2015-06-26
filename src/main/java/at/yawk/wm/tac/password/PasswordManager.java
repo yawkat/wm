@@ -17,11 +17,13 @@ import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Stream;
 import javax.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
 @Component
+@Slf4j
 public class PasswordManager {
     @Inject ScheduledExecutorService executor;
     @Inject ModalRegistry modalRegistry;
@@ -104,7 +106,7 @@ public class PasswordManager {
                                 passwordPrompt = false;
                                 textFieldFeature.clear();
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                log.info("Failed to load password database", e);
                                 errorMessage = e.getMessage();
                             }
                             refresh();

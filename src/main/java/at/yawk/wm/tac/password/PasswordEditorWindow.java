@@ -2,13 +2,13 @@ package at.yawk.wm.tac.password;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
+@Slf4j
 class PasswordEditorWindow extends TextEditorWindow {
-    // TODO: adjust title according to save status
-
     private final PasswordManager manager;
     private final at.yawk.password.model.PasswordEntry entry;
     private boolean needsInsert;
@@ -47,7 +47,7 @@ class PasswordEditorWindow extends TextEditorWindow {
         try {
             manager.holder.save();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to save password database", e);
         }
     }
 }

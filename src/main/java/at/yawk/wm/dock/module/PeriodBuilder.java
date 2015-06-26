@@ -9,10 +9,12 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.concurrent.NotThreadSafe;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
+@Slf4j
 @NotThreadSafe
 @RequiredArgsConstructor
 class PeriodBuilder {
@@ -123,8 +125,8 @@ class PeriodBuilder {
             if (run) {
                 try {
                     handle.invokeWithArguments();
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
+                } catch (Throwable t) {
+                    log.error("Error while executing " + handle, t);
                 }
             }
             i = (i + 1) % tickInterval;
