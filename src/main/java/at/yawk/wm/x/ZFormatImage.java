@@ -62,4 +62,17 @@ public class ZFormatImage extends LocalImage {
     public void setB(int x, int y, byte b) {
         buffer.put(baseOffset(x, y), b);
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <I extends LocalImage> I copy(LocalImageType<I> copyType) {
+        if (copyType == TYPE) {
+            ZFormatImage copy = TYPE.createImage(getWidth(), getHeight());
+            buffer.position(0);
+            buffer.limit(copy.buffer.capacity());
+            copy.buffer.put(buffer);
+            return (I) copy;
+        }
+        return super.copy(copyType);
+    }
 }

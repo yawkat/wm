@@ -47,6 +47,12 @@ public class Window extends AbstractResource {
         attributes.set(xcb_cw_t.XCB_CW_EVENT_MASK,
                        xcb_event_mask_t.XCB_EVENT_MASK_EXPOSURE |
                        xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_PRESS |
+                       xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_RELEASE |
+                       xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_1_MOTION |
+                       xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_2_MOTION |
+                       xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_3_MOTION |
+                       xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_4_MOTION |
+                       xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_5_MOTION |
                        xcb_event_mask_t.XCB_EVENT_MASK_KEY_PRESS |
                        xcb_event_mask_t.XCB_EVENT_MASK_FOCUS_CHANGE);
         MaskAttributeSet.Diff diff = attributes.flush();
@@ -216,6 +222,9 @@ public class Window extends AbstractResource {
         xcb_get_image_reply_t reply = LibXcb.xcb_get_image_reply(
                 screen.connector.connection, cookie, new xcb_generic_error_t(0, false));
         ByteBuffer data = LibXcb.xcb_get_image_data(reply);
-        return new ZFormatImage(width, height, data);
+        // we do limit-slice here so we don't get ridiculous capacities
+        data.position(0);
+        data.limit(LibXcb.xcb_get_image_data_length(reply));
+        return new ZFormatImage(width, height, data.slice());
     }
 }

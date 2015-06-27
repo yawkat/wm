@@ -51,14 +51,32 @@ public abstract class LocalImage {
         setB(x, y, (byte) (rgb & 0xff));
     }
 
+    public void apply(PixelTransformer transformer, int x, int y) {
+        setRgb(x, y, transformer.transform(getRgb(x, y)));
+    }
+
+    public void apply(PixelTransformer transformer) {
+        for (int x = 0; x < getWidth(); x++) {
+            for (int y = 0; y < getHeight(); y++) {
+                apply(transformer, x, y);
+            }
+        }
+    }
+
+    /**
+     * Get this image as the given type. May copy this image or may just return a view of this image.
+     */
     @SuppressWarnings("unchecked")
-    public <I extends LocalImage> I convertTo(LocalImageType<I> type) {
+    public <I extends LocalImage> I as(LocalImageType<I> type) {
         if (type == getType()) { return (I) this; }
         I to = type.createImage(getWidth(), getHeight());
-        this.copyTo(to);
+        copyTo(to);
         return to;
     }
 
+    /**
+     * Paint this image onto the given target image.
+     */
     public void copyTo(LocalImage to) {
         if (to.getWidth() < this.getWidth() || to.getHeight() < this.getHeight()) {
             throw new IllegalArgumentException("Target image too small");
@@ -68,5 +86,23 @@ public abstract class LocalImage {
                 to.setRgb(x, y, getRgb(x, y));
             }
         }
+    }
+
+    /**
+     * Return a copy of this image in the given type. Modifications to the returned image will never change the
+     * original
+     * image and vice-versa.
+     */
+    public <I extends LocalImage> I copy(LocalImageType<I> copyType) {
+        I to = copyType.createImage(getWidth(), getHeight());
+        copyTo(to);
+        return to;
+    }
+
+    /**
+     * Create a copy of this image of an arbitrary type.
+     */
+    public LocalImage copy() {
+        return copy(getType());
     }
 }

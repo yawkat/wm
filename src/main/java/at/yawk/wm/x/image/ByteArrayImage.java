@@ -1,5 +1,6 @@
 package at.yawk.wm.x.image;
 
+import java.util.Arrays;
 import lombok.Getter;
 
 /**
@@ -58,5 +59,19 @@ public class ByteArrayImage extends LocalImage {
     @Override
     public void setB(int x, int y, byte b) {
         bytes[baseOffset(x, y)] = b;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <I extends LocalImage> I copy(LocalImageType<I> copyType) {
+        if (copyType == TYPE) {
+            int end = start + getWidth() * getHeight() * pixelOffset;
+            byte[] copyBytes = start == 0 && end == bytes.length ?
+                    bytes.clone() :
+                    Arrays.copyOfRange(this.bytes, start, end);
+
+            return (I) new ByteArrayImage(getWidth(), getHeight(), copyBytes, 0, pixelOffset);
+        }
+        return super.copy(copyType);
     }
 }

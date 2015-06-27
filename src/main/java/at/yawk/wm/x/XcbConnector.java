@@ -8,6 +8,7 @@ import java.lang.reflect.Proxy;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 import lombok.extern.slf4j.Slf4j;
@@ -141,20 +142,30 @@ public class XcbConnector implements Resource {
         return internAtoms(atom)[0];
     }
 
-    int[] internAtoms(String... atoms) {
+    private final Map<String, Integer> atomCache = new HashMap<>();
+
+    synchronized int[] internAtoms(String... atoms) {
         xcb_intern_atom_cookie_t[] cookies = new xcb_intern_atom_cookie_t[atoms.length];
-        for (int i = 0; i < atoms.length; i++) {
-            cookies[i] = LibXcb.xcb_intern_atom(
-                    connection,
-                    (short) 0,
-                    atoms[i].length(),
-                    atoms[i]
-            );
-        }
         int[] ids = new int[atoms.length];
         for (int i = 0; i < atoms.length; i++) {
-            ids[i] = LibXcb.xcb_intern_atom_reply(connection, cookies[i], new xcb_generic_error_t(0, false))
-                    .getAtom();
+            Integer present = this.atomCache.get(atoms[i]);
+            if (present == null) {
+                cookies[i] = LibXcb.xcb_intern_atom(
+                        connection,
+                        (short) 0,
+                        atoms[i].length(),
+                        atoms[i]
+                );
+            } else {
+                ids[i] = present;
+            }
+        }
+        for (int i = 0; i < atoms.length; i++) {
+            if (cookies[i] != null) {
+                ids[i] = LibXcb.xcb_intern_atom_reply(connection, cookies[i], new xcb_generic_error_t(0, false))
+                        .getAtom();
+                this.atomCache.put(atoms[i], ids[i]);
+            }
         }
         return ids;
     }

@@ -5,6 +5,8 @@ import at.yawk.paste.client.PasteClient;
 import at.yawk.paste.model.PasteData;
 import at.yawk.wm.Config;
 import at.yawk.wm.hl.HerbstClient;
+import at.yawk.wm.tac.ModalRegistry;
+import at.yawk.wm.x.XcbConnector;
 import at.yawk.yarn.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.*;
@@ -12,7 +14,6 @@ import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.freedesktop.xcb.LibXcb;
 
 /**
  * @author yawkat
@@ -22,6 +23,9 @@ import org.freedesktop.xcb.LibXcb;
 public class PasteManager {
     private PasteClient client;
     private ClipboardHelper clipboardHelper;
+
+    @Inject XcbConnector connector;
+    @Inject ModalRegistry modalRegistry;
 
     @Inject
     void load(Config config, ObjectMapper objectMapper) {
@@ -33,8 +37,7 @@ public class PasteManager {
 
     @Inject
     void setupKeys(HerbstClient herbstClient) {
-        herbstClient.addKeyHandler("Mod4-v", this::pasteFromClipboard);
-        LibXcb.xcb_get_image()
+        herbstClient.addKeyHandler("Mod4-v", this::makeScreenshot);
     }
 
     void pasteFromClipboard() {
@@ -49,6 +52,13 @@ public class PasteManager {
             log.error("Failed to load paste from clipboard", e);
             sendNotification("Error: " + e.getMessage());
         }
+    }
+
+    void makeScreenshot() {
+        ScreenshotOverlay overlay = new ScreenshotOverlay(this, connector);
+        overlay.capture();
+        modalRegistry.onOpen(overlay);
+        overlay.open();
     }
 
     private void upload(PasteData data) {

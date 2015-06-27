@@ -83,6 +83,20 @@ class EventManager implements Runnable {
                     press.getDetail()
             ));
             break;
+        case LibXcbConstants.XCB_BUTTON_RELEASE:
+            xcb_button_press_event_t release = cast(evt, xcb_button_press_event_t::new);
+            submitEvent(new WindowContext(release.getEvent()), new ButtonReleaseEvent(
+                    release.getEvent_x(), release.getEvent_y(),
+                    release.getDetail()
+            ));
+            break;
+        case LibXcbConstants.XCB_MOTION_NOTIFY:
+            xcb_motion_notify_event_t motion = cast(evt, xcb_motion_notify_event_t::new);
+            submitEvent(new WindowContext(motion.getEvent()), new MouseMoveEvent(
+                    motion.getEvent_x(), motion.getEvent_y(),
+                    motion.getDetail()
+            ));
+            break;
         case LibXcbConstants.XCB_KEY_PRESS:
             xcb_key_press_event_t keyPress = cast(evt, xcb_key_press_event_t::new);
             connector.keyManager.updateState(keyPress.getState());

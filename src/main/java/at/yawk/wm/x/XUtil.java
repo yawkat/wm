@@ -24,7 +24,7 @@ public class XUtil {
      */
     public static void putImage(SWIGTYPE_p_xcb_connection_t connection, int drawable, int graphics, short depth,
                                 int x, int y, int width, int height, LocalImage image) {
-        ZFormatImage zImage = image.convertTo(ZFormatImage.TYPE);
+        ZFormatImage zImage = image.as(ZFormatImage.TYPE);
         LibXcb.xcb_put_image(
                 connection,
                 (short) xcb_image_format_t.XCB_IMAGE_FORMAT_Z_PIXMAP,
