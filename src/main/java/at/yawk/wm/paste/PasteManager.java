@@ -5,6 +5,8 @@ import at.yawk.paste.client.PasteClient;
 import at.yawk.paste.model.PasteData;
 import at.yawk.wm.Config;
 import at.yawk.wm.hl.HerbstClient;
+import at.yawk.wm.progress.ProgressManager;
+import at.yawk.wm.progress.SettableProgressTask;
 import at.yawk.wm.tac.ModalRegistry;
 import at.yawk.wm.x.XcbConnector;
 import at.yawk.yarn.Component;
@@ -26,6 +28,7 @@ public class PasteManager {
 
     @Inject XcbConnector connector;
     @Inject ModalRegistry modalRegistry;
+    @Inject ProgressManager progressManager;
 
     @Inject
     void load(Config config, ObjectMapper objectMapper) {
@@ -72,8 +75,9 @@ public class PasteManager {
     }
 
     private void upload(PasteData data) {
+        SettableProgressTask task = progressManager.createTask();
         try {
-            String url = client.save(data);
+            String url = client.save(data, (done, total) -> task.setProgress((float) done / total));
             Toolkit.getDefaultToolkit()
                     .getSystemClipboard()
                     .setContents(new StringSelection(url), null);
@@ -81,6 +85,8 @@ public class PasteManager {
         } catch (IOException e) {
             log.error("Failed to save paste", e);
             sendNotification("Error: " + e.getMessage());
+        } finally {
+            task.terminate();
         }
     }
 
