@@ -22,4 +22,5 @@ public class Config {
     private PasswordConfig password;
     private AnimatedWallpaperConfig wallpaper;
     private String shutdownCommand;
+    private at.yawk.paste.client.Config paste;
 }
