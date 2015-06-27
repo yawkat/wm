@@ -2,6 +2,7 @@ package at.yawk.wm.x.font;
 
 import at.yawk.wm.x.AbstractResource;
 import at.yawk.wm.x.XUtil;
+import at.yawk.wm.x.image.ByteArrayImage;
 import java.nio.ByteBuffer;
 import lombok.RequiredArgsConstructor;
 import org.freedesktop.xcb.LibXcb;
@@ -91,14 +92,9 @@ class GlyphRenderer extends AbstractResource {
             int headerLength = charCount * GlyphFile.GLYPH_HEADER_LENGTH;
 
             XUtil.putImage(
-                    connection,
-                    pixmapId,
-                    gcId,
-                    depth,
-                    0, 0, rowWidth, cellHeight,
-                    data,
-                    headerLength,
-                    3
+                    connection, pixmapId, gcId, depth,
+                    0, 0, rowWidth, (int) cellHeight,
+                    new ByteArrayImage(rowWidth, cellHeight, data, headerLength, 3)
             );
 
             // FREE GRAPHICS CONTEXT

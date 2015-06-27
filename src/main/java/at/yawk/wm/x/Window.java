@@ -1,5 +1,6 @@
 package at.yawk.wm.x;
 
+import at.yawk.wm.x.image.LocalImage;
 import java.awt.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -197,5 +198,24 @@ public class Window extends AbstractResource {
                 LibXcbConstants.XCB_CURRENT_TIME
         );
         return this;
+    }
+
+    /**
+     * Create a screenshot.
+     *
+     * @return an array of RGB data of the screenshot.
+     */
+    public LocalImage capture(int x, int y, int width, int height) {
+        xcb_get_image_cookie_t cookie = LibXcb.xcb_get_image(
+                screen.connector.connection,
+                (short) xcb_image_format_t.XCB_IMAGE_FORMAT_Z_PIXMAP,
+                windowId,
+                (short) x, (short) y, width, height,
+                0xffffffff
+        );
+        xcb_get_image_reply_t reply = LibXcb.xcb_get_image_reply(
+                screen.connector.connection, cookie, new xcb_generic_error_t(0, false));
+        ByteBuffer data = LibXcb.xcb_get_image_data(reply);
+        return new ZFormatImage(width, height, data);
     }
 }

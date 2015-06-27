@@ -54,5 +54,4 @@ public class Screen {
                 eventType, new EventManager.WindowContext(screen.getRoot()), handler);
         return this;
     }
-
 }

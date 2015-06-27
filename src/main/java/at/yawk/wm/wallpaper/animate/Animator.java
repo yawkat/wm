@@ -4,6 +4,7 @@ import at.yawk.wm.x.AbstractResource;
 import at.yawk.wm.x.Graphics;
 import at.yawk.wm.x.PixMap;
 import at.yawk.wm.x.Window;
+import at.yawk.wm.x.image.ByteArrayImage;
 import java.awt.*;
 import java.util.Iterator;
 import java.util.concurrent.Future;
@@ -53,8 +54,8 @@ public class Animator extends AbstractResource {
         pixMapGraphics.putImage(
                 (window.getWidth() - frame.getWidth()) / 2,
                 (window.getHeight() - frame.getHeight()) / 2,
-                frame.getWidth(), frame.getHeight(),
-                frame.getData(), 0, 3
+                new ByteArrayImage(frame.getWidth(), frame.getHeight(),
+                                   frame.getData(), 0, 3)
         );
         pixMapGraphics.close();
 
@@ -87,8 +88,8 @@ public class Animator extends AbstractResource {
                         graphics.putImage(
                                 (window.getWidth() - canvasWidth) / 2 + nextFrame.getX(),
                                 (window.getHeight() - canvasHeight) / 2 + nextFrame.getY(),
-                                nextFrame.getWidth(), nextFrame.getHeight(),
-                                nextFrame.getData(), 0, 3
+                                new ByteArrayImage(nextFrame.getWidth(), nextFrame.getHeight(),
+                                                   nextFrame.getData(), 0, 3)
                         );
                         graphics.flush();
                     }

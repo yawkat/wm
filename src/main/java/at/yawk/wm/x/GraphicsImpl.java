@@ -2,6 +2,7 @@ package at.yawk.wm.x;
 
 import at.yawk.wm.x.font.FontRenderer;
 import at.yawk.wm.x.font.GlyphFont;
+import at.yawk.wm.x.image.LocalImage;
 import java.awt.*;
 import javax.annotation.concurrent.NotThreadSafe;
 import org.freedesktop.xcb.LibXcb;
@@ -178,17 +179,14 @@ class GraphicsImpl extends AbstractResource implements Graphics {
     }
 
     @Override
-    public Graphics putImage(int x, int y, int width, int height, byte[] data, int offset, int pixelOffset) {
+    public Graphics putImage(int x, int y, LocalImage image) {
         flushFlags();
         XUtil.putImage(
                 connector.connection,
                 containerDrawableId,
                 contextId,
                 connector.getScreen().screen.getRoot_depth(),
-                x, y, width, height,
-                data,
-                offset,
-                pixelOffset
+                x, y, image.getWidth(), image.getHeight(), image
         );
         return this;
     }
