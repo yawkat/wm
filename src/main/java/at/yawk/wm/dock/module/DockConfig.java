@@ -42,5 +42,7 @@ public class DockConfig {
 
     private FontStyle windowTitleFont;
 
+    private Color progressColor;
+
     private int height;
 }

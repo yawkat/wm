@@ -38,7 +38,8 @@
     },
     "windowTitleFont": {
       "color": "#93a1a1"
-    }
+    },
+    "progressColor": "#93a1a1"
   },
   "font": {
     "name": "Source Code Pro"
