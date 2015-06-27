@@ -11,16 +11,12 @@ import at.yawk.wm.x.Window;
 import at.yawk.wm.x.font.ConfiguredFont;
 import at.yawk.wm.x.font.FontStyle;
 import at.yawk.wm.x.font.GlyphFont;
-import at.yawk.yarn.AcceptMethods;
-import at.yawk.yarn.AnnotatedWith;
 import at.yawk.yarn.Component;
 import at.yawk.yarn.Provides;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.function.Consumer;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,12 +31,6 @@ public class DockBuilder implements FontSource, RenderElf {
     @Inject GlobalResourceRegistry globalResourceRegistry;
     @Inject ScheduledExecutorService scheduler;
 
-    @AnnotatedWith(DockWidget.class)
-    @Inject Provider<List<Widget>> widgets;
-    @AnnotatedWith(DockStart.class)
-    @AcceptMethods
-    @Inject Provider<List<Runnable>> dockStartHandlers;
-
     private final Map<FontStyle, GlyphFont> fontStyleMap = new HashMap<>();
     private Dock dock;
 
@@ -49,16 +39,16 @@ public class DockBuilder implements FontSource, RenderElf {
         return config.getDock();
     }
 
-    public void start() {
+    void start(DockBootstrap bootstrap) {
         log.info("Initializing dock...");
 
         dock = new Dock(screen, dockConfig().getBackground());
         globalResourceRegistry.register(dock);
         dock.setBounds(0, 0, screen.getWidth(), dockConfig().getHeight());
 
-        setupWidgets();
+        setupWidgets(bootstrap);
 
-        dockStartHandlers.get().forEach(java.lang.Runnable::run);
+        bootstrap.dockStartHandlers.forEach(java.lang.Runnable::run);
 
         dock.show();
         log.info("Dock initialized");
@@ -100,14 +90,14 @@ public class DockBuilder implements FontSource, RenderElf {
 
     @SuppressWarnings("unchecked")
     @SneakyThrows // lazy
-    private void setupWidgets() {
+    private void setupWidgets(DockBootstrap bootstrap) {
         PeriodBuilder periodBuilder = new PeriodBuilder(this);
 
-        List<Widget> widgetList = widgets.get();
-        log.info("Visiting {} widgets...", widgetList.size());
-        Collections.sort(widgetList, Comparator.comparingInt(
+        List<Widget> widgets = bootstrap.widgets;
+        log.info("Visiting {} widgets...", widgets.size());
+        Collections.sort(widgets, Comparator.comparingInt(
                 w -> w.getClass().getAnnotation(DockWidget.class).priority()));
-        for (Widget widget : widgetList) {
+        for (Widget widget : widgets) {
             Class<? extends Widget> widgetClass = widget.getClass();
             DockWidget annotation = widgetClass.getAnnotation(DockWidget.class);
 

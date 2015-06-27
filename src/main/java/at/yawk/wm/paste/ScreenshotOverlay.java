@@ -48,6 +48,7 @@ class ScreenshotOverlay implements Modal {
         LocalImage darkened = capture.copy();
         darkened.apply((rgb) -> {
             // 50% brightness (>>> offset + 1 << offset)
+            // we basically shift the three bytes right by one bit, effectively halving their values
             return ((rgb >>> 17) & 0x7f) << 16 |
                    ((rgb >>> 9) & 0x7f) << 8 |
                    ((rgb >>> 1) & 0x7f);

@@ -1,6 +1,5 @@
 package at.yawk.wm;
 
-import at.yawk.wm.dock.module.DockBuilder;
 import at.yawk.yarn.Component;
 import at.yawk.yarn.ComponentScan;
 import at.yawk.yarn.Provides;
@@ -45,13 +44,11 @@ public class Main {
     }
 
     private static void start() {
-        Yarn.build(EntryPoint.class).dockBuilder().start();
+        Yarn.build(EntryPoint.class);
     }
 
     @ComponentScan
-    interface EntryPoint {
-        DockBuilder dockBuilder();
-    }
+    interface EntryPoint {}
 
     ///////
 
