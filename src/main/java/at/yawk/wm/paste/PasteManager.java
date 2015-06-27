@@ -33,7 +33,6 @@ public class PasteManager {
     @Inject
     void load(Config config, ObjectMapper objectMapper) {
         at.yawk.paste.client.Config pasteConfig = config.getPaste();
-        if (pasteConfig == null) { pasteConfig = new at.yawk.paste.client.Config(); }
         client = new PasteClient(pasteConfig, objectMapper);
         clipboardHelper = new ClipboardHelper(pasteConfig);
     }

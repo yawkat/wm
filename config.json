@@ -92,5 +92,8 @@
     "cache": ".cache/wallpaper",
     "input": "wallpaper",
     "backgroundColor": "#002b36"
+  },
+  "paste": {
+    "remote": "http://s.yawk.at"
   }
 }
