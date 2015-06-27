@@ -8,6 +8,7 @@ import at.yawk.wm.x.XcbConnector;
 import at.yawk.wm.x.event.*;
 import at.yawk.wm.x.image.BufferedLocalImage;
 import at.yawk.wm.x.image.LocalImage;
+import at.yawk.wm.x.image.SubImageView;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -98,10 +99,21 @@ class ScreenshotOverlay implements Modal {
         displayWindow.addListener(ButtonReleaseEvent.class, evt -> {
             endX = evt.getX();
             endY = evt.getY();
-            paintFrame();
             down = false;
-            // todo: send
+            send();
         });
+    }
+
+    private void send() {
+        close();
+        int minX = Math.min(startX, endX);
+        int minY = Math.min(startY, endY);
+        int maxX = Math.max(startX, endX);
+        int maxY = Math.max(startY, endY);
+        if (minX != maxX && minY != maxY) {
+            LocalImage region = new SubImageView(capture, minX, minY, maxX - minX, maxY - minY);
+            pasteManager.upload(region.as(BufferedLocalImage.TYPE).getImage());
+        }
     }
 
     private void paintFrame() {

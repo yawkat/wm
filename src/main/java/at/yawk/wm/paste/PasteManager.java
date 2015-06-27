@@ -61,6 +61,15 @@ public class PasteManager {
         overlay.open();
     }
 
+    void upload(Image image) {
+        try {
+            upload(clipboardHelper.getImagePasteData(image));
+        } catch (IOException e) {
+            log.error("Failed to convert image", e);
+            sendNotification("Error: " + e.getMessage());
+        }
+    }
+
     private void upload(PasteData data) {
         try {
             String url = client.save(data);
