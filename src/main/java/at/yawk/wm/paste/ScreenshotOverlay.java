@@ -52,11 +52,6 @@ class ScreenshotOverlay implements Modal {
                    ((rgb >>> 9) & 0x7f) << 8 |
                    ((rgb >>> 1) & 0x7f);
         });
-        try {
-            ImageIO.write(darkened.as(BufferedLocalImage.TYPE).getImage(), "PNG", new File("image.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         displayWindow = connector.getScreen().createWindow();
         displayGraphics = displayWindow.createGraphics();
