@@ -37,7 +37,8 @@ public class PasteManager {
 
     @Inject
     void setupKeys(HerbstClient herbstClient) {
-        herbstClient.addKeyHandler("Mod4-v", this::makeScreenshot);
+        herbstClient.addKeyHandler("Mod4-numbersign", this::makeScreenshot);
+        herbstClient.addKeyHandler("Mod4-Shift-numbersign", this::pasteFromClipboard);
     }
 
     void pasteFromClipboard() {
