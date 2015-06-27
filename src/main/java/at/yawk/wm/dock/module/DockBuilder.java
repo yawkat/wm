@@ -22,11 +22,13 @@ import java.util.function.Consumer;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
 @Component
+@Slf4j
 public class DockBuilder implements FontSource, RenderElf {
     @Inject Config config;
     @Inject Screen screen;
@@ -48,6 +50,8 @@ public class DockBuilder implements FontSource, RenderElf {
     }
 
     public void start() {
+        log.info("Initializing dock...");
+
         dock = new Dock(screen, dockConfig().getBackground());
         globalResourceRegistry.register(dock);
         dock.setBounds(0, 0, screen.getWidth(), dockConfig().getHeight());
@@ -57,6 +61,7 @@ public class DockBuilder implements FontSource, RenderElf {
         dockStartHandlers.get().forEach(java.lang.Runnable::run);
 
         dock.show();
+        log.info("Dock initialized");
     }
 
     private void decorate(Widget widget) {
@@ -99,6 +104,7 @@ public class DockBuilder implements FontSource, RenderElf {
         PeriodBuilder periodBuilder = new PeriodBuilder(this);
 
         List<Widget> widgetList = widgets.get();
+        log.info("Visiting {} widgets...", widgetList.size());
         Collections.sort(widgetList, Comparator.comparingInt(
                 w -> w.getClass().getAnnotation(DockWidget.class).priority()));
         for (Widget widget : widgetList) {

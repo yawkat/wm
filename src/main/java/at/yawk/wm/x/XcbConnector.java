@@ -10,6 +10,7 @@ import java.nio.ByteOrder;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
+import lombok.extern.slf4j.Slf4j;
 import org.freedesktop.xcb.*;
 import xcb4j.LibXcbLoader;
 
@@ -17,6 +18,7 @@ import xcb4j.LibXcbLoader;
  * @author yawkat
  */
 @Component
+@Slf4j
 public class XcbConnector implements Resource {
     private static final boolean DEBUG_ERRORS = false;
 
@@ -42,8 +44,10 @@ public class XcbConnector implements Resource {
     }
 
     private void open() {
+        log.info("Connecting to X server...");
         ByteBuffer ptr = ByteBuffer.allocateDirect(4).order(ByteOrder.nativeOrder());
         connection = LibXcb.xcb_connect(null, ptr);
+        log.info("Connected to X server");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             globalResourceRegistry.close();
             this.close(); // close us last
@@ -57,9 +61,14 @@ public class XcbConnector implements Resource {
             LibXcb.xcb_screen_next(itr);
         }
         screen = new Screen(this, itr.getData());
+        log.debug("Screen: width={} height={} depth={}",
+                  screen.screen.getWidth_in_pixels(),
+                  screen.screen.getHeight_in_pixels(),
+                  screen.screen.getRoot_depth());
 
         basicFontRegistry = new BasicFontRegistry(this);
 
+        log.info("Starting event handler...");
         eventManager = new EventManager(this);
         eventThread = new Thread(eventManager);
         eventThread.setDaemon(true);
@@ -71,6 +80,7 @@ public class XcbConnector implements Resource {
 
         keyManager = new KeyManager(this);
         globalResourceRegistry.register(keyManager);
+        log.info("X setup complete");
     }
 
     @Override

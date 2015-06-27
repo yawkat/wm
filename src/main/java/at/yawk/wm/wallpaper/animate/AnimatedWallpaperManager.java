@@ -13,11 +13,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
 @Component
+@Slf4j
 public class AnimatedWallpaperManager {
     @Inject XcbConnector connector;
     @Inject ScheduledExecutorService executor;
@@ -28,6 +30,8 @@ public class AnimatedWallpaperManager {
     @PostConstruct
     @SneakyThrows
     void start() {
+        log.info("Initializing wallpaper...");
+
         AnimatedWallpaper wallpaper = null;
 
         AnimatedWallpaperConfig wallpaperConfig = config.getWallpaper();
@@ -35,17 +39,21 @@ public class AnimatedWallpaperManager {
             FileTime cacheMod = Files.getLastModifiedTime(wallpaperConfig.getCache());
             FileTime inMod = Files.getLastModifiedTime(wallpaperConfig.getInput());
             if (cacheMod.compareTo(inMod) >= 0) {
+                log.info("Found valid cached wallpaper animation");
                 try (DataInputStream in = new DataInputStream(Files.newInputStream(wallpaperConfig.getCache()))) {
                     wallpaper = AnimatedWallpaper.read(in);
                 }
+                log.info("Wallpaper loaded to memory");
             }
         }
 
         if (wallpaper == null) {
+            log.info("Need to compile the wallpaper animation, this may take a while!");
             wallpaper = AnimationBuilder.loadDirectory(wallpaperConfig.getInput());
             try (DataOutputStream out = new DataOutputStream(Files.newOutputStream(wallpaperConfig.getCache()))) {
                 wallpaper.write(out);
             }
+            log.info("Compilation complete");
         }
 
         show(wallpaper);
