@@ -22,6 +22,8 @@ import javax.inject.Inject;
 @Component
 @DockWidget(position = DockWidget.Position.RIGHT, priority = -100)
 public class BatteryWidget extends FlowCompositeWidget {
+    private static final Pattern PATTERN_DEVICE =
+            Pattern.compile("Device: (.*)");
     private static final Pattern PATTERN_DURATION =
             Pattern.compile("\\s*time to (empty|full):\\s*([\\d,\\.]*) (hours|minutes|seconds)");
     private static final Pattern PATTERN_PERCENTAGE =
@@ -40,10 +42,23 @@ public class BatteryWidget extends FlowCompositeWidget {
                 .start();
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+
+            boolean showCurrentDevice = true;
+
             String line;
             while ((line = reader.readLine()) != null) {
                 String text;
                 FontStyle style;
+
+                Matcher deviceMatcher = PATTERN_DEVICE.matcher(line);
+                if (deviceMatcher.matches()) {
+                    showCurrentDevice = !deviceMatcher.group(1).contains("DisplayDevice");
+                    continue;
+                }
+
+                if (!showCurrentDevice) {
+                    continue;
+                }
 
                 Matcher durationMatcher = PATTERN_DURATION.matcher(line);
                 if (durationMatcher.matches()) {
