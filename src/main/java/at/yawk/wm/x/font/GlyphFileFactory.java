@@ -45,7 +45,7 @@ class GlyphFileFactory {
         gfx.clearRect(0, 0, rowWidth, cellHeight);
         gfx.setColor(configuredFont.getStyle().getColor());
         gfx.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                             RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB); // todo config option
+                             RenderingHints.VALUE_TEXT_ANTIALIAS_ON); // todo config option
         FontMetrics metrics = gfx.getFontMetrics();
         for (char c = startInclusive; c <= endInclusive; c++) {
             String s = Character.toString(c);

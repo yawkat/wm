@@ -42,7 +42,7 @@
     "progressColor": "#93a1a1"
   },
   "font": {
-    "name": "Source Code Pro"
+    "name": "Ubuntu"
   },
   "tac": {
     "fontNormal": {
@@ -80,7 +80,7 @@
     "host": "pw.yawk.at",
     "editorBackground": "#002b36",
     "editorFont": {
-      "name": "Source Code Pro"
+      "name": "Ubuntu"
     },
     "editorFontStyle": {
       "color": "#93a1a1"
