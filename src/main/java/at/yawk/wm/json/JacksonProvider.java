@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.datatype.jdk7.Jdk7Module;
 import java.awt.*;
 import java.io.IOException;
@@ -19,7 +20,7 @@ import java.io.IOException;
 public class JacksonProvider {
     private static final char[] ZEROES = { '0', '0', '0', '0', '0', '0' };
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper yaml = new ObjectMapper(new YAMLFactory());
 
     {
         SimpleModule module = new SimpleModule();
@@ -62,14 +63,14 @@ public class JacksonProvider {
                 return new Color(rgb);
             }
         });
-        objectMapper.registerModule(module);
-        objectMapper.registerModule(new Jdk7Module());
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        yaml.registerModule(module);
+        yaml.registerModule(new Jdk7Module());
+        yaml.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     @Provides
-    public ObjectMapper objectMapper() {
-        return objectMapper;
+    public ObjectMapper yaml() {
+        return yaml;
     }
 
 }

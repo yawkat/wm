@@ -56,7 +56,7 @@ public class Main {
 
     @Provides
     Config config() {
-        try (InputStream i = new BufferedInputStream(Files.newInputStream(Paths.get("config.json")))) {
+        try (InputStream i = new BufferedInputStream(Files.newInputStream(Paths.get("config.yml")))) {
             return objectMapper.readValue(i, Config.class);
         } catch (IOException e) {
             throw new UncheckedIOException(e);

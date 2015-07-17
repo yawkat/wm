@@ -31,9 +31,9 @@ public class PasteManager {
     @Inject ProgressManager progressManager;
 
     @Inject
-    void load(Config config, ObjectMapper objectMapper) {
+    void load(Config config) {
         at.yawk.paste.client.Config pasteConfig = config.getPaste();
-        client = new PasteClient(pasteConfig, objectMapper);
+        client = new PasteClient(pasteConfig, new ObjectMapper());
         clipboardHelper = new ClipboardHelper(pasteConfig);
     }
 
