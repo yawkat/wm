@@ -7,6 +7,8 @@ import at.yawk.wm.tac.*;
 import at.yawk.wm.wallpaper.animate.AnimatedWallpaperManager;
 import at.yawk.wm.x.XcbConnector;
 import at.yawk.yarn.Component;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,6 +29,8 @@ public class Launcher {
     @Inject XcbConnector connector;
     @Inject ModalRegistry modalRegistry;
     @Inject AnimatedWallpaperManager animatedWallpaper;
+    @Inject ApplicationRunner applicationRunner;
+    @Inject ObjectMapper objectMapper;
 
     private final PathScanner pathScanner = new PathScanner();
     private final REPL repl = new REPL();
@@ -94,7 +98,7 @@ public class Launcher {
             };
             customEntries = Arrays.asList(
                     new LauncherEntry(this.ui, new EntryDescriptor(
-                            "shutdown", config.getShutdownCommand(), true)) {
+                            "shutdown", new Command(config.getShutdownCommand()), true), applicationRunner) {
                         @Override
                         public void onUsed() {
                             ui.close();
@@ -106,7 +110,7 @@ public class Launcher {
                         }
                     },
 
-                    new LauncherEntry(this.ui, new EntryDescriptor("rehash", null, false)) {
+                    new LauncherEntry(this.ui, new EntryDescriptor("rehash", null, false), applicationRunner) {
                         @Override
                         public void onUsed() {
                             ui.close();
@@ -125,9 +129,16 @@ public class Launcher {
             }
 
             Stream<EntryDescriptor> shortcuts = config.getShortcuts().entrySet().stream()
-                    .map(e -> new EntryDescriptor(e.getKey(), e.getValue(), true));
+                    .map(e -> {
+                        try {
+                            return new EntryDescriptor(
+                                    e.getKey(), objectMapper.treeToValue(e.getValue(), Command.class), true);
+                        } catch (JsonProcessingException f) {
+                            throw new RuntimeException(f);
+                        }
+                    });
             Stream<EntryDescriptor> normal = pathScanner.getApplications().stream()
-                    .map(s -> new EntryDescriptor(s, s, false));
+                    .map(s -> new EntryDescriptor(s, new Command(s), false));
 
             Stream<LauncherEntry> entryStream = Stream.concat(
                     Stream.concat(shortcuts.map(this::getLauncherEntry),
@@ -141,7 +152,7 @@ public class Launcher {
         }
 
         private LauncherEntry getLauncherEntry(EntryDescriptor d) {
-            return entries.computeIfAbsent(d, t -> new LauncherEntry(ui, t));
+            return entries.computeIfAbsent(d, t -> new LauncherEntry(ui, t, applicationRunner));
         }
     }
 

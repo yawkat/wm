@@ -8,6 +8,6 @@ import lombok.Value;
 @Value
 public class EntryDescriptor {
     String title;
-    String command;
+    Command command;
     boolean highPriority;
 }

@@ -5,6 +5,7 @@ import at.yawk.wm.tac.TacConfig;
 import at.yawk.wm.tac.password.PasswordConfig;
 import at.yawk.wm.wallpaper.animate.AnimatedWallpaperConfig;
 import at.yawk.wm.x.font.FontFactory;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.nio.file.Path;
 import java.util.Map;
 import lombok.Data;
@@ -18,9 +19,9 @@ public class Config {
     private TacConfig tac;
     private Path fontCacheDir;
     private FontFactory font;
-    private Map<String, String> shortcuts;
+    private Map<String, JsonNode> shortcuts;
     private PasswordConfig password;
     private AnimatedWallpaperConfig wallpaper;
-    private String shutdownCommand;
+    private String[] shutdownCommand;
     private at.yawk.paste.client.Config paste;
 }

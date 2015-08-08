@@ -41,23 +41,38 @@ tac:
   colorSelected: '#93a1a1'
   width: 400
 shortcuts: 
-  firefox: "firefox"
-  thunderbird: "thunderbird"
-  quasselclient: "quasselclient"
-  subl: "subl"
-  intellij: "idea.sh"
-  intellij-android: "~/Applications/Android/studio/bin/studio.sh"
-  genpw16: "< /dev/urandom tr -dc A-Za-z0-9 | head -c${1:-16} | xclip -selection c"
-  genpw32: "< /dev/urandom tr -dc A-Za-z0-9 | head -c${1:-16} | xclip -selection c"
-  lock: "gnome-screensaver-command -l && xset dpms force off"
-  nautilus: "nautilus --no-desktop"
-  minecraft yawkat: "minecraft yawkat"
-  minecraft jonalu: "minecraft jonas.konrad@googlemail.com"
-  steven yawkat: "steven yawkat"
-  steven jonalu: "steven jonas.konrad@googlemail.com"
-  hostup: "/etc/hosts.sh on"
-  hostdown: "/etc/hosts.sh off"
-shutdownCommand: "systemctl poweroff"
+  firefox:
+    command: ["firefox"]
+    jail: true
+  thunderbird:
+    command: ["thunderbird"]
+    jail: true
+  quasselclient:
+    command: ["quasselclient"]
+    jail: true
+  subl:
+    command: ["subl"]
+  intellij:
+    command: ["intellij-idea-ultimate-edition"]
+  android-studio:
+    command: ["android-studio"]
+  genpw16:
+    command: ["bash", "-c", "< /dev/urandom tr -dc A-Za-z0-9 | head -c${1:-16} | xclip -selection c"]
+  genpw32:
+    command: ["bash", "-c", "< /dev/urandom tr -dc A-Za-z0-9 | head -c${1:-32} | xclip -selection c"]
+  lock:
+    command: ["bash", "-c", "gnome-screensaver-command -l && xset dpms force off"]
+  nautilus:
+    command: ["nautilus", "--no-desktop"]
+  minecraft yawkat:
+    command: ["minecraft", "yawkat"]
+  minecraft jonalu:
+    command: ["minecraft", "jonas.konrad@googlemail.com"]
+  steven yawkat:
+    command: ["steven", "yawkat"]
+  steven jonalu:
+    command: ["steven", "jonas.konrad@googlemail.com"]
+shutdownCommand: ["systemctl", "poweroff"]
 password: 
   cacheDir: "/home/yawkat/.local/share/password"
   timeout: 600
