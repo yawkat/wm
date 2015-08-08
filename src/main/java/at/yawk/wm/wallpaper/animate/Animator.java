@@ -1,5 +1,6 @@
 package at.yawk.wm.wallpaper.animate;
 
+import at.yawk.wm.Scheduler;
 import at.yawk.wm.x.AbstractResource;
 import at.yawk.wm.x.Graphics;
 import at.yawk.wm.x.PixMap;
@@ -8,7 +9,6 @@ import at.yawk.wm.x.image.ByteArrayImage;
 import java.awt.*;
 import java.util.Iterator;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 public class Animator extends AbstractResource {
     private final Color backgroundColor;
     private final AnimatedWallpaper wallpaper;
-    private final ScheduledExecutorService scheduler;
+    private final Scheduler scheduler;
 
     private final Window window;
     private Graphics graphics;
@@ -29,7 +29,7 @@ public class Animator extends AbstractResource {
     private int canvasWidth;
     private int canvasHeight;
 
-    public Animator(AnimatedWallpaper wallpaper, Color backgroundColor, ScheduledExecutorService scheduler,
+    public Animator(AnimatedWallpaper wallpaper, Color backgroundColor, Scheduler scheduler,
                     Window window) {
         this.backgroundColor = backgroundColor;
         this.wallpaper = new AnimatedWallpaper(wallpaper); // copy so we can free frames when done
@@ -81,24 +81,20 @@ public class Animator extends AbstractResource {
 
         Iterator<Frame> frameIterator = animation.getFrames().iterator();
         return currentRunningTask = scheduler.scheduleAtFixedRate(() -> {
-            try {
-                if (frameIterator.hasNext()) {
-                    Frame nextFrame = frameIterator.next();
-                    if (!nextFrame.isEmpty()) {
-                        graphics.putImage(
-                                (window.getWidth() - canvasWidth) / 2 + nextFrame.getX(),
-                                (window.getHeight() - canvasHeight) / 2 + nextFrame.getY(),
-                                new ByteArrayImage(nextFrame.getWidth(), nextFrame.getHeight(),
-                                                   nextFrame.getData(), 0, 3)
-                        );
-                        graphics.flush();
-                    }
-                    frameIterator.remove(); // remove from iterator to allow GC
-                } else {
-                    stopTask();
+            if (frameIterator.hasNext()) {
+                Frame nextFrame = frameIterator.next();
+                if (!nextFrame.isEmpty()) {
+                    graphics.putImage(
+                            (window.getWidth() - canvasWidth) / 2 + nextFrame.getX(),
+                            (window.getHeight() - canvasHeight) / 2 + nextFrame.getY(),
+                            new ByteArrayImage(nextFrame.getWidth(), nextFrame.getHeight(),
+                                               nextFrame.getData(), 0, 3)
+                    );
+                    graphics.flush();
                 }
-            } catch (Throwable t) {
-                log.error("Exception in animator", t);
+                frameIterator.remove(); // remove from iterator to allow GC
+            } else {
+                stopTask();
             }
         }, 0, animation.getInterval(), TimeUnit.MILLISECONDS);
     }

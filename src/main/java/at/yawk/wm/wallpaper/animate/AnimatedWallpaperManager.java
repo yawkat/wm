@@ -1,6 +1,7 @@
 package at.yawk.wm.wallpaper.animate;
 
 import at.yawk.wm.Config;
+import at.yawk.wm.Scheduler;
 import at.yawk.wm.x.Window;
 import at.yawk.wm.x.XcbConnector;
 import at.yawk.yarn.Component;
@@ -9,7 +10,6 @@ import java.io.DataOutputStream;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import lombok.SneakyThrows;
@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AnimatedWallpaperManager {
     @Inject XcbConnector connector;
-    @Inject ScheduledExecutorService executor;
+    @Inject Scheduler scheduler;
     @Inject Config config;
 
     private Animator animator;
@@ -61,7 +61,7 @@ public class AnimatedWallpaperManager {
 
     private void show(AnimatedWallpaper wallpaper) {
         Window rootWindow = connector.getScreen().getRootWindow();
-        animator = new Animator(wallpaper, config.getWallpaper().getBackgroundColor(), executor, rootWindow);
+        animator = new Animator(wallpaper, config.getWallpaper().getBackgroundColor(), scheduler, rootWindow);
         animator.start();
     }
 

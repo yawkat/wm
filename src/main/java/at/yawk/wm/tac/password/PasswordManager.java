@@ -2,6 +2,7 @@ package at.yawk.wm.tac.password;
 
 import at.yawk.password.MultiFileLocalStorageProvider;
 import at.yawk.wm.Config;
+import at.yawk.wm.Scheduler;
 import at.yawk.wm.Util;
 import at.yawk.wm.hl.HerbstClient;
 import at.yawk.wm.tac.*;
@@ -25,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class PasswordManager {
-    @Inject ScheduledExecutorService executor;
+    @Inject Scheduler scheduler;
     @Inject ModalRegistry modalRegistry;
     @Inject Config config;
     @Inject XcbConnector connector;
@@ -33,7 +34,7 @@ public class PasswordManager {
     PasswordHolder holder;
 
     @Inject
-    void configure(ScheduledExecutorService executor, ObjectMapper objectMapper) {
+    void configure(ObjectMapper objectMapper) {
         PasswordConfig passwordConfig = config.getPassword();
         if (!Files.isDirectory(passwordConfig.getCacheDir())) {
             try {
@@ -44,7 +45,7 @@ public class PasswordManager {
         }
         holder = new PasswordHolder(
                 new MultiFileLocalStorageProvider(passwordConfig.getCacheDir()),
-                executor, objectMapper,
+                scheduler, objectMapper,
                 new InetSocketAddress(passwordConfig.getHost(), passwordConfig.getPort()),
                 passwordConfig.getTimeout()
         );
@@ -100,7 +101,7 @@ public class PasswordManager {
                     if (passwordPrompt) {
                         loadRunning = true;
                         refresh();
-                        executor.execute(() -> {
+                        scheduler.execute(() -> {
                             try {
                                 holder.claim(textFieldFeature.getText());
                                 passwordPrompt = false;

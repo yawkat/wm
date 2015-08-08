@@ -1,5 +1,6 @@
 package at.yawk.wm.dock.module;
 
+import at.yawk.wm.Scheduler;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
@@ -72,10 +73,10 @@ class PeriodBuilder {
         buckets.add(bucket);
     }
 
-    public void flush(ScheduledExecutorService executorService) {
+    public void flush(Scheduler scheduler) {
         for (Bucket bucket : buckets) {
             bucket.initialRun();
-            executorService.scheduleAtFixedRate(bucket, bucket.interval, bucket.interval, TimeUnit.MILLISECONDS);
+            scheduler.scheduleAtFixedRate(bucket, bucket.interval, bucket.interval, TimeUnit.MILLISECONDS);
         }
     }
 

@@ -1,6 +1,7 @@
 package at.yawk.wm.dock.module;
 
 import at.yawk.wm.Config;
+import at.yawk.wm.Scheduler;
 import at.yawk.wm.dock.Dock;
 import at.yawk.wm.dock.Origin;
 import at.yawk.wm.dock.TextWidget;
@@ -29,7 +30,7 @@ public class DockBuilder implements FontSource, RenderElf {
     @Inject Config config;
     @Inject Screen screen;
     @Inject GlobalResourceRegistry globalResourceRegistry;
-    @Inject ScheduledExecutorService scheduler;
+    @Inject Scheduler scheduler;
 
     private final Map<FontStyle, GlyphFont> fontStyleMap = new HashMap<>();
     private Dock dock;

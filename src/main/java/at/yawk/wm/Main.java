@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -64,8 +63,8 @@ public class Main {
     }
 
     @Provides
-    ScheduledExecutorService scheduledExecutor() {
-        return new ScheduledThreadPoolExecutor(1) {
+    Scheduler scheduledExecutor() {
+        return new Scheduler(new ScheduledThreadPoolExecutor(1) {
             AtomicInteger threadId = new AtomicInteger(0);
 
             {
@@ -78,6 +77,6 @@ public class Main {
                 setMaximumPoolSize(16);
                 setKeepAliveTime(20, TimeUnit.SECONDS);
             }
-        };
+        });
     }
 }

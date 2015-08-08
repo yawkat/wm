@@ -4,11 +4,11 @@ import at.yawk.password.LocalStorageProvider;
 import at.yawk.password.client.ClientValue;
 import at.yawk.password.client.PasswordClient;
 import at.yawk.password.model.PasswordBlob;
+import at.yawk.wm.Scheduler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -22,7 +22,7 @@ import lombok.Value;
 @RequiredArgsConstructor
 class PasswordHolder {
     private final LocalStorageProvider storageProvider;
-    private final ScheduledExecutorService executor;
+    private final Scheduler scheduler;
     private final ObjectMapper objectMapper;
     private final InetSocketAddress remote;
     /**
@@ -58,7 +58,7 @@ class PasswordHolder {
         if (claimed) {
             clearUnclaim();
             claimed = false;
-            unclaimFuture = executor.schedule(() -> {
+            unclaimFuture = scheduler.schedule(() -> {
                 synchronized (this) {
                     if (!claimed) {
                         clear();
