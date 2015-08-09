@@ -14,6 +14,7 @@ style:
     foreground_highlight:
       parent: foreground
       foreground: '#eee8d5'
+      background: '#073642'
     foreground_disabled:
       parent: foreground
       foreground: '#586e75'
@@ -34,10 +35,10 @@ style:
       parent: foreground_disabled
       foreground: '#586e75'
     tac_primary_selected:
-      parent: foreground_highlight
+      parent: tac_primary
       background: '#073642'
     tac_secondary_selected:
-      parent: foreground_disabled
+      parent: tac_secondary
       background: '#073642'
 
 # Modules
