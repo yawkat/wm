@@ -3,7 +3,6 @@ package at.yawk.wm.tac.password;
 import at.yawk.wm.tac.Entry;
 import at.yawk.wm.tac.EntryState;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 
 /**
@@ -17,7 +16,7 @@ class PasswordEntry extends Entry {
         this.instance = instance;
         this.name = name;
 
-        setState(new EntryState("  " + name, false, false));
+        setState(new EntryState(name, false, false));
     }
 
     @Override

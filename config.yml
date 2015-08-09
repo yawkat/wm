@@ -73,6 +73,7 @@ tac:
   colorSelected: '#073642'
   width: 400
   rowHeight: 22
+  padding: 3
 shortcuts: 
   firefox:
     command: ["firefox"]

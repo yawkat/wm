@@ -117,7 +117,7 @@ public class TacUI extends AbstractResource implements Modal {
             }
             graphics.setFont(font);
             int h = font.getStringBounds(entry.getText()).height;
-            graphics.drawText(0, y + (config.getRowHeight() - h) / 2, entry.getText());
+            graphics.drawText(config.getPadding(), y + (config.getRowHeight() - h) / 2, entry.getText());
         }
         graphics.flush();
         lastEntries = entries.stream().map(e -> e.state).collect(Collectors.toList());

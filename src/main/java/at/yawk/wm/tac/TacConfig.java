@@ -20,4 +20,5 @@ public class TacConfig {
 
     private int width;
     private int rowHeight;
+    private int padding;
 }
