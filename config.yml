@@ -29,10 +29,10 @@ style:
       foreground: '#b58900'
 
     tac_primary:
-      parent: foreground_highlight
+      parent: base
       foreground: '#fdf6e3'
     tac_secondary:
-      parent: foreground_disabled
+      parent: base
       foreground: '#586e75'
     tac_primary_selected:
       parent: tac_primary
