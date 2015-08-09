@@ -48,11 +48,20 @@ public class TextWidget extends Widget {
         // local copy
         String text = this.text;
 
-        int x = Math.min(getX(), getX2()) + padding;
+        int x0 = Math.min(getX(), getX2());
+        int x = x0 + padding;
         int y = Math.min(getY(), getY2());
+        int boxHeight;
         if (textHeight != 0) {
+            boxHeight = textHeight;
             // center text vertically
             y += (textHeight - layoutTextBounds.height) / 2;
+        } else {
+            boxHeight = layoutTextBounds.height;
+        }
+        if (padding > 0) {
+            graphics.setForegroundColor(font.getStyle().getBackground());
+            graphics.fillRect(x0, y, layoutTextBounds.width + padding * 2, boxHeight);
         }
         graphics.setFont(font);
         graphics.drawText(x, y, text);

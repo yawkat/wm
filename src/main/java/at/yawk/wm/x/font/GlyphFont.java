@@ -7,6 +7,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import javax.annotation.Nullable;
+import lombok.Getter;
 import lombok.ToString;
 
 /**
@@ -16,7 +17,7 @@ import lombok.ToString;
 public class GlyphFont {
     private static final char GLYPH_FILE_LENGTH = 256;
 
-    private final FontStyle style;
+    @Getter private final FontStyle style;
     @Nullable private final Path cacheRoot;
 
     private byte cellWidth;

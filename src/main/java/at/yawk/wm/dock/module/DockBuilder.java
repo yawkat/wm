@@ -2,15 +2,15 @@ package at.yawk.wm.dock.module;
 
 import at.yawk.wm.Scheduler;
 import at.yawk.wm.dock.*;
-import at.yawk.wm.style.FontDescriptor;
 import at.yawk.wm.style.FontManager;
 import at.yawk.wm.x.GlobalResourceRegistry;
 import at.yawk.wm.x.Screen;
 import at.yawk.wm.x.Window;
-import at.yawk.wm.x.font.GlyphFont;
 import at.yawk.yarn.Component;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import javax.inject.Inject;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,6 @@ public class DockBuilder implements RenderElf {
     @Inject Scheduler scheduler;
     @Inject FontManager fontManager;
 
-    private final Map<FontDescriptor, GlyphFont> fontStyleMap = new HashMap<>();
     private Dock dock;
 
     void start(DockBootstrap bootstrap) {
