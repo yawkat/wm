@@ -1,6 +1,5 @@
 package at.yawk.wm.style;
 
-import at.yawk.wm.Config;
 import at.yawk.yarn.Component;
 import java.util.HashSet;
 import java.util.Map;
@@ -17,7 +16,7 @@ public class FontManager {
     private Map<FontDescriptor, FontStyle> fonts;
 
     @Inject
-    void loadConfig(Config config) {
+    void loadConfig(StyleConfig config) {
         fonts = config.getFonts();
 
         Set<FontDescriptor> visited = new HashSet<>();

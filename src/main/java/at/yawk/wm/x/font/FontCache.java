@@ -1,10 +1,10 @@
 package at.yawk.wm.x.font;
 
-import at.yawk.wm.Config;
 import at.yawk.wm.dock.module.FontSource;
 import at.yawk.wm.style.FontDescriptor;
 import at.yawk.wm.style.FontManager;
 import at.yawk.wm.style.FontStyle;
+import at.yawk.wm.style.StyleConfig;
 import at.yawk.yarn.Component;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +18,7 @@ public class FontCache implements FontSource {
     private final Map<FontDescriptor, GlyphFont> descriptorMap = new HashMap<>();
     private final Map<FontStyle, GlyphFont> styleMap = new HashMap<>();
 
-    @Inject Config config;
+    @Inject StyleConfig config;
     @Inject FontManager fontManager;
 
     @Override

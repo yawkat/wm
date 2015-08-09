@@ -1,6 +1,5 @@
 package at.yawk.wm.tac;
 
-import at.yawk.wm.Config;
 import at.yawk.wm.x.AbstractResource;
 import at.yawk.wm.x.Graphics;
 import at.yawk.wm.x.Window;
@@ -44,10 +43,10 @@ public class TacUI extends AbstractResource implements Modal {
 
     private final List<Feature> features = new ArrayList<>();
 
-    public TacUI(Config config, FontCache fontCache, XcbConnector connector, int x, int y) {
-        this.config = config.getTac();
+    public TacUI(TacConfig config, FontCache fontCache, XcbConnector connector, int x, int y) {
+        this.config = config;
         this.connector = connector;
-        this.width = this.config.getWidth();
+        this.width = config.getWidth();
         this.x = x;
         this.y = y;
 

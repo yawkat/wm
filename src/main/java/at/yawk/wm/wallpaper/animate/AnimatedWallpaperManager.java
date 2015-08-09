@@ -1,6 +1,5 @@
 package at.yawk.wm.wallpaper.animate;
 
-import at.yawk.wm.Config;
 import at.yawk.wm.Scheduler;
 import at.yawk.wm.x.Window;
 import at.yawk.wm.x.XcbConnector;
@@ -23,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AnimatedWallpaperManager {
     @Inject XcbConnector connector;
     @Inject Scheduler scheduler;
-    @Inject Config config;
+    @Inject AnimatedWallpaperConfig wallpaperConfig;
 
     private Animator animator;
 
@@ -34,7 +33,6 @@ public class AnimatedWallpaperManager {
 
         AnimatedWallpaper wallpaper = null;
 
-        AnimatedWallpaperConfig wallpaperConfig = config.getWallpaper();
         if (Files.exists(wallpaperConfig.getCache())) {
             FileTime cacheMod = Files.getLastModifiedTime(wallpaperConfig.getCache());
             FileTime inMod = Files.getLastModifiedTime(wallpaperConfig.getInput());
@@ -61,7 +59,7 @@ public class AnimatedWallpaperManager {
 
     private void show(AnimatedWallpaper wallpaper) {
         Window rootWindow = connector.getScreen().getRootWindow();
-        animator = new Animator(wallpaper, config.getWallpaper().getBackgroundColor(), scheduler, rootWindow);
+        animator = new Animator(wallpaper, wallpaperConfig.getBackgroundColor(), scheduler, rootWindow);
         animator.start();
     }
 

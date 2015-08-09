@@ -1,43 +1,46 @@
-fontCacheDir: .cache/font/
-fonts:
-  base:
-    background: '#002b36'
-    foreground: '#839496'
-    italic: false
-    bold: false
-    size: 15
-    family:
-      name: "DejaVu Sans"
-  foreground:
-    parent: base
-  foreground_highlight:
-    parent: foreground
-    foreground: '#eee8d5'
-  foreground_disabled:
-    parent: foreground
-    foreground: '#586e75'
-  red:
-    parent: foreground
-    foreground: '#dc322f'
-  green:
-    parent: foreground
-    foreground: '#859900'
-  yellow:
-    parent: foreground
-    foreground: '#b58900'
+style:
+  fontCacheDir: .cache/font/
+  fonts:
+    base:
+      background: '#002b36'
+      foreground: '#839496'
+      italic: false
+      bold: false
+      size: 15
+      family:
+        name: "DejaVu Sans"
+    foreground:
+      parent: base
+    foreground_highlight:
+      parent: foreground
+      foreground: '#eee8d5'
+    foreground_disabled:
+      parent: foreground
+      foreground: '#586e75'
+    red:
+      parent: foreground
+      foreground: '#dc322f'
+    green:
+      parent: foreground
+      foreground: '#859900'
+    yellow:
+      parent: foreground
+      foreground: '#b58900'
 
-  tac_primary:
-    parent: foreground_highlight
-    foreground: '#fdf6e3'
-  tac_secondary:
-    parent: foreground_disabled
-    foreground: '#586e75'
-  tac_primary_selected:
-    parent: foreground_highlight
-    background: '#073642'
-  tac_secondary_selected:
-    parent: foreground_disabled
-    background: '#073642'
+    tac_primary:
+      parent: foreground_highlight
+      foreground: '#fdf6e3'
+    tac_secondary:
+      parent: foreground_disabled
+      foreground: '#586e75'
+    tac_primary_selected:
+      parent: foreground_highlight
+      background: '#073642'
+    tac_secondary_selected:
+      parent: foreground_disabled
+      background: '#073642'
+
+# Modules
 dock:
   height: 20
   background: '#002b36'
@@ -74,39 +77,40 @@ tac:
   width: 400
   rowHeight: 22
   padding: 3
-shortcuts: 
-  firefox:
-    command: ["firefox"]
-    jail: true
-  thunderbird:
-    command: ["thunderbird"]
-    jail: true
-  quasselclient:
-    command: ["quasselclient"]
-    jail: true
-  subl:
-    command: ["subl"]
-  intellij:
-    command: ["intellij-idea-ultimate-edition"]
-  android-studio:
-    command: ["android-studio"]
-  genpw16:
-    command: ["bash", "-c", "< /dev/urandom tr -dc A-Za-z0-9 | head -c${1:-16} | xclip -selection c"]
-  genpw32:
-    command: ["bash", "-c", "< /dev/urandom tr -dc A-Za-z0-9 | head -c${1:-32} | xclip -selection c"]
-  lock:
-    command: ["bash", "-c", "gnome-screensaver-command -l && xset dpms force off"]
-  nautilus:
-    command: ["nautilus", "--no-desktop"]
-  minecraft yawkat:
-    command: ["minecraft", "yawkat"]
-  minecraft jonalu:
-    command: ["minecraft", "jonas.konrad@googlemail.com"]
-  steven yawkat:
-    command: ["steven", "yawkat"]
-  steven jonalu:
-    command: ["steven", "jonas.konrad@googlemail.com"]
-shutdownCommand: ["systemctl", "poweroff"]
+launcher:
+  shortcuts:
+    firefox:
+      command: ["firefox"]
+      jail: true
+    thunderbird:
+      command: ["thunderbird"]
+      jail: true
+    quasselclient:
+      command: ["quasselclient"]
+      jail: true
+    subl:
+      command: ["subl"]
+    intellij:
+      command: ["intellij-idea-ultimate-edition"]
+    android-studio:
+      command: ["android-studio"]
+    genpw16:
+      command: ["bash", "-c", "< /dev/urandom tr -dc A-Za-z0-9 | head -c${1:-16} | xclip -selection c"]
+    genpw32:
+      command: ["bash", "-c", "< /dev/urandom tr -dc A-Za-z0-9 | head -c${1:-32} | xclip -selection c"]
+    lock:
+      command: ["bash", "-c", "gnome-screensaver-command -l && xset dpms force off"]
+    nautilus:
+      command: ["nautilus", "--no-desktop"]
+    minecraft yawkat:
+      command: ["minecraft", "yawkat"]
+    minecraft jonalu:
+      command: ["minecraft", "jonas.konrad@googlemail.com"]
+    steven yawkat:
+      command: ["steven", "yawkat"]
+    steven jonalu:
+      command: ["steven", "jonas.konrad@googlemail.com"]
+  shutdownCommand: ["systemctl", "poweroff"]
 password: 
   cacheDir: "/home/yawkat/.local/share/password"
   timeout: 600

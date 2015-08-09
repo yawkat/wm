@@ -1,7 +1,7 @@
 package at.yawk.wm.tac.launcher;
 
-import at.yawk.wm.Config;
 import at.yawk.wm.Util;
+import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.hl.HerbstClient;
 import at.yawk.wm.tac.*;
 import at.yawk.wm.wallpaper.animate.AnimatedWallpaperManager;
@@ -26,7 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Launcher {
 
-    @Inject Config config;
+    @Inject TacConfig tacConfig;
+    @Inject DockConfig dockConfig;
+    @Inject LauncherConfig launcherConfig;
     @Inject XcbConnector connector;
     @Inject ModalRegistry modalRegistry;
     @Inject AnimatedWallpaperManager animatedWallpaper;
@@ -52,11 +54,11 @@ public class Launcher {
         }
 
         TacUI ui = new TacUI(
-                config,
+                tacConfig,
                 fontCache,
                 connector,
-                connector.getScreen().getWidth() - config.getTac().getWidth(),
-                config.getDock().getHeight()
+                connector.getScreen().getWidth() - tacConfig.getWidth(),
+                dockConfig.getHeight()
         );
         ui.addFeature(new UseFeature());
         ui.addFeature(new CycleFeature());
@@ -111,7 +113,7 @@ public class Launcher {
             };
             customEntries = Arrays.asList(
                     new LauncherEntry(this.ui, new EntryDescriptor(
-                            "shutdown", new Command(config.getShutdownCommand()), true), applicationRunner) {
+                            "shutdown", new Command(launcherConfig.getShutdownCommand()), true), applicationRunner) {
                         @Override
                         public void onUsed() {
                             ui.close();
@@ -141,7 +143,7 @@ public class Launcher {
                 return;
             }
 
-            Stream<EntryDescriptor> shortcuts = config.getShortcuts().entrySet().stream()
+            Stream<EntryDescriptor> shortcuts = launcherConfig.getShortcuts().entrySet().stream()
                     .map(e -> {
                         try {
                             return new EntryDescriptor(

@@ -1,6 +1,5 @@
 package at.yawk.wm.dock.module;
 
-import at.yawk.wm.Config;
 import at.yawk.wm.Scheduler;
 import at.yawk.wm.dock.*;
 import at.yawk.wm.style.FontDescriptor;
@@ -10,7 +9,6 @@ import at.yawk.wm.x.Screen;
 import at.yawk.wm.x.Window;
 import at.yawk.wm.x.font.GlyphFont;
 import at.yawk.yarn.Component;
-import at.yawk.yarn.Provides;
 import java.lang.reflect.Method;
 import java.util.*;
 import javax.inject.Inject;
@@ -23,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class DockBuilder implements RenderElf {
-    @Inject Config config;
+    @Inject DockConfig config;
     @Inject Screen screen;
     @Inject GlobalResourceRegistry globalResourceRegistry;
     @Inject Scheduler scheduler;
@@ -32,17 +30,12 @@ public class DockBuilder implements RenderElf {
     private final Map<FontDescriptor, GlyphFont> fontStyleMap = new HashMap<>();
     private Dock dock;
 
-    @Provides
-    DockConfig dockConfig() {
-        return config.getDock();
-    }
-
     void start(DockBootstrap bootstrap) {
         log.info("Initializing dock...");
 
-        dock = new Dock(screen, dockConfig().getBackground());
+        dock = new Dock(screen, config.getBackground());
         globalResourceRegistry.register(dock);
-        dock.setBounds(0, 0, screen.getWidth(), dockConfig().getHeight());
+        dock.setBounds(0, 0, screen.getWidth(), config.getHeight());
 
         setupWidgets(bootstrap);
 
@@ -54,7 +47,7 @@ public class DockBuilder implements RenderElf {
 
     private void decorate(Widget widget) {
         if (widget instanceof TextWidget) {
-            ((TextWidget) widget).setTextHeight(dockConfig().getHeight());
+            ((TextWidget) widget).setTextHeight(config.getHeight());
         } else if (widget instanceof FlowCompositeWidget) {
             ((FlowCompositeWidget) widget).getWidgets().forEach(this::decorate);
         }

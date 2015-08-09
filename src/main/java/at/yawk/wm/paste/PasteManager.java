@@ -1,9 +1,9 @@
 package at.yawk.wm.paste;
 
 import at.yawk.paste.client.ClipboardHelper;
+import at.yawk.paste.client.Config;
 import at.yawk.paste.client.PasteClient;
 import at.yawk.paste.model.PasteData;
-import at.yawk.wm.Config;
 import at.yawk.wm.hl.HerbstClient;
 import at.yawk.wm.progress.ProgressManager;
 import at.yawk.wm.progress.SettableProgressTask;
@@ -31,8 +31,7 @@ public class PasteManager {
     @Inject ProgressManager progressManager;
 
     @Inject
-    void load(Config config) {
-        at.yawk.paste.client.Config pasteConfig = config.getPaste();
+    void load(Config pasteConfig) {
         client = new PasteClient(pasteConfig, new ObjectMapper());
         clipboardHelper = new ClipboardHelper(pasteConfig);
     }

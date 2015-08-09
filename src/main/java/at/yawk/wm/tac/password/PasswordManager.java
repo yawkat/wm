@@ -1,9 +1,9 @@
 package at.yawk.wm.tac.password;
 
 import at.yawk.password.MultiFileLocalStorageProvider;
-import at.yawk.wm.Config;
 import at.yawk.wm.Scheduler;
 import at.yawk.wm.Util;
+import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.hl.HerbstClient;
 import at.yawk.wm.style.FontManager;
 import at.yawk.wm.tac.*;
@@ -17,7 +17,6 @@ import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Stream;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -28,9 +27,11 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class PasswordManager {
+    @Inject TacConfig tacConfig;
+    @Inject DockConfig dockConfig;
+    @Inject PasswordConfig passwordConfig;
     @Inject Scheduler scheduler;
     @Inject ModalRegistry modalRegistry;
-    @Inject Config config;
     @Inject XcbConnector connector;
     @Inject FontCache fontCache;
     @Inject FontManager fontManager;
@@ -39,7 +40,6 @@ public class PasswordManager {
 
     @Inject
     void configure(ObjectMapper objectMapper) {
-        PasswordConfig passwordConfig = config.getPassword();
         if (!Files.isDirectory(passwordConfig.getCacheDir())) {
             try {
                 Files.createDirectories(passwordConfig.getCacheDir());
@@ -66,11 +66,11 @@ public class PasswordManager {
 
     private void open() {
         TacUI ui = new TacUI(
-                config,
+                tacConfig,
                 fontCache,
                 connector,
-                connector.getScreen().getWidth() - config.getTac().getWidth(),
-                config.getDock().getHeight()
+                connector.getScreen().getWidth() - tacConfig.getWidth(),
+                dockConfig.getHeight()
         );
         ui.addFeature(new CycleFeature());
         Instance instance = new Instance(ui);
