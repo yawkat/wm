@@ -58,7 +58,6 @@ class GlyphRenderer extends AbstractResource {
 
     private void loadIfAbsent() {
         if (pixmapLoaded) { return; }
-        System.out.println("load");
         synchronized (this) {
             if (pixmapLoaded) { return; }
             pixmapId = LibXcb.xcb_generate_id(connection);

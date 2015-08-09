@@ -2,17 +2,17 @@ fontCacheDir: .cache/font/
 fonts:
   base:
     background: '#002b36'
-    foreground: '#93a1a1'
+    foreground: '#839496'
     italic: false
-    bold: true
-    size: 14
+    bold: false
+    size: 15
     family:
-      name: "Ubuntu"
+      name: "DejaVu Sans"
   foreground:
     parent: base
   foreground_highlight:
     parent: foreground
-    foreground: '#fdf6e3'
+    foreground: '#eee8d5'
   foreground_disabled:
     parent: foreground
     foreground: '#586e75'
@@ -26,21 +26,18 @@ fonts:
     parent: foreground
     foreground: '#b58900'
 
-  tac_base:
-    parent: base
-    background: '#002b36'
   tac_primary:
-    parent: tac_base
+    parent: foreground_highlight
     foreground: '#fdf6e3'
   tac_secondary:
-    parent: tac_base
+    parent: foreground_disabled
     foreground: '#586e75'
   tac_primary_selected:
     parent: foreground_highlight
-    background: '#93a1a1'
+    background: '#073642'
   tac_secondary_selected:
     parent: foreground_disabled
-    background: '#93a1a1'
+    background: '#073642'
 dock:
   height: 20
   background: '#002b36'
@@ -73,9 +70,9 @@ tac:
   fontSecondary: tac_secondary
   fontSecondarySelected: tac_secondary_selected
   colorBackground: '#002b36'
-  colorSelected: '#93a1a1'
+  colorSelected: '#073642'
   width: 400
-  rowHeight: 20
+  rowHeight: 22
 shortcuts: 
   firefox:
     command: ["firefox"]

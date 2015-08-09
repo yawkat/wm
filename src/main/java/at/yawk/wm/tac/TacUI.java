@@ -105,7 +105,7 @@ public class TacUI extends AbstractResource implements Modal {
                 // can skip that render
                 continue;
             }
-            int y = i * 16;
+            int y = i * config.getRowHeight();
             Color background = entry.isSelected() ? config.getColorSelected() : config.getColorBackground();
             graphics.setForegroundColor(background);
             graphics.fillRect(0, y, width, config.getRowHeight());
