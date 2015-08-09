@@ -102,7 +102,7 @@ class GraphicsImpl extends AbstractResource implements Graphics {
                         f,
                         connector.connection,
                         connector.format,
-                        containerDrawableId,
+                        connector.getScreen().screen.getRoot(),
                         (short) connector.getScreen().screen.getRoot_depth()
                 )
         );
@@ -122,7 +122,7 @@ class GraphicsImpl extends AbstractResource implements Graphics {
                     text
             );
         } else {
-            fontRenderer.render(contextId, text, x, y);
+            fontRenderer.render(containerDrawableId, contextId, text, x, y);
         }
         return this;
     }

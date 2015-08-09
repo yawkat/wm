@@ -16,10 +16,7 @@ import org.freedesktop.xcb.xcb_format_t;
 class GlyphRenderer extends AbstractResource {
     private final SWIGTYPE_p_xcb_connection_t connection;
     private final xcb_format_t format;
-    /**
-     * Target drawable (window or pixmap)
-     */
-    private final int drawable;
+    private final int rootDrawable;
     /**
      * pixmap depth
      */
@@ -30,13 +27,14 @@ class GlyphRenderer extends AbstractResource {
     private int pixmapId;
 
     /**
+     * @param drawable  target drawable
      * @param gc        graphics context
      * @param c         character
      * @param x         x location
      * @param baselineY baseline y location
      * @return width of the rendered character
      */
-    public int renderChar(int gc, char c, int x, int baselineY) {
+    public int renderChar(int drawable, int gc, char c, int x, int baselineY) {
         int i = c - file.getStartInclusive();
         int ascent = file.getAscent(c);
         int height = file.getHeight(c);
@@ -60,6 +58,7 @@ class GlyphRenderer extends AbstractResource {
 
     private void loadIfAbsent() {
         if (pixmapLoaded) { return; }
+        System.out.println("load");
         synchronized (this) {
             if (pixmapLoaded) { return; }
             pixmapId = LibXcb.xcb_generate_id(connection);
@@ -74,7 +73,7 @@ class GlyphRenderer extends AbstractResource {
                     connection,
                     depth,
                     pixmapId,
-                    drawable,
+                    rootDrawable,
                     rowWidth,
                     cellHeight
             );
@@ -111,6 +110,7 @@ class GlyphRenderer extends AbstractResource {
     public synchronized void close() {
         if (pixmapLoaded) {
             LibXcb.xcb_free_pixmap(connection, pixmapId);
+            pixmapLoaded = false;
         }
     }
 }

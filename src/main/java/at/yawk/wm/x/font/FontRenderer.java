@@ -17,7 +17,7 @@ public class FontRenderer extends AbstractResource {
 
     private final SWIGTYPE_p_xcb_connection_t connection;
     private final xcb_format_t format;
-    private final int drawable;
+    private final int rootDrawable;
     private final short depth;
 
     private final Map<GlyphFile, GlyphRenderer> handlerMap =
@@ -29,14 +29,14 @@ public class FontRenderer extends AbstractResource {
 
     private GlyphRenderer getHandler(char c) {
         GlyphFile file = getFile(c);
-        return handlerMap.computeIfAbsent(file, f -> new GlyphRenderer(connection, format, drawable, depth, f));
+        return handlerMap.computeIfAbsent(file, f -> new GlyphRenderer(connection, format, rootDrawable, depth, f));
     }
 
     public int getCharWidth(char c) {
         return getFile(c).getWidth(c);
     }
 
-    public int render(int gc, CharSequence s, int x, int y) {
+    public int render(int drawable, int gc, CharSequence s, int x, int y) {
         if (s.length() == 0) { return 0; }
         int maxAscent = 0;
         for (int i = 0; i < s.length(); i++) {
@@ -46,7 +46,7 @@ public class FontRenderer extends AbstractResource {
         int xOffset = 0;
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
-            xOffset += getHandler(c).renderChar(gc, c, x + xOffset, y + maxAscent);
+            xOffset += getHandler(c).renderChar(drawable, gc, c, x + xOffset, y + maxAscent);
         }
         return xOffset;
     }
