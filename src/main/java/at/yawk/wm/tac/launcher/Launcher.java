@@ -72,8 +72,16 @@ public class Launcher {
         final TextFieldFeature textFieldFeature;
         final List<LauncherEntry> customEntries;
 
+        /**
+         * Python REPL
+         */
         boolean replMode = false;
         String replResult;
+
+        /**
+         * Search in commands instead of looking for start only
+         */
+        boolean searchMode = false;
 
         public Instance(TacUI ui) {
             this.ui = ui;
@@ -86,6 +94,8 @@ public class Launcher {
                     replMode = getText().startsWith(REPL_PREFIX);
                     if (replMode) {
                         replResult = repl.run(getText().substring(REPL_PREFIX.length()));
+                    } else {
+                        searchMode = getText().contains("~");
                     }
                     refresh();
                 }
@@ -95,7 +105,7 @@ public class Launcher {
                     if (replMode) {
                         return "# " + text.substring(REPL_PREFIX.length());
                     } else {
-                        return "> " + text;
+                        return (searchMode ? "~ " : "> ") + text;
                     }
                 }
             };
@@ -149,9 +159,19 @@ public class Launcher {
                     normal.map(this::getLauncherEntry)
             );
 
-            String filter = textFieldFeature.getText();
-            ui.setEntries(entryStream.filter(
-                    e -> Util.startsWithIgnoreCaseAscii(e.getDescriptor().getTitle(), filter)));
+            String filter;
+            if (searchMode) {
+                filter = textFieldFeature.getText().replace("~", "");
+            } else {
+                filter = textFieldFeature.getText();
+            }
+            ui.setEntries(entryStream.filter(e -> {
+                if (searchMode) {
+                    return Util.containsIgnoreCaseAscii(e.getDescriptor().getTitle(), filter);
+                } else {
+                    return Util.startsWithIgnoreCaseAscii(e.getDescriptor().getTitle(), filter);
+                }
+            }));
         }
 
         private LauncherEntry getLauncherEntry(EntryDescriptor d) {

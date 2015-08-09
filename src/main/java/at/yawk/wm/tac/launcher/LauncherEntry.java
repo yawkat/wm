@@ -19,7 +19,7 @@ class LauncherEntry extends Entry {
         this.ui = ui;
         this.descriptor = descriptor;
         this.applicationRunner = applicationRunner;
-        setState(new EntryState("  " + descriptor.getTitle(), !descriptor.isHighPriority(), false));
+        setState(new EntryState(descriptor.getTitle(), !descriptor.isHighPriority(), false));
     }
 
     @Override
