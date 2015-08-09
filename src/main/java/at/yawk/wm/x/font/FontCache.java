@@ -16,7 +16,6 @@ import javax.inject.Inject;
 @Component
 public class FontCache implements FontSource {
     private final Map<FontDescriptor, GlyphFont> descriptorMap = new HashMap<>();
-    private final Map<FontStyle, GlyphFont> styleMap = new HashMap<>();
 
     @Inject Config config;
     @Inject FontManager fontManager;
@@ -27,6 +26,6 @@ public class FontCache implements FontSource {
     }
 
     private GlyphFont getFont(FontStyle style) {
-        return styleMap.computeIfAbsent(style, s -> new GlyphFont(s/*, config.getFontCacheDir()*/));
+        return new GlyphFont(style);
     }
 }
