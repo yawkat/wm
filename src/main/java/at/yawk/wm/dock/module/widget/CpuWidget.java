@@ -2,7 +2,11 @@ package at.yawk.wm.dock.module.widget;
 
 import at.yawk.wm.Util;
 import at.yawk.wm.dock.TextWidget;
-import at.yawk.wm.dock.module.*;
+import at.yawk.wm.dock.module.DockConfig;
+import at.yawk.wm.dock.module.DockWidget;
+import at.yawk.wm.dock.module.FontSource;
+import at.yawk.wm.dock.module.Periodic;
+import at.yawk.wm.style.FontManager;
 import at.yawk.yarn.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,6 +26,7 @@ public class CpuWidget extends TextWidget {
 
     @Inject DockConfig dockConfig;
     @Inject FontSource fontSource;
+    @Inject FontManager fontManager;
 
     private final MovingAverage cpuUsage = new MovingAverage(0.8);
     private long lastTime = 0;
@@ -55,11 +60,8 @@ public class CpuWidget extends TextWidget {
 
         // one significant digit precision
         setText(formatPercent(cpuUsage.getAverage()));
-        setFont(fontSource.getFont(dockConfig.getCpuFont().withColor(Shader.shade(
-                dockConfig.getCpuColorLow(),
-                dockConfig.getCpuColorHigh(),
-                (float) cpuUsage.getAverage()
-        ))));
+        setFont(fontSource.getFont(fontManager.compute(dockConfig.getCpuTransition(),
+                                                       (float) cpuUsage.getAverage())));
     }
 
     static String formatPercent(double number) {

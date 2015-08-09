@@ -1,6 +1,7 @@
 package at.yawk.wm.dock.module;
 
-import at.yawk.wm.x.font.FontStyle;
+import at.yawk.wm.style.FontDescriptor;
+import at.yawk.wm.style.FontTransition;
 import java.awt.*;
 import lombok.Data;
 
@@ -11,36 +12,26 @@ import lombok.Data;
 public class DockConfig {
     private Color background;
 
-    private FontStyle time;
+    private FontDescriptor time;
 
-    private FontStyle batteryTime;
-    private FontStyle batteryPercentage = new FontStyle(); // color is shaded
-    private Color batteryPercentageColorLow;
-    private Color batteryPercentageColorHigh;
+    private FontDescriptor batteryTime;
+    private FontTransition batteryTransition;
 
-    private FontStyle cpuFont = new FontStyle(); // color is shaded
-    private Color cpuColorLow;
-    private Color cpuColorHigh;
-
-    private FontStyle memoryFont = new FontStyle(); // color is shaded
-    private Color memoryColorLow;
-    private Color memoryColorHigh;
-
-    private FontStyle swapFont = new FontStyle(); // color is shaded
-    private Color swapColorLow;
-    private Color swapColorHigh;
+    private FontTransition cpuTransition;
+    private FontTransition memoryTransition;
+    private FontTransition swapTransition;
 
     private String clockFormat;
-    private FontStyle clockFont;
+    private FontDescriptor clockFont;
 
-    private FontStyle netUpFont;
-    private FontStyle netDownFont;
+    private FontDescriptor netUpFont;
+    private FontDescriptor netDownFont;
 
-    private FontStyle activeFont;
-    private FontStyle runningFont;
-    private FontStyle emptyFont;
+    private FontDescriptor activeFont;
+    private FontDescriptor runningFont;
+    private FontDescriptor emptyFont;
 
-    private FontStyle windowTitleFont;
+    private FontDescriptor windowTitleFont;
 
     private Color progressColor;
 

@@ -1,45 +1,81 @@
 fontCacheDir: .cache/font/
-dock: 
-  height: 16
+fonts:
+  base:
+    background: '#002b36'
+    foreground: '#93a1a1'
+    italic: false
+    bold: true
+    size: 14
+    family:
+      name: "Ubuntu"
+  foreground:
+    parent: base
+  foreground_highlight:
+    parent: foreground
+    foreground: '#fdf6e3'
+  foreground_disabled:
+    parent: foreground
+    foreground: '#586e75'
+  red:
+    parent: foreground
+    foreground: '#dc322f'
+  green:
+    parent: foreground
+    foreground: '#859900'
+  yellow:
+    parent: foreground
+    foreground: '#b58900'
+
+  tac_base:
+    parent: base
+    background: '#002b36'
+  tac_primary:
+    parent: tac_base
+    foreground: '#fdf6e3'
+  tac_secondary:
+    parent: tac_base
+    foreground: '#586e75'
+  tac_primary_selected:
+    parent: foreground_highlight
+    background: '#93a1a1'
+  tac_secondary_selected:
+    parent: foreground_disabled
+    background: '#93a1a1'
+dock:
+  height: 20
   background: '#002b36'
-  time: 
-    color: '#93a1a1'
-  batteryTime: 
-    color: '#93a1a1'
-  batteryPercentageColorLow: '#dc322f'
-  batteryPercentageColorHigh: '#859900'
-  cpuColorHigh: '#dc322f'
-  cpuColorLow: '#859900'
-  memoryColorHigh: '#dc322f'
-  memoryColorLow: '#859900'
-  swapColorHigh: '#dc322f'
-  swapColorLow: '#859900'
-  clockFont: 
-    color: '#93a1a1'
+  time: foreground
+  batteryTime: foreground
+  batteryTransition:
+    low: red
+    high: green
+  cpuTransition:
+    low: green
+    high: red
+  memoryTransition:
+    low: green
+    high: red
+  swapTransition:
+    low: green
+    high: red
+  clockFont: foreground
   clockFormat: "uuuu-MM-dd HH:mm:ss"
-  netUpFont: 
-    color: '#b58900'
-  netDownFont: 
-    color: '#dc322f'
-  activeFont: 
-    color: '#fdf6e3'
-  runningFont: 
-    color: '#93a1a1'
-  emptyFont: 
-    color: '#586e75'
-  windowTitleFont: 
-    color: '#93a1a1'
+  netUpFont: yellow
+  netDownFont: red
+  activeFont: foreground_highlight
+  runningFont: foreground
+  emptyFont: foreground_disabled
+  windowTitleFont: foreground
   progressColor: '#93a1a1'
-font: 
-  name: "Ubuntu"
-tac: 
-  fontNormal: 
-    color: '#fdf6e3'
-  fontLowPriority: 
-    color: '#586e75'
+tac:
+  fontPrimary: tac_primary
+  fontPrimarySelected: tac_primary_selected
+  fontSecondary: tac_secondary
+  fontSecondarySelected: tac_secondary_selected
   colorBackground: '#002b36'
   colorSelected: '#93a1a1'
   width: 400
+  rowHeight: 20
 shortcuts: 
   firefox:
     command: ["firefox"]
@@ -78,10 +114,7 @@ password:
   timeout: 600
   host: pw.yawk.at
   editorBackground: '#002b36'
-  editorFont: 
-    name: Ubuntu
-  editorFontStyle:
-    color: '#93a1a1'
+  editorFont: foreground
   editorWidth: 400
   editorHeight: 400
 wallpaper: 

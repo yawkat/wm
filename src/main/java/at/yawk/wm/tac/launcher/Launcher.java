@@ -6,6 +6,7 @@ import at.yawk.wm.hl.HerbstClient;
 import at.yawk.wm.tac.*;
 import at.yawk.wm.wallpaper.animate.AnimatedWallpaperManager;
 import at.yawk.wm.x.XcbConnector;
+import at.yawk.wm.x.font.FontCache;
 import at.yawk.yarn.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,6 +32,7 @@ public class Launcher {
     @Inject AnimatedWallpaperManager animatedWallpaper;
     @Inject ApplicationRunner applicationRunner;
     @Inject ObjectMapper objectMapper;
+    @Inject FontCache fontCache;
 
     private final PathScanner pathScanner = new PathScanner();
     private final REPL repl = new REPL();
@@ -51,6 +53,7 @@ public class Launcher {
 
         TacUI ui = new TacUI(
                 config,
+                fontCache,
                 connector,
                 connector.getScreen().getWidth() - config.getTac().getWidth(),
                 config.getDock().getHeight()

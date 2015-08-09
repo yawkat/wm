@@ -3,8 +3,13 @@ package at.yawk.wm.dock.module.widget;
 import at.yawk.wm.dock.Direction;
 import at.yawk.wm.dock.FlowCompositeWidget;
 import at.yawk.wm.dock.TextWidget;
-import at.yawk.wm.dock.module.*;
-import at.yawk.wm.x.font.FontStyle;
+import at.yawk.wm.dock.Widget;
+import at.yawk.wm.dock.module.DockConfig;
+import at.yawk.wm.dock.module.DockWidget;
+import at.yawk.wm.dock.module.FontSource;
+import at.yawk.wm.dock.module.Periodic;
+import at.yawk.wm.style.FontDescriptor;
+import at.yawk.wm.style.FontManager;
 import at.yawk.yarn.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,8 +36,7 @@ public class BatteryWidget extends FlowCompositeWidget {
 
     @Inject DockConfig config;
     @Inject FontSource fontSource;
-
-    private final List<TextWidget> widgets = new ArrayList<>();
+    @Inject FontManager fontManager;
 
     @Periodic(20)
     void updateBattery() throws IOException {
@@ -48,7 +52,7 @@ public class BatteryWidget extends FlowCompositeWidget {
             String line;
             while ((line = reader.readLine()) != null) {
                 String text;
-                FontStyle style;
+                FontDescriptor style;
 
                 Matcher deviceMatcher = PATTERN_DEVICE.matcher(line);
                 if (deviceMatcher.matches()) {
@@ -85,11 +89,7 @@ public class BatteryWidget extends FlowCompositeWidget {
                     Matcher percentageMatcher = PATTERN_PERCENTAGE.matcher(line);
                     if (percentageMatcher.matches()) {
                         int percentage = Integer.parseInt(percentageMatcher.group(1));
-                        style = config.getBatteryPercentage().withColor(Shader.shade(
-                                config.getBatteryPercentageColorLow(),
-                                config.getBatteryPercentageColorHigh(),
-                                percentage / 100F
-                        ));
+                        style = fontManager.compute(config.getBatteryTransition(), percentage / 100F);
                         text = percentage + "%";
                     } else {
                         continue;
@@ -97,17 +97,17 @@ public class BatteryWidget extends FlowCompositeWidget {
                 }
 
                 TextWidget widget;
-                if (i >= widgets.size()) {
+                if (i >= getWidgets().size()) {
                     widget = new TextWidget();
-                    if (widgets.isEmpty()) {
+                    widget.setTextHeight(config.getHeight());
+                    if (getWidgets().isEmpty()) {
                         widget.after(getAnchor(), Direction.HORIZONTAL);
                     } else {
-                        widget.after(widgets.get(widgets.size() - 1), Direction.HORIZONTAL);
+                        widget.after(getWidgets().get(getWidgets().size() - 1), Direction.HORIZONTAL);
                     }
-                    widgets.add(widget);
                     addWidget(widget);
                 } else {
-                    widget = widgets.get(i);
+                    widget = (TextWidget) getWidgets().get(i);
                 }
 
                 widget.setText(text);
@@ -118,8 +118,9 @@ public class BatteryWidget extends FlowCompositeWidget {
         }
 
         // remove newly unused widgets
-        List<TextWidget> toRemove = widgets.subList(i, widgets.size());
-        toRemove.forEach(this::removeWidget);
-        toRemove.clear();
+        if (i < getWidgets().size()) {
+            List<Widget> toRemove = new ArrayList<>(getWidgets().subList(i, getWidgets().size()));
+            toRemove.forEach(this::removeWidget);
+        }
     }
 }

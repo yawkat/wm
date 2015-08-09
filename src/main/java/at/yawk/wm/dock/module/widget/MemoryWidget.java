@@ -3,7 +3,11 @@ package at.yawk.wm.dock.module.widget;
 import at.yawk.wm.dock.Direction;
 import at.yawk.wm.dock.FlowCompositeWidget;
 import at.yawk.wm.dock.TextWidget;
-import at.yawk.wm.dock.module.*;
+import at.yawk.wm.dock.module.DockConfig;
+import at.yawk.wm.dock.module.DockWidget;
+import at.yawk.wm.dock.module.FontSource;
+import at.yawk.wm.dock.module.Periodic;
+import at.yawk.wm.style.FontManager;
 import at.yawk.yarn.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,6 +26,7 @@ public class MemoryWidget extends FlowCompositeWidget {
 
     @Inject DockConfig dockConfig;
     @Inject FontSource fontSource;
+    @Inject FontManager fontManager;
 
     private TextWidget ram;
     private TextWidget swap;
@@ -67,17 +72,9 @@ public class MemoryWidget extends FlowCompositeWidget {
         float ramUse = memTotal == 0 ? 1 : (float) (memTotal - memFree - buffers - cached) / memTotal;
         float swapUse = swapTotal == 0 ? 1 : (float) (swapTotal - swapFree) / swapTotal;
 
-        ram.setFont(fontSource.getFont(dockConfig.getMemoryFont().withColor(Shader.shade(
-                dockConfig.getMemoryColorLow(),
-                dockConfig.getMemoryColorHigh(),
-                ramUse
-        ))));
+        ram.setFont(fontSource.getFont(fontManager.compute(dockConfig.getMemoryTransition(), ramUse)));
         ram.setText(CpuWidget.formatPercent(ramUse));
-        swap.setFont(fontSource.getFont(dockConfig.getMemoryFont().withColor(Shader.shade(
-                dockConfig.getSwapColorLow(),
-                dockConfig.getSwapColorHigh(),
-                swapUse
-        ))));
+        swap.setFont(fontSource.getFont(fontManager.compute(dockConfig.getSwapTransition(), swapUse)));
         swap.setText(CpuWidget.formatPercent(swapUse));
     }
 

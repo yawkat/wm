@@ -1,19 +1,22 @@
 package at.yawk.wm.x.font;
 
+import at.yawk.wm.style.FontStyle;
 import java.awt.*;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import javax.annotation.Nullable;
+import lombok.ToString;
 
 /**
  * @author yawkat
  */
+@ToString(of = "style")
 public class GlyphFont {
     private static final char GLYPH_FILE_LENGTH = 256;
 
-    private final ConfiguredFont font;
+    private final FontStyle style;
     @Nullable private final Path cacheRoot;
 
     private byte cellWidth;
@@ -23,16 +26,16 @@ public class GlyphFont {
 
     private GlyphFileFactory glyphFileFactory = null;
 
-    public GlyphFont(ConfiguredFont font, @Nullable Path cacheRoot) {
-        this.font = font;
+    public GlyphFont(FontStyle style, @Nullable Path cacheRoot) {
+        this.style = style;
         this.cacheRoot = cacheRoot;
-        this.cellWidth = this.cellHeight = (byte) font.getFont().getCellSize();
+        this.cellWidth = this.cellHeight = (byte) style.getFamily().getCellSize(style);
     }
 
     /**
-     * Create an uncached glyph font.
+     * Create an uncached glyph style.
      */
-    public GlyphFont(ConfiguredFont font) {
+    public GlyphFont(FontStyle font) {
         this(font, null);
     }
 
@@ -40,7 +43,7 @@ public class GlyphFont {
     private Path getCacheFolder() {
         if (cacheRoot == null) { return null; }
         return cacheRoot.resolve(
-                font.getDescriptor() + "-" + cellWidth + "x" + cellHeight
+                style.getDescriptor() + "-" + cellWidth + "x" + cellHeight
         );
     }
 
@@ -59,7 +62,7 @@ public class GlyphFont {
         if (loaded == null) {
             // need to generate
             if (glyphFileFactory == null) {
-                glyphFileFactory = new GlyphFileFactory(cellWidth, cellHeight, font);
+                glyphFileFactory = new GlyphFileFactory(cellWidth, cellHeight, style);
             }
             loaded = glyphFileFactory.renderRange(startInclusive, endInclusive);
 

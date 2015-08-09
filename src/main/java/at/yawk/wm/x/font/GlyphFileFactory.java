@@ -1,5 +1,6 @@
 package at.yawk.wm.x.font;
 
+import at.yawk.wm.style.FontStyle;
 import java.awt.*;
 import java.awt.font.LineMetrics;
 import java.awt.image.BufferedImage;
@@ -12,14 +13,14 @@ class GlyphFileFactory {
 
     private final byte cellWidth;
     private final byte cellHeight;
-    private final ConfiguredFont configuredFont;
+    private final FontStyle style;
     private final Font font;
 
-    public GlyphFileFactory(byte cellWidth, byte cellHeight, ConfiguredFont font) {
+    public GlyphFileFactory(byte cellWidth, byte cellHeight, FontStyle style) {
         this.cellWidth = cellWidth;
         this.cellHeight = cellHeight;
-        this.configuredFont = font;
-        this.font = font.getFont().createFont(font.getStyle());
+        this.style = style;
+        this.font = style.getFamily().createFont(style);
     }
 
     public GlyphFile renderRange(char startInclusive, char endInclusive) {
@@ -41,9 +42,9 @@ class GlyphFileFactory {
                 rowWidth, cellHeight, BufferedImage.TYPE_3BYTE_BGR);
         Graphics2D gfx = image.createGraphics();
         gfx.setFont(font);
-        gfx.setBackground(configuredFont.getBackground());
+        gfx.setBackground(style.getBackground());
         gfx.clearRect(0, 0, rowWidth, cellHeight);
-        gfx.setColor(configuredFont.getStyle().getColor());
+        gfx.setColor(style.getForeground());
         gfx.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                              RenderingHints.VALUE_TEXT_ANTIALIAS_ON); // todo config option
         FontMetrics metrics = gfx.getFontMetrics();
@@ -74,7 +75,7 @@ class GlyphFileFactory {
                 gfx.drawLine(x, (int) (lh - lineMetrics.getAscent()), x + width, (int) (lh - lineMetrics.getAscent()));
 
                 // reset color
-                gfx.setColor(configuredFont.getStyle().getColor());
+                gfx.setColor(style.getForeground());
             }
         }
         gfx.dispose();

@@ -8,6 +8,7 @@ import at.yawk.wm.x.XcbConnector;
 import at.yawk.wm.x.event.ExposeEvent;
 import at.yawk.wm.x.event.FocusLostEvent;
 import at.yawk.wm.x.event.KeyPressEvent;
+import at.yawk.wm.x.font.FontCache;
 import at.yawk.wm.x.font.GlyphFont;
 import java.awt.*;
 import java.util.ArrayList;
@@ -22,7 +23,6 @@ import lombok.Getter;
  */
 public class TacUI extends AbstractResource implements Modal {
     private static final int ENTRY_LIMIT = 20;
-    private static final int ROW_HEIGHT = 16;
 
     private final TacConfig config;
     private final XcbConnector connector;
@@ -37,17 +37,24 @@ public class TacUI extends AbstractResource implements Modal {
     @Getter
     private List<Entry> entries = Collections.emptyList();
 
-    private final TacFontMap fontMap;
+    private final GlyphFont primaryNormal;
+    private final GlyphFont secondaryNormal;
+    private final GlyphFont primarySelected;
+    private final GlyphFont secondarySelected;
 
     private final List<Feature> features = new ArrayList<>();
 
-    public TacUI(Config config, XcbConnector connector, int x, int y) {
+    public TacUI(Config config, FontCache fontCache, XcbConnector connector, int x, int y) {
         this.config = config.getTac();
         this.connector = connector;
         this.width = this.config.getWidth();
         this.x = x;
         this.y = y;
-        fontMap = new TacFontMap(config.getFontCacheDir(), config.getFont());
+
+        primaryNormal = fontCache.getFont(this.config.getFontPrimary());
+        secondaryNormal = fontCache.getFont(this.config.getFontSecondary());
+        primarySelected = fontCache.getFont(this.config.getFontPrimarySelected());
+        secondarySelected = fontCache.getFont(this.config.getFontSecondarySelected());
 
         addFeature(new CloseFeature());
     }
@@ -63,7 +70,7 @@ public class TacUI extends AbstractResource implements Modal {
     }
 
     private synchronized void render(boolean expose) {
-        int newHeight = entries.size() * ROW_HEIGHT;
+        int newHeight = entries.size() * config.getRowHeight();
 
         if (window == null) {
             window = connector.getScreen().createWindow();
@@ -86,7 +93,7 @@ public class TacUI extends AbstractResource implements Modal {
             return; // wait for expose
         }
 
-        int lastHeight = lastEntries.size() * ROW_HEIGHT;
+        int lastHeight = lastEntries.size() * config.getRowHeight();
 
         if (lastHeight != newHeight) {
             window.setBounds(x, y, width, newHeight);
@@ -101,14 +108,16 @@ public class TacUI extends AbstractResource implements Modal {
             int y = i * 16;
             Color background = entry.isSelected() ? config.getColorSelected() : config.getColorBackground();
             graphics.setForegroundColor(background);
-            graphics.fillRect(0, y, width, ROW_HEIGHT);
-            GlyphFont font = fontMap.getFont(
-                    entry.isLowPriority() ? config.getFontLowPriority() : config.getFontNormal(),
-                    background
-            );
+            graphics.fillRect(0, y, width, config.getRowHeight());
+            GlyphFont font;
+            if (entry.isLowPriority()) {
+                font = entry.isSelected() ? secondarySelected : secondaryNormal;
+            } else {
+                font = entry.isSelected() ? primarySelected : primaryNormal;
+            }
             graphics.setFont(font);
             int h = font.getStringBounds(entry.getText()).height;
-            graphics.drawText(0, y + (ROW_HEIGHT - h) / 2, entry.getText());
+            graphics.drawText(0, y + (config.getRowHeight() - h) / 2, entry.getText());
         }
         graphics.flush();
         lastEntries = entries.stream().map(e -> e.state).collect(Collectors.toList());

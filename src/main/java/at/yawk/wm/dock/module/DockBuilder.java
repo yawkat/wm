@@ -2,21 +2,17 @@ package at.yawk.wm.dock.module;
 
 import at.yawk.wm.Config;
 import at.yawk.wm.Scheduler;
-import at.yawk.wm.dock.Dock;
-import at.yawk.wm.dock.Origin;
-import at.yawk.wm.dock.TextWidget;
-import at.yawk.wm.dock.Widget;
+import at.yawk.wm.dock.*;
+import at.yawk.wm.style.FontDescriptor;
+import at.yawk.wm.style.FontManager;
 import at.yawk.wm.x.GlobalResourceRegistry;
 import at.yawk.wm.x.Screen;
 import at.yawk.wm.x.Window;
-import at.yawk.wm.x.font.ConfiguredFont;
-import at.yawk.wm.x.font.FontStyle;
 import at.yawk.wm.x.font.GlyphFont;
 import at.yawk.yarn.Component;
 import at.yawk.yarn.Provides;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.ScheduledExecutorService;
 import javax.inject.Inject;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -26,13 +22,14 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Component
 @Slf4j
-public class DockBuilder implements FontSource, RenderElf {
+public class DockBuilder implements RenderElf {
     @Inject Config config;
     @Inject Screen screen;
     @Inject GlobalResourceRegistry globalResourceRegistry;
     @Inject Scheduler scheduler;
+    @Inject FontManager fontManager;
 
-    private final Map<FontStyle, GlyphFont> fontStyleMap = new HashMap<>();
+    private final Map<FontDescriptor, GlyphFont> fontStyleMap = new HashMap<>();
     private Dock dock;
 
     @Provides
@@ -58,6 +55,8 @@ public class DockBuilder implements FontSource, RenderElf {
     private void decorate(Widget widget) {
         if (widget instanceof TextWidget) {
             ((TextWidget) widget).setTextHeight(dockConfig().getHeight());
+        } else if (widget instanceof FlowCompositeWidget) {
+            ((FlowCompositeWidget) widget).getWidgets().forEach(this::decorate);
         }
     }
 
@@ -71,13 +70,6 @@ public class DockBuilder implements FontSource, RenderElf {
         widget.setOrigin(Origin.TOP_RIGHT);
         decorate(widget);
         dock.getRight().addWidget(widget);
-    }
-
-    @Override
-    public GlyphFont getFont(FontStyle style) {
-        return fontStyleMap.computeIfAbsent(style, s ->
-                new GlyphFont(new ConfiguredFont(s, config.getDock().getBackground(), config.getFont()),
-                              config.getFontCacheDir()));
     }
 
     @Override

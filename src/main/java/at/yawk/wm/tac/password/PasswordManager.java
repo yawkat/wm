@@ -5,8 +5,10 @@ import at.yawk.wm.Config;
 import at.yawk.wm.Scheduler;
 import at.yawk.wm.Util;
 import at.yawk.wm.hl.HerbstClient;
+import at.yawk.wm.style.FontManager;
 import at.yawk.wm.tac.*;
 import at.yawk.wm.x.XcbConnector;
+import at.yawk.wm.x.font.FontCache;
 import at.yawk.yarn.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -30,6 +32,8 @@ public class PasswordManager {
     @Inject ModalRegistry modalRegistry;
     @Inject Config config;
     @Inject XcbConnector connector;
+    @Inject FontCache fontCache;
+    @Inject FontManager fontManager;
 
     PasswordHolder holder;
 
@@ -63,6 +67,7 @@ public class PasswordManager {
     private void open() {
         TacUI ui = new TacUI(
                 config,
+                fontCache,
                 connector,
                 connector.getScreen().getWidth() - config.getTac().getWidth(),
                 config.getDock().getHeight()

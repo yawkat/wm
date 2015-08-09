@@ -1,4 +1,4 @@
-package at.yawk.wm.x.font;
+package at.yawk.wm.style;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -21,7 +21,7 @@ import java.awt.*;
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public interface FontFactory {
     @JsonIgnore
-    int getCellSize();
+    int getCellSize(FontStyle style);
 
     @JsonIgnore
     String getDescriptor();

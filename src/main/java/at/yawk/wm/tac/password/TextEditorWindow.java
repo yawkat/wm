@@ -1,5 +1,7 @@
 package at.yawk.wm.tac.password;
 
+import at.yawk.wm.style.FontManager;
+import at.yawk.wm.style.FontStyle;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -14,7 +16,7 @@ class TextEditorWindow {
     private final Window window;
     private final JTextArea field;
 
-    public TextEditorWindow(PasswordConfig config, String text) {
+    public TextEditorWindow(FontManager fontManager, PasswordConfig config, String text) {
         Dimension size = new Dimension(config.getEditorWidth(), config.getEditorHeight());
 
         field = new JTextArea() {
@@ -29,11 +31,12 @@ class TextEditorWindow {
         };
         field.setText(text);
         field.setBackground(config.getEditorBackground());
-        field.setFont(config.getEditorFont().createFont(config.getEditorFontStyle()));
-        field.setForeground(config.getEditorFontStyle().getColor());
+        FontStyle style = fontManager.resolve(config.getEditorFont());
+        field.setFont(style.getFamily().createFont(style));
+        field.setForeground(style.getForeground());
         field.setSelectedTextColor(config.getEditorBackground());
-        field.setSelectionColor(config.getEditorFontStyle().getColor());
-        field.setCaretColor(config.getEditorFontStyle().getColor());
+        field.setSelectionColor(style.getForeground());
+        field.setCaretColor(style.getForeground());
         field.setLineWrap(true);
 
         window = new JDialog();

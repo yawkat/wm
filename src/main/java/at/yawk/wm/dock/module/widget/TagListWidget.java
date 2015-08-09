@@ -11,7 +11,8 @@ import at.yawk.wm.hl.HerbstClient;
 import at.yawk.wm.hl.Subscribe;
 import at.yawk.wm.hl.Tag;
 import at.yawk.wm.hl.TagEvent;
-import at.yawk.wm.x.font.FontStyle;
+import at.yawk.wm.style.FontDescriptor;
+import at.yawk.wm.style.FontStyle;
 import at.yawk.yarn.Component;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,7 @@ public class TagListWidget extends FlowCompositeWidget {
                 tagWidgets.add(widget);
             }
 
-            FontStyle style;
+            FontDescriptor style;
             switch (tag.getState()) {
             case SELECTED:
                 style = config.getActiveFont();

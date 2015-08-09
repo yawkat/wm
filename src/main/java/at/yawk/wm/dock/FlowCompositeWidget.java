@@ -9,6 +9,7 @@ import lombok.Getter;
  * @author yawkat
  */
 public class FlowCompositeWidget extends Widget {
+    @Getter
     private final List<Widget> widgets = new ArrayList<>();
 
     @Getter

@@ -1,7 +1,6 @@
 package at.yawk.wm.tac.password;
 
-import at.yawk.wm.x.font.FontFactory;
-import at.yawk.wm.x.font.FontStyle;
+import at.yawk.wm.style.FontDescriptor;
 import java.awt.*;
 import java.nio.file.Path;
 import lombok.Data;
@@ -19,8 +18,7 @@ public class PasswordConfig {
     private String host;
     private int port = 80;
     private Color editorBackground;
-    private FontFactory editorFont;
-    private FontStyle editorFontStyle;
+    private FontDescriptor editorFont;
     private int editorWidth;
     private int editorHeight;
 }
