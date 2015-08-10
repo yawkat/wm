@@ -49,7 +49,7 @@ style:
       foreground: '#b58900'
 
     tac_primary:
-      parent: base3
+      parent: base1
     tac_secondary:
       parent: base01
     tac_primary_selected:
