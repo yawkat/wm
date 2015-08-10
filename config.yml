@@ -2,51 +2,69 @@ style:
   fontCacheDir: .cache/font/
   fonts:
     base:
-      background: '#002b36'
-      foreground: '#839496'
+      background: '#002b36' # base03
+      foreground: '#ffffff'
       italic: false
       bold: false
       size: 15
       family:
         name: "Source Code Pro"
-    foreground:
+    # Text Colors
+    base03:
       parent: base
-    foreground_highlight:
-      parent: foreground
-      foreground: '#eee8d5'
-      background: '#073642'
-    foreground_disabled:
-      parent: foreground
+      foreground: '#002b36'
+    base02:
+      parent: base
+      foreground: '#073642'
+    base01:
+      parent: base
       foreground: '#586e75'
+    base00:
+      parent: base
+      foreground: '#657b83'
+    base0:
+      parent: base
+      foreground: '#839496'
+    base1:
+      parent: base
+      foreground: '#93a1a1'
+    base2:
+      parent: base
+      foreground: '#eee8d5'
+    base3:
+      parent: base
+      foreground: '#fdf6e3'
+
+    highlight:
+      parent: base2
+      background: '#073642' # base02
     red:
-      parent: foreground
+      parent: base
       foreground: '#dc322f'
     green:
-      parent: foreground
+      parent: base
       foreground: '#859900'
     yellow:
-      parent: foreground
+      parent: base
       foreground: '#b58900'
 
     tac_primary:
-      parent: base
-      foreground: '#fdf6e3'
+      parent: base3
     tac_secondary:
-      parent: base
-      foreground: '#586e75'
+      parent: base01
     tac_primary_selected:
       parent: tac_primary
-      background: '#073642'
+      background: '#073642' # base02
     tac_secondary_selected:
       parent: tac_secondary
-      background: '#073642'
+      background: '#073642' # base02
 
 # Modules
 dock:
   height: 20
   background: '#002b36'
-  time: foreground
-  batteryTime: foreground
+  time: base0
+  batteryTime: base0
   batteryTransition:
     low: red
     high: green
@@ -59,14 +77,14 @@ dock:
   swapTransition:
     low: green
     high: red
-  clockFont: foreground
+  clockFont: base0
   clockFormat: "uuuu-MM-dd HH:mm:ss"
   netUpFont: yellow
   netDownFont: red
-  activeFont: foreground_highlight
-  runningFont: foreground
-  emptyFont: foreground_disabled
-  windowTitleFont: foreground
+  activeFont: highlight
+  runningFont: base0
+  emptyFont: base01
+  windowTitleFont: base01
   progressColor: '#93a1a1'
 tac:
   fontPrimary: tac_primary
@@ -117,7 +135,7 @@ password:
   timeout: 600
   host: pw.yawk.at
   editorBackground: '#002b36'
-  editorFont: foreground
+  editorFont: base0
   editorWidth: 400
   editorHeight: 400
 wallpaper: 
