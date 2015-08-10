@@ -83,7 +83,16 @@ public class TacUI extends AbstractResource implements Modal {
                     if (evt.isCancelled()) { break; }
                 }
             });
-            window.addListener(FocusLostEvent.class, evt -> close());
+            long startTime = System.currentTimeMillis();
+            window.addListener(FocusLostEvent.class, evt -> {
+                // HACK: sometimes a focus lost event would be received immediately after expose,
+                // closing the UI
+                if (startTime >= System.currentTimeMillis() - 100) {
+                    return;
+                }
+
+                close();
+            });
             graphics = window.createGraphics();
             window.setBackgroundColor(config.getColorBackground())
                     .setBounds(x, y, width, newHeight)
