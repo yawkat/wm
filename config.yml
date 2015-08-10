@@ -8,7 +8,7 @@ style:
       bold: false
       size: 15
       family:
-        name: "DejaVu Sans"
+        name: "Source Code Pro"
     foreground:
       parent: base
     foreground_highlight:
