@@ -151,12 +151,17 @@ public class PasswordManager {
                 @Override
                 protected String format(String text) {
                     if (claim == null) {
-                        StringBuilder builder = new StringBuilder("Password: ");
-                        for (int i = 0; i < text.length(); i++) {
-                            builder.append('\u00b7');
+                        if (loadRunning) {
+                            return "Loading...";
+                        } else {
+                            StringBuilder builder = new StringBuilder("Password: ");
+                            for (int i = 0; i < text.length(); i++) {
+                                builder.append('·');
+                            }
+                            return builder.toString();
                         }
-                        return builder.toString();
                     }
+
                     switch (action) {
                     case ADD:
                         return "+ " + text;
@@ -178,6 +183,9 @@ public class PasswordManager {
 
         void refresh() {
             if (claim == null) {
+                if (loadRunning) {
+                }
+
                 if (errorMessage == null) {
                     ui.setEntries(Stream.empty());
                 } else {
