@@ -20,6 +20,8 @@ public abstract class Widget implements Positioned {
     @Getter private int width;
     @Getter private int height;
 
+    @Getter @Setter Visibility visibility = Visibility.VISIBLE;
+
     int lastX = 0;
     int lastY = 0;
     int lastWidth = 0;
@@ -83,14 +85,31 @@ public abstract class Widget implements Positioned {
             lastWidth = getWidth();
             lastHeight = getHeight();
 
-            layout(pass.graphics);
+            doLayout(pass.graphics);
+            doRender(pass.graphics);
 
-            render(pass.graphics);
             dirty = false;
         }
     }
 
+    public final void doLayout(Graphics graphics) {
+        switch (visibility) {
+        case VISIBLE:
+        case INVISIBLE:
+            layout(graphics);
+            break;
+        }
+    }
+
     protected void layout(Graphics graphics) {}
+
+    public final void doRender(Graphics graphics) {
+        switch (visibility) {
+        case VISIBLE:
+            render(graphics);
+            break;
+        }
+    }
 
     protected void render(Graphics graphics) {}
 
@@ -147,5 +166,20 @@ public abstract class Widget implements Positioned {
             this.height = height;
             markGeometryDirty();
         }
+    }
+
+    public enum Visibility {
+        /**
+         * This element is visible and takes up layout space.
+         */
+        VISIBLE,
+        /**
+         * This element is not visible but still takes layout space.
+         */
+        INVISIBLE,
+        /**
+         * This element is not visible and does not take layout space.
+         */
+        GONE,
     }
 }

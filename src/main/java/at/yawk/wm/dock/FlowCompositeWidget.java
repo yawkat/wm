@@ -40,7 +40,7 @@ public class FlowCompositeWidget extends Widget {
         anchor.setY(getY());
 
         for (Widget widget : widgets) {
-            widget.layout(graphics);
+            widget.doLayout(graphics);
         }
 
         int width = 0;
@@ -57,7 +57,7 @@ public class FlowCompositeWidget extends Widget {
     @Override
     protected void render(Graphics graphics) {
         for (Widget widget : widgets) {
-            widget.render(graphics);
+            widget.doRender(graphics);
         }
     }
 }

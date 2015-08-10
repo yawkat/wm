@@ -76,6 +76,10 @@ public class MemoryWidget extends FlowCompositeWidget {
         ram.setText(CpuWidget.formatPercent(ramUse));
         swap.setFont(fontSource.getFont(fontManager.compute(dockConfig.getSwapTransition(), swapUse)));
         swap.setText(CpuWidget.formatPercent(swapUse));
+
+        if (swapTotal == 0) {
+            swap.setVisibility(Visibility.GONE);
+        }
     }
 
     private static long parseMem(String s, int off) {
