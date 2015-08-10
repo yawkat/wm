@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 class PasswordEditorWindow extends TextEditorWindow {
     private final PasswordManager manager;
     private final at.yawk.password.model.PasswordEntry entry;
+    private final PasswordHolder.HolderClaim claim;
     private boolean needsInsert;
 
     public PasswordEditorWindow(PasswordManager manager, at.yawk.password.model.PasswordEntry entry,
@@ -18,7 +19,10 @@ class PasswordEditorWindow extends TextEditorWindow {
         super(manager.fontManager, manager.passwordConfig, entry.getValue());
         this.manager = manager;
         this.entry = entry;
+        this.claim = manager.holder.claim();
         this.needsInsert = needsInsert;
+
+        if (this.claim == null) { throw new IllegalStateException(); }
 
         getField().addKeyListener(new KeyAdapter() {
             @Override
@@ -36,6 +40,12 @@ class PasswordEditorWindow extends TextEditorWindow {
     private void updateTitle() {
         boolean modified = !entry.getValue().equals(getText());
         setTitle(entry.getName() + (modified ? "*" : ""));
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        claim.unclaim();
     }
 
     private void save() {

@@ -10,8 +10,12 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Holds password info until a timeout occurs (auto password lock). Holders have two states: <i>Claimed</i> and
@@ -19,6 +23,7 @@ import lombok.Value;
  *
  * @author yawkat
  */
+@Slf4j
 @RequiredArgsConstructor
 class PasswordHolder {
     private final LocalStorageProvider storageProvider;
@@ -32,36 +37,43 @@ class PasswordHolder {
 
     private Future<?> unclaimFuture = null;
 
-    private boolean claimed = false;
+    private int claimCount = 0;
     private Holder holder = null;
 
     /**
      * Try to claim this holder without supplying a password.
      *
-     * @return <code>true</code> if this holder was claimed successfully or was already claimed, <code>false</code> if
-     * the holder has no data cached and cannot be claimed without password.
+     * @return A {@link at.yawk.wm.tac.password.PasswordHolder.HolderClaim} object if this holder was claimed
+     * successfully or was already claimed, <code>null</code> if the holder has no data cached and cannot be
+     * claimed without password.
      */
-    public synchronized boolean claim() {
+    @Nullable
+    public synchronized HolderClaim claim() {
+        log.debug("Attempting to claim password holder without password");
         clearUnclaim();
         if (holder == null) {
-            return false;
+            return null;
         } else {
-            claimed = true;
-            return true;
+            return createClaim();
         }
     }
 
     /**
-     * Unclaim this holder and mark it for future clearing.
+     * Unclaim one claim on this holder and clear if needed.
      */
-    public synchronized void unclaim() {
-        if (claimed) {
+    private synchronized void internalUnclaim() {
+        claimCount--;
+        log.debug("Discarded claim, now have {} claims", claimCount);
+        if (claimCount <= 0) {
+            log.debug("Unclaiming password holder, scheduling clear");
             clearUnclaim();
-            claimed = false;
             unclaimFuture = scheduler.schedule(() -> {
-                synchronized (this) {
-                    if (!claimed) {
+                synchronized (PasswordHolder.this) {
+                    if (claimCount <= 0) {
+                        log.debug("Running scheduled clear");
                         clear();
+                    } else {
+                        log.debug("Aborting scheduled clear because a new claim was added");
                     }
                 }
             }, 10, TimeUnit.MINUTES);
@@ -71,8 +83,11 @@ class PasswordHolder {
     /**
      * Claim this holder with a password. This is a blocking operation.
      */
-    public void claim(String password) throws Exception {
-        if (claim()) { return; }
+    @Nonnull
+    public HolderClaim claim(String password) throws Exception {
+        log.info("Attempting to claim password holder with password");
+        HolderClaim noPasswordClaim = claim();
+        if (noPasswordClaim != null) { return noPasswordClaim; }
 
         PasswordClient client = PasswordClient.create();
         client.setPassword(password.getBytes(StandardCharsets.UTF_8));
@@ -88,22 +103,24 @@ class PasswordHolder {
                         value.isFromLocalStorage()
                 );
             }
-            claim();
+            HolderClaim claim = claim();
+            assert claim != null;
+            return claim;
         }
     }
 
     /**
      * Immediately unclaim and close this holder.
      */
-    public synchronized void clear() {
-        claimed = false;
+    private synchronized void clear() {
+        claimCount = 0;
         holder = null;
         clearUnclaim();
         // suggest a GC to clear as much sensitive info as possible
         System.gc();
     }
 
-    private void clearUnclaim() {
+    private synchronized void clearUnclaim() {
         if (unclaimFuture != null) {
             unclaimFuture.cancel(false);
             unclaimFuture = null;
@@ -111,24 +128,53 @@ class PasswordHolder {
     }
 
     public synchronized PasswordBlob getPasswords() {
-        if (!claimed) {
+        if (claimCount <= 0) {
             throw new IllegalStateException();
         }
         return holder.blob;
     }
 
     public synchronized boolean isFromLocalStorage() {
-        if (!claimed) {
+        if (claimCount <= 0) {
             throw new IllegalStateException();
         }
         return holder.fromLocalStorage;
     }
 
     public synchronized void save() throws Exception {
-        if (!claimed) {
+        if (claimCount <= 0) {
             throw new IllegalStateException();
         }
         holder.client.save(holder.blob);
+    }
+
+    /**
+     * Increment the claim counter and return a new claim object.
+     */
+    @Nonnull
+    private synchronized PasswordHolder.HolderClaim createClaim() {
+        if (holder == null) { throw new IllegalStateException(); }
+
+        claimCount++;
+        log.debug("Created claim, now have {} claims", claimCount);
+        AtomicBoolean unclaimed = new AtomicBoolean(false);
+        return new HolderClaim() {
+            @Override
+            public void unclaim() {
+                if (unclaimed.compareAndSet(false, true)) {
+                    PasswordHolder.this.internalUnclaim();
+                }
+            }
+
+            @Override
+            protected void finalize() throws Throwable {
+                super.finalize();
+
+                if (!unclaimed.get()) {
+                    log.warn("Orphaned HolderClaim object");
+                }
+            }
+        };
     }
 
     @Value
@@ -136,5 +182,9 @@ class PasswordHolder {
         private final PasswordClient client;
         private final PasswordBlob blob;
         private final boolean fromLocalStorage;
+    }
+
+    public interface HolderClaim {
+        void unclaim();
     }
 }

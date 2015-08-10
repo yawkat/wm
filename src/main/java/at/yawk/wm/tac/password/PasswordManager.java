@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
@@ -86,37 +87,37 @@ public class PasswordManager {
         final Map<String, PasswordEntry> entries = new HashMap<>();
         final TextFieldFeature textFieldFeature;
 
-        boolean passwordPrompt;
-        boolean loadRunning = true;
+        @Nullable PasswordHolder.HolderClaim claim;
+
+        boolean loadRunning = false;
         String errorMessage = null;
 
         Action action = Action.COPY;
         String search = "";
 
         public Instance(TacUI ui) {
-            if (holder.claim()) {
-                passwordPrompt = false;
-            } else {
-                passwordPrompt = true;
-            }
+            //noinspection RedundantIfStatement
+            claim = holder.claim();
 
             ui.addFeature(new UseFeature() {
                 @Override
                 protected void onEnter() {
-                    if (passwordPrompt) {
-                        loadRunning = true;
-                        refresh();
-                        scheduler.execute(() -> {
-                            try {
-                                holder.claim(textFieldFeature.getText());
-                                passwordPrompt = false;
-                                textFieldFeature.clear();
-                            } catch (Exception e) {
-                                log.info("Failed to load password database", e);
-                                errorMessage = e.getMessage();
-                            }
+                    if (claim == null) {
+                        if (!loadRunning) {
+                            loadRunning = true;
                             refresh();
-                        });
+                            scheduler.execute(() -> {
+                                try {
+                                    claim = holder.claim(textFieldFeature.getText());
+                                    textFieldFeature.clear();
+                                } catch (Exception e) {
+                                    log.info("Failed to load password database", e);
+                                    errorMessage = e.getMessage();
+                                }
+                                loadRunning = false;
+                                refresh();
+                            });
+                        }
                     } else if (action == Action.ADD) {
                         at.yawk.password.model.PasswordEntry e = new at.yawk.password.model.PasswordEntry();
                         e.setName(search);
@@ -132,7 +133,7 @@ public class PasswordManager {
             this.textFieldFeature = new TextFieldFeature() {
                 @Override
                 protected void onUpdate() {
-                    if (!passwordPrompt) {
+                    if (claim != null) {
                         search = getText();
                         if (getText().indexOf('+') != -1) {
                             action = Action.ADD;
@@ -149,7 +150,7 @@ public class PasswordManager {
 
                 @Override
                 protected String format(String text) {
-                    if (passwordPrompt) {
+                    if (claim == null) {
                         StringBuilder builder = new StringBuilder("Password: ");
                         for (int i = 0; i < text.length(); i++) {
                             builder.append('\u00b7');
@@ -167,10 +168,16 @@ public class PasswordManager {
                 }
             };
             ui.addFeature(textFieldFeature);
+
+            ui.addCloseListener(() -> {
+                if (claim != null) {
+                    claim.unclaim();
+                }
+            });
         }
 
         void refresh() {
-            if (passwordPrompt) {
+            if (claim == null) {
                 if (errorMessage == null) {
                     ui.setEntries(Stream.empty());
                 } else {
