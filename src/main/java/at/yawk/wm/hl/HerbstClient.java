@@ -12,10 +12,12 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.xml.bind.DatatypeConverter;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
+@Slf4j
 @Component
 public class HerbstClient {
     @Inject Provider<HerbstEventBus> eventBus;
@@ -62,6 +64,7 @@ public class HerbstClient {
                     String verb = components.get(0);
                     switch (verb) {
                     case "tag_changed":
+                    case "tag_flags":
                         eventBus.get().post(new TagEvent());
                         break;
                     case "window_title_changed":
