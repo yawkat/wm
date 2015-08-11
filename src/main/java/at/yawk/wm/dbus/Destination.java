@@ -10,4 +10,6 @@ import java.lang.annotation.*;
 @Inherited
 public @interface Destination {
     String value();
+
+    boolean system() default false;
 }

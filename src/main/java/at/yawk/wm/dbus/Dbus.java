@@ -2,10 +2,6 @@ package at.yawk.wm.dbus;
 
 import at.yawk.yarn.Component;
 import at.yawk.yarn.Provides;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -20,9 +16,16 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class Dbus {
+    private final DbusCaller caller = new DbusCaller();
+
     @Provides
     MediaPlayer mediaPlayer() {
         return implement(MediaPlayer.class);
+    }
+
+    @Provides
+    NetworkManager networkManager() {
+        return implement(NetworkManager.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -39,45 +42,37 @@ public class Dbus {
     }
 
     private Function<Object[], Object> implement(Method method) {
-        String destination = getAnnotation(method, Destination.class).value();
+        Destination destination = getAnnotation(method, Destination.class);
         String objectPath = getAnnotation(method, ObjectPath.class).value();
-        List<String> baseList;
+        List<String> baseList = new ArrayList<>();
+        baseList.add("nice");
+        baseList.add("dbus-send");
+        baseList.add("--print-reply=literal");
+        baseList.add("--dest=" + destination.value());
+        if (destination.system()) {
+            baseList.add("--system");
+        }
 
         String interfaceName = getAnnotation(method, Interface.class).value();
 
         DbusMethod dbusMethod = findAnnotation(method, DbusMethod.class);
         if (dbusMethod != null) {
-            baseList = Arrays.asList(
-                    "nice", "dbus-send",
-                    "--type=method_call",
-                    "--print-reply=literal",
-                    "--dest=" + destination,
-                    objectPath,
-                    interfaceName + '.' + dbusMethod.value()
-            );
+            baseList.add("--type=method_call");
+            baseList.add(objectPath);
+            baseList.add(interfaceName + '.' + dbusMethod.value());
         } else {
             DbusSignal dbusSignal = findAnnotation(method, DbusSignal.class);
             if (dbusSignal != null) {
-                baseList = Arrays.asList(
-                        "nice", "dbus-send",
-                        "--type=signal",
-                        "--print-reply=literal",
-                        "--dest=" + destination,
-                        objectPath,
-                        interfaceName + '.' + dbusSignal.value()
-                );
+                baseList.add("--type=signal");
+                baseList.add(objectPath);
+                baseList.add(interfaceName + '.' + dbusSignal.value());
             } else {
                 String property = getAnnotation(method, DbusProperty.class).value();
-                baseList = Arrays.asList(
-                        "nice", "dbus-send",
-                        "--type=method_call",
-                        "--print-reply=literal",
-                        "--dest=" + destination,
-                        objectPath,
-                        "org.freedesktop.DBus.Properties.Get",
-                        "string:" + interfaceName,
-                        "string:" + property
-                );
+                baseList.add("--type=method_call");
+                baseList.add(objectPath);
+                baseList.add("org.freedesktop.DBus.Properties.Get");
+                baseList.add("string:" + interfaceName);
+                baseList.add("string:" + property);
             }
         }
 
@@ -91,7 +86,7 @@ public class Dbus {
             } else {
                 dbus = baseList;
             }
-            return call(dbus);
+            return mapResponse(caller.call(dbus));
         };
     }
 
@@ -133,40 +128,33 @@ public class Dbus {
         }
     }
 
-    private String call(List<String> args) {
-        if (log.isTraceEnabled()) { log.trace("Calling {}", String.join(" ", args)); }
-        try {
-            Process process = new ProcessBuilder(args)
-                    .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                    .redirectError(ProcessBuilder.Redirect.PIPE)
-                    .start();
-
-            int status = process.waitFor();
-            try (BufferedReader err = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-                String line;
-                while ((line = err.readLine()) != null) {
-                    log.warn("[DBus] {}", line);
-                }
-            }
-
-            if (status != 0) { throw new RuntimeException("Status " + status); }
-
-            StringBuilder reply = new StringBuilder();
-            try (Reader reader = new InputStreamReader(process.getInputStream())) {
-                char[] buf = new char[1024];
-                int len;
-                while ((len = reader.read(buf)) != -1) {
-                    reply.append(buf, 0, len);
-                }
-            }
-            if (reply.length() == 0) { return null; }
-            if (!reply.substring(0, 17).equals("   variant       ")) {
-                throw new UnsupportedOperationException("Unsupported response '" + reply + "'");
-            }
-            return reply.substring(17);
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+    private static Object mapResponse(String response) {
+        if (response.startsWith("int16")) {
+            return Short.parseShort(getResponseBody(response));
+        } else if (response.startsWith("int16")) {
+            return (short) Integer.parseUnsignedInt(getResponseBody(response));
+        } else if (response.startsWith("int32")) {
+            return Integer.parseInt(getResponseBody(response));
+        } else if (response.startsWith("uint32")) {
+            return Integer.parseUnsignedInt(getResponseBody(response));
+        } else if (response.startsWith("int64")) {
+            return Long.parseLong(getResponseBody(response));
+        } else if (response.startsWith("uint64")) {
+            return Long.parseUnsignedLong(getResponseBody(response));
+        } else if (response.startsWith("boolean")) {
+            return Boolean.parseBoolean(getResponseBody(response));
+        } else if (response.startsWith("double")) {
+            return Double.parseDouble(getResponseBody(response));
+        } else if (response.startsWith("byte")) {
+            return Byte.parseByte(getResponseBody(response));
+        } else {
+            return response;
         }
     }
+
+    private static String getResponseBody(String response) {
+        return response.substring(response.indexOf(' ') + 1, response.length() - 1);
+    }
+
 }
 

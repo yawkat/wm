@@ -1,6 +1,7 @@
 package at.yawk.wm.dock.module.widget;
 
 import at.yawk.wm.Util;
+import at.yawk.wm.dbus.NetworkManager;
 import at.yawk.wm.dock.Direction;
 import at.yawk.wm.dock.FlowCompositeWidget;
 import at.yawk.wm.dock.IconWidget;
@@ -26,6 +27,7 @@ import javax.inject.Inject;
 public class NetworkWidget extends FlowCompositeWidget {
     @Inject IconManager iconManager;
     @Inject DockConfig config;
+    @Inject NetworkManager networkManager;
 
     private TextWidget down;
     private IconWidget iconWidget;
@@ -81,7 +83,12 @@ public class NetworkWidget extends FlowCompositeWidget {
         down.setText(format(downAverage.getAverage()));
         up.setText(format(upAverage.getAverage()));
 
-        boolean online = upOctets != 0 || downOctets != 0;
+        updateOnline();
+    }
+
+    @Periodic(value = 10, render = true)
+    void updateOnline() {
+        boolean online = networkManager.getConnectivity() > 1;
         iconWidget.setIcon(iconManager.getIconOrNull(online ? config.getNetIconOnline() : config.getNetIconOffline()));
     }
 

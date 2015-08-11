@@ -124,7 +124,7 @@ dock:
   netDownFont: red
   netIconFont: base0
   netIconOnline: net_online
-  netIconOffline: net_online
+  netIconOffline: net_offline
   activeFont: highlight
   runningFont: base0
   emptyFont: base01
