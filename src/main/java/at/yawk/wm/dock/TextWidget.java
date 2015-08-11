@@ -2,8 +2,10 @@ package at.yawk.wm.dock;
 
 import at.yawk.wm.x.Graphics;
 import at.yawk.wm.x.font.GlyphFont;
+import at.yawk.wm.x.icon.Icon;
 import java.awt.*;
 import java.util.Objects;
+import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -13,6 +15,7 @@ import lombok.Getter;
 @Getter
 public class TextWidget extends Widget {
     private String text;
+    @Nullable private Icon icon;
     private GlyphFont font;
     private int textHeight = 0;
     private int padding = 4;
@@ -29,18 +32,29 @@ public class TextWidget extends Widget {
     private String layoutText;
     @Getter(AccessLevel.NONE)
     private Dimension layoutTextBounds;
+    @Getter(AccessLevel.NONE)
+    private int boxWidth;
+    @Getter(AccessLevel.NONE)
+    private int boxHeight;
 
     @Override
     protected void layout(Graphics graphics) {
         layoutText = text;
 
         layoutTextBounds = font.getStringBounds(text);
-        setWidth(layoutTextBounds.width + padding * 2);
-        if (textHeight == 0) {
-            setHeight((int) layoutTextBounds.getHeight());
-        } else {
-            setHeight(textHeight);
+        boxWidth = layoutTextBounds.width;
+        if (icon != null) {
+            boxWidth += icon.getWidth();
         }
+
+        if (textHeight == 0) {
+            boxHeight = (int) layoutTextBounds.getHeight();
+        } else {
+            boxHeight = textHeight;
+        }
+
+        setWidth(boxWidth + padding * 2);
+        setHeight(boxHeight);
     }
 
     @Override
@@ -51,20 +65,24 @@ public class TextWidget extends Widget {
         int x0 = Math.min(getX(), getX2());
         int x = x0 + padding;
         int y = Math.min(getY(), getY2());
-        int boxHeight;
+
         if (textHeight != 0) {
-            boxHeight = textHeight;
             // center text vertically
             y += (textHeight - layoutTextBounds.height) / 2;
-        } else {
-            boxHeight = layoutTextBounds.height;
         }
+
         if (padding > 0) {
             graphics.setForegroundColor(font.getStyle().getBackground());
-            graphics.fillRect(x0, y, layoutTextBounds.width + padding * 2, boxHeight);
+            graphics.fillRect(x0, y, boxWidth + padding * 2, boxHeight);
+        }
+
+        int textStartX = x;
+        if (icon != null) {
+            graphics.drawPixMap(icon.colorize(font.getStyle().getForeground(), font.getStyle().getBackground()), x, y);
+            textStartX += icon.getWidth();
         }
         graphics.setFont(font);
-        graphics.drawText(x, y, text);
+        graphics.drawText(textStartX, y, text);
     }
 
     public void setText(String text) {
@@ -91,6 +109,13 @@ public class TextWidget extends Widget {
     public void setPadding(int padding) {
         if (this.padding != padding) {
             this.padding = padding;
+            markDirty();
+        }
+    }
+
+    public void setIcon(@Nullable Icon icon) {
+        if (!Objects.equals(this.icon, icon)) {
+            this.icon = icon;
             markDirty();
         }
     }

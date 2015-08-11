@@ -2,6 +2,7 @@ package at.yawk.wm.json;
 
 import at.yawk.wm.style.FontDescriptor;
 import at.yawk.wm.style.NamedFontDescriptor;
+import at.yawk.wm.x.icon.IconDescriptor;
 import at.yawk.yarn.Component;
 import at.yawk.yarn.Provides;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -69,6 +70,12 @@ public class JacksonProvider {
             @Override
             public Object deserializeKey(String key, DeserializationContext ctxt) {
                 return new NamedFontDescriptor(key);
+            }
+        });
+        module.addKeyDeserializer(IconDescriptor.class, new KeyDeserializer() {
+            @Override
+            public Object deserializeKey(String key, DeserializationContext ctxt) {
+                return new IconDescriptor(key);
             }
         });
         yaml.registerModule(module);

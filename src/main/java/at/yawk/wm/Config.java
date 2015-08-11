@@ -6,6 +6,7 @@ import at.yawk.wm.tac.TacConfig;
 import at.yawk.wm.tac.launcher.LauncherConfig;
 import at.yawk.wm.tac.password.PasswordConfig;
 import at.yawk.wm.wallpaper.animate.AnimatedWallpaperConfig;
+import at.yawk.wm.x.icon.IconConfig;
 import at.yawk.yarn.Provides;
 import lombok.Data;
 
@@ -21,6 +22,7 @@ class Config {
     private PasswordConfig password;
     private AnimatedWallpaperConfig wallpaper;
     private at.yawk.paste.client.Config paste;
+    private IconConfig icon;
 
     @Provides
     public StyleConfig getStyle() {
@@ -55,5 +57,10 @@ class Config {
     @Provides
     public at.yawk.paste.client.Config getPaste() {
         return paste;
+    }
+
+    @Provides
+    public IconConfig getIcon() {
+        return icon;
     }
 }

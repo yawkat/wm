@@ -6,7 +6,7 @@ style:
       foreground: '#ffffff'
       italic: false
       bold: false
-      size: 15
+      size: 14
       family:
         name: "Source Code Pro"
     # Text Colors
@@ -58,6 +58,10 @@ style:
     tac_secondary_selected:
       parent: tac_secondary
       background: '#073642' # base02
+icon:
+  cacheDir: .cache/icon/
+  icons:
+    cpu: material-design-icons/hardware/1x_web/ic_memory_white_18dp.png
 
 # Modules
 dock:
@@ -68,6 +72,7 @@ dock:
   batteryTransition:
     low: red
     high: green
+  cpuIcon: cpu
   cpuTransition:
     low: green
     high: red

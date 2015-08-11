@@ -1,8 +1,8 @@
 package at.yawk.wm.wallpaper.animate;
 
+import at.yawk.wm.Util;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -12,7 +12,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
-import javax.imageio.ImageIO;
 import lombok.Value;
 
 /**
@@ -53,7 +52,7 @@ class AnimationBuilder {
      * The number represents the milliseconds when to show the frame. Every image must have the same size.
      */
     public static AnimatedWallpaper loadDirectory(Path animationDirectory) throws IOException {
-        BufferedImage base = loadImage(animationDirectory.resolve("base.png"));
+        BufferedImage base = Util.loadImage(animationDirectory.resolve("base.png"));
 
         AnimatedWallpaper wallpaper = new AnimatedWallpaper();
         wallpaper.setBaseFrame(createFrame(base, null, 0, 0, base.getWidth(), base.getHeight()));
@@ -68,7 +67,7 @@ class AnimationBuilder {
             Matcher matcher = framePattern.matcher(path.getFileName().toString());
             if (matcher.matches()) {
                 long time = Long.parseUnsignedLong(matcher.group(2));
-                ImageHolder holder = new ImageHolder(time, loadImage(path));
+                ImageHolder holder = new ImageHolder(time, Util.loadImage(path));
                 (matcher.group(1).equals("start") ? start : stop).add(holder);
             }
         }
@@ -115,12 +114,6 @@ class AnimationBuilder {
 
     private static long gcd(long a, long b) {
         return b == 0 ? a : gcd(b, a % b);
-    }
-
-    private static BufferedImage loadImage(Path path) throws IOException {
-        try (InputStream in = Files.newInputStream(path)) {
-            return ImageIO.read(in);
-        }
     }
 
     /**

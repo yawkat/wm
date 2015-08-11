@@ -53,12 +53,12 @@ public class ByteArrayImage extends LocalImage {
 
     @Override
     public void setG(int x, int y, byte g) {
-        bytes[baseOffset(x, y)] = g;
+        bytes[baseOffset(x, y) + 1] = g;
     }
 
     @Override
     public void setB(int x, int y, byte b) {
-        bytes[baseOffset(x, y)] = b;
+        bytes[baseOffset(x, y) + 2] = b;
     }
 
     @SuppressWarnings("unchecked")

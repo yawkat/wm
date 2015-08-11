@@ -2,6 +2,7 @@ package at.yawk.wm.dock.module;
 
 import at.yawk.wm.style.FontDescriptor;
 import at.yawk.wm.style.FontTransition;
+import at.yawk.wm.x.icon.IconDescriptor;
 import java.awt.*;
 import lombok.Data;
 
@@ -18,6 +19,7 @@ public class DockConfig {
     private FontTransition batteryTransition;
 
     private FontTransition cpuTransition;
+    private IconDescriptor cpuIcon;
     private FontTransition memoryTransition;
     private FontTransition swapTransition;
 

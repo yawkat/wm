@@ -25,11 +25,11 @@ public class BufferedLocalImage extends LocalImage {
 
     @Override
     public int getRgb(int x, int y) {
-        return image.getRGB(x, y);
+        return image.getRGB(x, y) & 0xffffff;
     }
 
     @Override
     public void setRgb(int x, int y, int rgb) {
-        image.setRGB(x, y, rgb);
+        image.setRGB(x, y, rgb | 0xff000000);
     }
 }

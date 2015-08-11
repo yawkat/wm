@@ -7,6 +7,7 @@ import at.yawk.wm.dock.module.DockWidget;
 import at.yawk.wm.dock.module.FontSource;
 import at.yawk.wm.dock.module.Periodic;
 import at.yawk.wm.style.FontManager;
+import at.yawk.wm.x.icon.IconManager;
 import at.yawk.yarn.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
@@ -27,10 +29,16 @@ public class CpuWidget extends TextWidget {
     @Inject DockConfig dockConfig;
     @Inject FontSource fontSource;
     @Inject FontManager fontManager;
+    @Inject IconManager iconManager;
 
     private final MovingAverage cpuUsage = new MovingAverage(0.8);
     private long lastTime = 0;
     private long lastShares = 0;
+
+    @PostConstruct
+    void initIcon() {
+        setIcon(iconManager.getIconOrNull(dockConfig.getCpuIcon()));
+    }
 
     @Periodic(value = 1, render = true)
     void update() throws IOException {

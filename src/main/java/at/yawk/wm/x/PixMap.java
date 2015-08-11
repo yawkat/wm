@@ -6,7 +6,7 @@ import org.freedesktop.xcb.LibXcb;
 /**
  * @author yawkat
  */
-public class PixMap extends AbstractResource {
+public class PixMap extends AbstractResource implements PixMapArea {
     final XcbConnector connector;
     final ColorMap colorMap;
     final int id;
@@ -43,5 +43,10 @@ public class PixMap extends AbstractResource {
         GraphicsImpl graphics = new GraphicsImpl(this);
         resources.register(graphics);
         return connector.wrapGraphics(graphics);
+    }
+
+    @Override
+    public PixMapArea getArea(int x, int y, int width, int height) {
+        return new PixMapAreaImpl(this, x, y, width, height);
     }
 }

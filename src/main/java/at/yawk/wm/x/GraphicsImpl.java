@@ -161,6 +161,19 @@ class GraphicsImpl extends AbstractResource implements Graphics {
     }
 
     @Override
+    public Graphics drawPixMap(PixMapArea area, int x, int y) {
+        if (area instanceof PixMap) {
+            PixMap map = (PixMap) area;
+            return drawPixMap(map, 0, 0, x, y, (map).getWidth(), (map).getHeight());
+        } else if (area instanceof PixMapAreaImpl) {
+            PixMapAreaImpl impl = (PixMapAreaImpl) area;
+            return drawPixMap(impl.getPixMap(), impl.getX(), impl.getY(), x, y, impl.getWidth(), impl.getHeight());
+        } else {
+            throw new UnsupportedOperationException("Unsupported area type " + area.getClass().getName());
+        }
+    }
+
+    @Override
     public Graphics drawPixMap(PixMap pixMap, int srcX, int srcY, int destX, int destY, int width, int height) {
         flushFlags();
         LibXcb.xcb_copy_area(

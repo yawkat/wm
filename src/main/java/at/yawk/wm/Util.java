@@ -1,7 +1,13 @@
 package at.yawk.wm;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import javax.imageio.ImageIO;
 
 /**
  * @author yawkat
@@ -78,5 +84,11 @@ public class Util {
             return true;
         }
         return false;
+    }
+
+    public static BufferedImage loadImage(Path path) throws IOException {
+        try (InputStream in = Files.newInputStream(path)) {
+            return ImageIO.read(in);
+        }
     }
 }

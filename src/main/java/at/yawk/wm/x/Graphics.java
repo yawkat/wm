@@ -22,6 +22,8 @@ public interface Graphics extends Resource {
 
     Graphics clearRect(int x, int y, int width, int height);
 
+    Graphics drawPixMap(PixMapArea area, int x, int y);
+
     Graphics drawPixMap(PixMap pixMap, int srcX, int srcY, int destX, int destY, int width, int height);
 
     /**
