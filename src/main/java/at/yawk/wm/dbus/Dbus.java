@@ -8,6 +8,7 @@ import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.function.Function;
 import javax.annotation.Nullable;
+import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Dbus {
     private final DbusCaller caller = new DbusCaller();
+    private final DEventBus eventBus = new DEventBus();
 
     @Provides
     MediaPlayer mediaPlayer() {
@@ -26,6 +28,12 @@ public class Dbus {
     @Provides
     NetworkManager networkManager() {
         return implement(NetworkManager.class);
+    }
+
+    @PostConstruct
+    void startListeners() {
+        caller.startListener(Bus.SYSTEM, eventBus);
+        caller.startListener(Bus.USER, eventBus);
     }
 
     @SuppressWarnings("unchecked")
@@ -43,17 +51,27 @@ public class Dbus {
 
     private Function<Object[], Object> implement(Method method) {
         Destination destination = getAnnotation(method, Destination.class);
-        String objectPath = getAnnotation(method, ObjectPath.class).value();
+        ObjectPath objectPathAnnotation = getAnnotation(method, ObjectPath.class);
+        String objectPath = objectPathAnnotation.value();
+        String interfaceName = getAnnotation(method, Interface.class).value();
+        Bus bus = objectPathAnnotation.bus();
+
+        DbusSignal signal = findAnnotation(method, DbusSignal.class);
+        if (signal != null) {
+            return args -> {
+                Runnable listener = (Runnable) args[0];
+                eventBus.subscribe(new DEventBus.EndPoint(bus, objectPath, interfaceName, signal.value()), listener);
+                return null;
+            };
+        }
+
         List<String> baseList = new ArrayList<>();
         baseList.add("nice");
         baseList.add("dbus-send");
         baseList.add("--print-reply=literal");
         baseList.add("--dest=" + destination.value());
-        if (destination.system()) {
-            baseList.add("--system");
-        }
+        Collections.addAll(baseList, bus.flags);
 
-        String interfaceName = getAnnotation(method, Interface.class).value();
 
         DbusMethod dbusMethod = findAnnotation(method, DbusMethod.class);
         if (dbusMethod != null) {
@@ -61,19 +79,12 @@ public class Dbus {
             baseList.add(objectPath);
             baseList.add(interfaceName + '.' + dbusMethod.value());
         } else {
-            DbusSignal dbusSignal = findAnnotation(method, DbusSignal.class);
-            if (dbusSignal != null) {
-                baseList.add("--type=signal");
-                baseList.add(objectPath);
-                baseList.add(interfaceName + '.' + dbusSignal.value());
-            } else {
-                String property = getAnnotation(method, DbusProperty.class).value();
-                baseList.add("--type=method_call");
-                baseList.add(objectPath);
-                baseList.add("org.freedesktop.DBus.Properties.Get");
-                baseList.add("string:" + interfaceName);
-                baseList.add("string:" + property);
-            }
+            String property = getAnnotation(method, DbusProperty.class).value();
+            baseList.add("--type=method_call");
+            baseList.add(objectPath);
+            baseList.add("org.freedesktop.DBus.Properties.Get");
+            baseList.add("string:" + interfaceName);
+            baseList.add("string:" + property);
         }
 
         return args -> {

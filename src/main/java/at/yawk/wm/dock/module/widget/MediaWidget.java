@@ -34,43 +34,23 @@ public class MediaWidget extends FlowCompositeWidget {
         playing.setColor(fontManager.resolve(config.getMediaFont()));
         playing.after(getAnchor(), Direction.HORIZONTAL);
         addWidget(playing);
+
+        mediaPlayer.onPropertiesChanged(() -> {
+            update();
+            renderElf.render();
+        });
     }
 
     @Inject
     void bindKeys(HerbstClient herbstClient) {
-        herbstClient.addKeyHandler("Mod4-Pause", this::playPause);
-        herbstClient.addKeyHandler("Mod4-Insert", this::previous);
-        herbstClient.addKeyHandler("Mod4-Delete", this::next);
+        herbstClient.addKeyHandler("Mod4-Pause", mediaPlayer::playPause);
+        herbstClient.addKeyHandler("Mod4-Insert", mediaPlayer::previous);
+        herbstClient.addKeyHandler("Mod4-Delete", mediaPlayer::next);
 
-        herbstClient.addKeyHandler("XF86AudioPlay", this::playPause);
-        herbstClient.addKeyHandler("XF86AudioStop", this::stop);
-        herbstClient.addKeyHandler("XF86AudioPrevious", this::previous);
-        herbstClient.addKeyHandler("XF86AudioNext", this::next);
-    }
-
-    private void playPause() {
-        mediaPlayer.playPause();
-        asyncUpdate();
-    }
-
-    private void next() {
-        mediaPlayer.next();
-        asyncUpdate();
-    }
-
-    private void previous() {
-        mediaPlayer.previous();
-        asyncUpdate();
-    }
-
-    private void stop() {
-        mediaPlayer.stop();
-        asyncUpdate();
-    }
-
-    private void asyncUpdate() {
-        update();
-        renderElf.render();
+        herbstClient.addKeyHandler("XF86AudioPlay", mediaPlayer::playPause);
+        herbstClient.addKeyHandler("XF86AudioStop", mediaPlayer::stop);
+        herbstClient.addKeyHandler("XF86AudioPrevious", mediaPlayer::previous);
+        herbstClient.addKeyHandler("XF86AudioNext", mediaPlayer::next);
     }
 
     @Periodic(value = 10, render = true)

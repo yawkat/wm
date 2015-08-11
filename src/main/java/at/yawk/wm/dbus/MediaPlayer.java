@@ -24,4 +24,8 @@ public interface MediaPlayer {
 
     @DbusProperty("LoopStatus")
     String getLoopStatus();
+
+    @Interface("org.freedesktop.DBus.Properties")
+    @DbusSignal("PropertiesChanged")
+    void onPropertiesChanged(Runnable listener);
 }

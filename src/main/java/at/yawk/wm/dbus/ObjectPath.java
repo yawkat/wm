@@ -10,4 +10,6 @@ import java.lang.annotation.*;
 @Inherited
 public @interface ObjectPath {
     String value();
+
+    Bus bus() default Bus.USER;
 }

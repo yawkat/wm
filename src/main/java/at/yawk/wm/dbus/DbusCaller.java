@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,6 +14,43 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 class DbusCaller {
+    void startListener(Bus bus, DEventBus target) {
+        Thread thread = new Thread(() -> {
+            try {
+                listen(bus, target);
+            } catch (IOException e) {
+                log.error("Failed to listen to dbus {}", bus, e);
+            }
+        });
+        thread.setName("DBus listener " + bus);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    void listen(Bus bus, DEventBus target) throws IOException {
+        List<String> args = new ArrayList<>();
+        args.add("dbus-monitor");
+        args.add("--profile");
+        Collections.addAll(args, bus.flags);
+        Process process = new ProcessBuilder(args)
+                .redirectOutput(ProcessBuilder.Redirect.PIPE)
+                .redirectError(ProcessBuilder.Redirect.PIPE)
+                .start();
+
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            String line;
+            while ((line = in.readLine()) != null) {
+                String[] parts = line.split("\t");
+                if (parts.length < 7) { continue; }
+                DEventBus.EndPoint ep = new DEventBus.EndPoint(bus, parts[4], parts[5], parts[6]);
+                log.trace("Received {}", ep);
+                target.postUpdate(ep);
+            }
+        }
+
+        copyErrToLog(process);
+    }
+
     String call(List<String> args) {
         if (log.isTraceEnabled()) { log.trace("Calling {}", String.join(" ", args)); }
         try {

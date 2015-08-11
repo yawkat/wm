@@ -3,8 +3,8 @@ package at.yawk.wm.dbus;
 /**
  * @author yawkat
  */
-@Destination(value = "org.freedesktop.NetworkManager", system = true)
-@ObjectPath("/org/freedesktop/NetworkManager")
+@Destination("org.freedesktop.NetworkManager")
+@ObjectPath(value = "/org/freedesktop/NetworkManager", bus = Bus.SYSTEM)
 @Interface("org.freedesktop.NetworkManager")
 public interface NetworkManager {
     @DbusProperty("Connectivity")
