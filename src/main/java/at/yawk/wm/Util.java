@@ -9,26 +9,28 @@ import java.util.List;
 public class Util {
     private Util() {}
 
+    /**
+     * @param tryMaxCount The maximum output length
+     */
     public static List<String> split(String input, char delimiter, int tryMaxCount) {
         List<String> found = new ArrayList<>(tryMaxCount > 4 ? 4 : tryMaxCount);
-        StringBuilder builder = new StringBuilder();
-        int i = 0;
-        for (; i < input.length(); i++) {
+        StringBuilder currentEntry = new StringBuilder();
+        for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
             if (c == delimiter) {
-                if (builder.length() != 0) {
-                    found.add(builder.toString());
-                    builder.setLength(0);
+                if (currentEntry.length() != 0) {
+                    found.add(currentEntry.toString());
+                    currentEntry.setLength(0);
                     if (found.size() >= tryMaxCount) {
                         break;
                     }
                 }
             } else {
-                builder.append(c);
+                currentEntry.append(c);
             }
         }
-        if (found.size() < tryMaxCount && builder.length() > 0) {
-            found.add(builder.toString());
+        if (found.size() < tryMaxCount && currentEntry.length() > 0) {
+            found.add(currentEntry.toString());
         }
         return found;
     }
