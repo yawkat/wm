@@ -3,11 +3,14 @@ package at.yawk.wm.dock.module.widget;
 import at.yawk.wm.Util;
 import at.yawk.wm.dock.Direction;
 import at.yawk.wm.dock.FlowCompositeWidget;
+import at.yawk.wm.dock.IconWidget;
 import at.yawk.wm.dock.TextWidget;
 import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.dock.module.DockWidget;
 import at.yawk.wm.dock.module.FontSource;
 import at.yawk.wm.dock.module.Periodic;
+import at.yawk.wm.style.FontManager;
+import at.yawk.wm.x.icon.IconManager;
 import at.yawk.yarn.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,23 +24,35 @@ import javax.inject.Inject;
 @Component
 @DockWidget(position = DockWidget.Position.RIGHT, priority = 50)
 public class NetworkWidget extends FlowCompositeWidget {
+    @Inject IconManager iconManager;
+    @Inject DockConfig config;
+
     private TextWidget down;
+    private IconWidget iconWidget;
     private TextWidget up;
 
     private final MovingAverage downAverage = new MovingAverage(0.8);
     private final MovingAverage upAverage = new MovingAverage(0.8);
 
     @Inject
-    void init(DockConfig config, FontSource fontSource) {
+    void init(FontSource fontSource, FontManager fontManager) {
         up = new TextWidget();
         up.setFont(fontSource.getFont(config.getNetUpFont()));
         up.after(getAnchor(), Direction.HORIZONTAL);
         addWidget(up);
 
+        iconWidget = new IconWidget();
+        iconWidget.setColor(fontManager.resolve(config.getNetIconFont()));
+        iconWidget.after(up, Direction.HORIZONTAL);
+        addWidget(iconWidget);
+
         down = new TextWidget();
         down.setFont(fontSource.getFont(config.getNetDownFont()));
-        down.after(up, Direction.HORIZONTAL);
+        down.after(iconWidget, Direction.HORIZONTAL);
         addWidget(down);
+
+        down.setPaddingRight(2);
+        up.setPaddingLeft(2);
     }
 
     @Periodic(value = 1, render = true)
@@ -65,6 +80,9 @@ public class NetworkWidget extends FlowCompositeWidget {
 
         down.setText(format(downAverage.getAverage()));
         up.setText(format(upAverage.getAverage()));
+
+        boolean online = upOctets != 0 || downOctets != 0;
+        iconWidget.setIcon(iconManager.getIconOrNull(online ? config.getNetIconOnline() : config.getNetIconOffline()));
     }
 
     private static String format(double traffic) {

@@ -62,6 +62,23 @@ icon:
   cacheDir: .cache/icon/
   icons:
     cpu: material-design-icons/hardware/1x_web/ic_memory_white_18dp.png
+    battery_0: material-design-icons/device/1x_web/ic_battery_alert_white_18dp.png
+    battery_20: material-design-icons/device/1x_web/ic_battery_20_white_18dp.png
+    battery_30: material-design-icons/device/1x_web/ic_battery_30_white_18dp.png
+    battery_50: material-design-icons/device/1x_web/ic_battery_50_white_18dp.png
+    battery_60: material-design-icons/device/1x_web/ic_battery_60_white_18dp.png
+    battery_80: material-design-icons/device/1x_web/ic_battery_80_white_18dp.png
+    battery_90: material-design-icons/device/1x_web/ic_battery_90_white_18dp.png
+    battery_100: material-design-icons/device/1x_web/ic_battery_full_white_18dp.png
+    battery_20_charging: material-design-icons/device/1x_web/ic_battery_charging_20_white_18dp.png
+    battery_30_charging: material-design-icons/device/1x_web/ic_battery_charging_30_white_18dp.png
+    battery_50_charging: material-design-icons/device/1x_web/ic_battery_charging_50_white_18dp.png
+    battery_60_charging: material-design-icons/device/1x_web/ic_battery_charging_60_white_18dp.png
+    battery_80_charging: material-design-icons/device/1x_web/ic_battery_charging_80_white_18dp.png
+    battery_90_charging: material-design-icons/device/1x_web/ic_battery_charging_90_white_18dp.png
+    battery_100_charging: material-design-icons/device/1x_web/ic_battery_charging_full_white_18dp.png
+    net_online: material-design-icons/action/1x_web/ic_settings_ethernet_white_18dp.png
+    net_offline: material-design-icons/av/1x_web/ic_not_interested_white_18dp.png
 
 # Modules
 dock:
@@ -72,6 +89,23 @@ dock:
   batteryTransition:
     low: red
     high: green
+  chargingIcons:
+    0.2: battery_20_charging
+    0.3: battery_30_charging
+    0.5: battery_50_charging
+    0.6: battery_60_charging
+    0.8: battery_80_charging
+    0.9: battery_90_charging
+    1.0: battery_100_charging
+  dischargingIcons:
+    0.0: battery_0
+    0.2: battery_20
+    0.3: battery_30
+    0.5: battery_50
+    0.6: battery_60
+    0.8: battery_80
+    0.9: battery_90
+    1.0: battery_100
   cpuIcon: cpu
   cpuTransition:
     low: green
@@ -86,6 +120,9 @@ dock:
   clockFormat: "uuuu-MM-dd HH:mm:ss"
   netUpFont: yellow
   netDownFont: red
+  netIconFont: base0
+  netIconOnline: net_online
+  netIconOffline: net_online
   activeFont: highlight
   runningFont: base0
   emptyFont: base01

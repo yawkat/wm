@@ -4,6 +4,7 @@ import at.yawk.wm.style.FontDescriptor;
 import at.yawk.wm.style.FontTransition;
 import at.yawk.wm.x.icon.IconDescriptor;
 import java.awt.*;
+import java.util.Map;
 import lombok.Data;
 
 /**
@@ -17,6 +18,8 @@ public class DockConfig {
 
     private FontDescriptor batteryTime;
     private FontTransition batteryTransition;
+    private Map<Float, IconDescriptor> chargingIcons;
+    private Map<Float, IconDescriptor> dischargingIcons;
 
     private FontTransition cpuTransition;
     private IconDescriptor cpuIcon;
@@ -28,6 +31,9 @@ public class DockConfig {
 
     private FontDescriptor netUpFont;
     private FontDescriptor netDownFont;
+    private FontDescriptor netIconFont;
+    private IconDescriptor netIconOnline;
+    private IconDescriptor netIconOffline;
 
     private FontDescriptor activeFont;
     private FontDescriptor runningFont;

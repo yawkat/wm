@@ -30,8 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class IconManager {
-    private static final int HEADER_ITEM_LENGTH = 2;
-
     @Inject IconConfig config;
     @Inject Screen screen;
 
@@ -56,7 +54,7 @@ public class IconManager {
                 .iterator();
         int i = 0;
         while (iterator.hasNext()) {
-            descriptorIndices.put(iterator.next().getKey(), i);
+            descriptorIndices.put(iterator.next().getKey(), i++);
         }
 
         int descriptorCount = config.getIcons().size();
@@ -198,12 +196,12 @@ public class IconManager {
 
             @Override
             public int getWidth() {
-                return getPixMap(Color.WHITE, Color.BLACK).getWidth();
+                return width;
             }
 
             @Override
             public int getHeight() {
-                return getPixMap(Color.WHITE, Color.BLACK).getHeight();
+                return height;
             }
         };
     }

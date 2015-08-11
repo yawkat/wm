@@ -18,7 +18,8 @@ public class TextWidget extends Widget {
     @Nullable private Icon icon;
     private GlyphFont font;
     private int textHeight = 0;
-    private int padding = 4;
+    private int paddingLeft = 4;
+    private int paddingRight = 4;
 
     public TextWidget() {
         this("");
@@ -53,7 +54,7 @@ public class TextWidget extends Widget {
             boxHeight = textHeight;
         }
 
-        setWidth(boxWidth + padding * 2);
+        setWidth(boxWidth + paddingLeft + paddingRight);
         setHeight(boxHeight);
     }
 
@@ -63,7 +64,7 @@ public class TextWidget extends Widget {
         String text = this.text;
 
         int x0 = Math.min(getX(), getX2());
-        int x = x0 + padding;
+        int x = x0 + paddingLeft;
         int y = Math.min(getY(), getY2());
 
         if (textHeight != 0) {
@@ -71,9 +72,9 @@ public class TextWidget extends Widget {
             y += (textHeight - layoutTextBounds.height) / 2;
         }
 
-        if (padding > 0) {
+        if (paddingLeft > 0 || paddingRight > 0) {
             graphics.setForegroundColor(font.getStyle().getBackground());
-            graphics.fillRect(x0, y, boxWidth + padding * 2, boxHeight);
+            graphics.fillRect(x0, y, boxWidth + paddingLeft + paddingRight, boxHeight);
         }
 
         int textStartX = x;
@@ -106,9 +107,16 @@ public class TextWidget extends Widget {
         }
     }
 
-    public void setPadding(int padding) {
-        if (this.padding != padding) {
-            this.padding = padding;
+    public void setPaddingLeft(int paddingLeft) {
+        if (this.paddingLeft != paddingLeft) {
+            this.paddingLeft = paddingLeft;
+            markDirty();
+        }
+    }
+
+    public void setPaddingRight(int paddingRight) {
+        if (this.paddingRight != paddingRight) {
+            this.paddingRight = paddingRight;
             markDirty();
         }
     }

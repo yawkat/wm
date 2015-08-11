@@ -47,6 +47,8 @@ public class DockBuilder implements RenderElf {
     private void decorate(Widget widget) {
         if (widget instanceof TextWidget) {
             ((TextWidget) widget).setTextHeight(config.getHeight());
+        } else if (widget instanceof IconWidget) {
+            ((IconWidget) widget).setTargetHeight(config.getHeight());
         } else if (widget instanceof FlowCompositeWidget) {
             ((FlowCompositeWidget) widget).getWidgets().forEach(this::decorate);
         }
