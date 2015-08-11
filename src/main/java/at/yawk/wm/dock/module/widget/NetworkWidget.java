@@ -6,10 +6,7 @@ import at.yawk.wm.dock.Direction;
 import at.yawk.wm.dock.FlowCompositeWidget;
 import at.yawk.wm.dock.IconWidget;
 import at.yawk.wm.dock.TextWidget;
-import at.yawk.wm.dock.module.DockConfig;
-import at.yawk.wm.dock.module.DockWidget;
-import at.yawk.wm.dock.module.FontSource;
-import at.yawk.wm.dock.module.Periodic;
+import at.yawk.wm.dock.module.*;
 import at.yawk.wm.style.FontManager;
 import at.yawk.wm.x.icon.IconManager;
 import at.yawk.yarn.Component;
@@ -28,6 +25,7 @@ public class NetworkWidget extends FlowCompositeWidget {
     @Inject IconManager iconManager;
     @Inject DockConfig config;
     @Inject NetworkManager networkManager;
+    @Inject RenderElf renderElf;
 
     private TextWidget down;
     private IconWidget iconWidget;
@@ -55,6 +53,11 @@ public class NetworkWidget extends FlowCompositeWidget {
 
         down.setPaddingRight(2);
         up.setPaddingLeft(2);
+
+        networkManager.onStateChanged(() -> {
+            updateOnline();
+            renderElf.render();
+        });
     }
 
     @Periodic(value = 1, render = true)
@@ -82,11 +85,9 @@ public class NetworkWidget extends FlowCompositeWidget {
 
         down.setText(format(downAverage.getAverage()));
         up.setText(format(upAverage.getAverage()));
-
-        updateOnline();
     }
 
-    @Periodic(value = 10, render = true)
+    @Periodic(value = 30, render = true)
     void updateOnline() {
         boolean online = networkManager.getConnectivity() > 1;
         iconWidget.setIcon(iconManager.getIconOrNull(online ? config.getNetIconOnline() : config.getNetIconOffline()));

@@ -9,4 +9,7 @@ package at.yawk.wm.dbus;
 public interface NetworkManager {
     @DbusProperty("Connectivity")
     int getConnectivity();
+
+    @DbusSignal("StateChanged")
+    void onStateChanged(Runnable listener);
 }

@@ -53,7 +53,7 @@ public class MediaWidget extends FlowCompositeWidget {
         herbstClient.addKeyHandler("XF86AudioNext", mediaPlayer::next);
     }
 
-    @Periodic(value = 10, render = true)
+    @Periodic(value = 30, render = true)
     void update() {
         IconDescriptor icon;
         if (mediaPlayer.getPlaybackStatus().equals("Playing")) {

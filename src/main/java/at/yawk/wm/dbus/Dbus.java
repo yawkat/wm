@@ -140,6 +140,8 @@ public class Dbus {
     }
 
     private static Object mapResponse(String response) {
+        if (response == null) { return null; }
+
         if (response.startsWith("int16")) {
             return Short.parseShort(getResponseBody(response));
         } else if (response.startsWith("int16")) {
