@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -181,29 +182,9 @@ public class IconManager {
     }
 
     public Icon getIcon(IconDescriptor descriptor) {
-        Integer indexObject = descriptorIndices.get(descriptor);
-        if (indexObject == null) { throw new NoSuchElementException(descriptor.getId()); }
-        int index = indexObject;
-
-        short width = descriptorWidths[index];
-        short height = descriptorHeights[index];
-        int xOffset = descriptorOffsets[index];
-        return new Icon() {
-            @Override
-            public PixMapArea colorize(Color foreground, Color background) {
-                return getPixMap(foreground, background).getArea(xOffset, 0, width, height);
-            }
-
-            @Override
-            public int getWidth() {
-                return width;
-            }
-
-            @Override
-            public int getHeight() {
-                return height;
-            }
-        };
+        Integer index = descriptorIndices.get(descriptor);
+        if (index == null) { throw new NoSuchElementException(descriptor.getId()); }
+        return new IconImpl(index);
     }
 
     @Value
@@ -212,4 +193,31 @@ public class IconManager {
         private final Color background;
     }
 
+    @EqualsAndHashCode
+    private class IconImpl implements Icon {
+        private final int xOffset;
+        private final short width;
+        private final short height;
+
+        public IconImpl(int index) {
+            width = descriptorWidths[index];
+            height = descriptorHeights[index];
+            xOffset = descriptorOffsets[index];
+        }
+
+        @Override
+        public PixMapArea colorize(Color foreground, Color background) {
+            return getPixMap(foreground, background).getArea(xOffset, 0, width, height);
+        }
+
+        @Override
+        public int getWidth() {
+            return width;
+        }
+
+        @Override
+        public int getHeight() {
+            return height;
+        }
+    }
 }

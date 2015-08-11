@@ -10,6 +10,15 @@ public interface MediaPlayer {
     @DbusMethod("PlayPause")
     void playPause();
 
+    @DbusMethod("Stop")
+    void stop();
+
+    @DbusMethod("Previous")
+    void previous();
+
+    @DbusMethod("Next")
+    void next();
+
     @DbusProperty("PlaybackStatus")
     String getPlaybackStatus();
 

@@ -79,6 +79,8 @@ icon:
     battery_100_charging: material-design-icons/device/1x_web/ic_battery_charging_full_white_18dp.png
     net_online: material-design-icons/action/1x_web/ic_settings_ethernet_white_18dp.png
     net_offline: material-design-icons/av/1x_web/ic_not_interested_white_18dp.png
+    playing: material-design-icons/av/1x_web/ic_pause_white_18dp.png
+    paused: material-design-icons/av/1x_web/ic_play_arrow_white_18dp.png
 
 # Modules
 dock:
@@ -128,6 +130,9 @@ dock:
   emptyFont: base01
   windowTitleFont: base01
   progressColor: '#93a1a1'
+  mediaFont: base0
+  mediaPlaying: playing
+  mediaPaused: paused
 tac:
   fontPrimary: tac_primary
   fontPrimarySelected: tac_primary_selected

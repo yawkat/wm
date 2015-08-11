@@ -43,5 +43,9 @@ public class DockConfig {
 
     private Color progressColor;
 
+    private FontDescriptor mediaFont;
+    private IconDescriptor mediaPlaying;
+    private IconDescriptor mediaPaused;
+
     private int height;
 }

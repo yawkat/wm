@@ -20,8 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class Dbus {
-    private static final String DBUS_EXECUTABLE = "dbus-send";
-
     @Provides
     MediaPlayer mediaPlayer() {
         return implement(MediaPlayer.class);
@@ -50,7 +48,7 @@ public class Dbus {
         DbusMethod dbusMethod = findAnnotation(method, DbusMethod.class);
         if (dbusMethod != null) {
             baseList = Arrays.asList(
-                    DBUS_EXECUTABLE,
+                    "nice", "dbus-send",
                     "--type=method_call",
                     "--print-reply=literal",
                     "--dest=" + destination,
@@ -61,7 +59,7 @@ public class Dbus {
             DbusSignal dbusSignal = findAnnotation(method, DbusSignal.class);
             if (dbusSignal != null) {
                 baseList = Arrays.asList(
-                        DBUS_EXECUTABLE,
+                        "nice", "dbus-send",
                         "--type=signal",
                         "--print-reply=literal",
                         "--dest=" + destination,
@@ -71,7 +69,7 @@ public class Dbus {
             } else {
                 String property = getAnnotation(method, DbusProperty.class).value();
                 baseList = Arrays.asList(
-                        DBUS_EXECUTABLE,
+                        "nice", "dbus-send",
                         "--type=method_call",
                         "--print-reply=literal",
                         "--dest=" + destination,
@@ -136,7 +134,7 @@ public class Dbus {
     }
 
     private String call(List<String> args) {
-        if (log.isDebugEnabled()) { log.debug("Calling {}", String.join(" ", args)); }
+        if (log.isTraceEnabled()) { log.trace("Calling {}", String.join(" ", args)); }
         try {
             Process process = new ProcessBuilder(args)
                     .redirectOutput(ProcessBuilder.Redirect.PIPE)
