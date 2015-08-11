@@ -13,10 +13,14 @@ public class Screen {
     final xcb_screen_t screen;
 
     private final ResourceSet resources = new ResourceSet();
+    private final Window rootWindow;
 
     Screen(XcbConnector connector, xcb_screen_t screen) {
         this.connector = connector;
         this.screen = screen;
+
+        rootWindow = new RootWindow(this);
+        resources.register(rootWindow);
     }
 
     public ColorMap createColorMap() {
@@ -38,7 +42,7 @@ public class Screen {
     }
 
     public Window getRootWindow() {
-        return new RootWindow(this);
+        return rootWindow;
     }
 
     public int getWidth() {

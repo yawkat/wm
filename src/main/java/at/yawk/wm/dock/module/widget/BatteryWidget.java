@@ -135,7 +135,7 @@ public class BatteryWidget extends FlowCompositeWidget {
                 widget.setText(text);
                 widget.setFont(fontSource.getFont(style));
                 widget.setIcon(icon);
-                widget.setPaddingLeft(icon == null ? 4 : -1);
+                widget.setPaddingLeft(icon == null ? 4 : 0);
 
                 i++;
             }
