@@ -1,9 +1,6 @@
 package at.yawk.wm.dock.module.widget;
 
-import at.yawk.wm.dock.Direction;
-import at.yawk.wm.dock.FlowCompositeWidget;
-import at.yawk.wm.dock.TextWidget;
-import at.yawk.wm.dock.Widget;
+import at.yawk.wm.dock.*;
 import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.dock.module.DockWidget;
 import at.yawk.wm.dock.module.FontSource;
@@ -18,13 +15,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.time.Duration;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
+import lombok.Data;
 
 /**
  * @author yawkat
@@ -44,6 +40,8 @@ public class BatteryWidget extends FlowCompositeWidget {
     @Inject FontManager fontManager;
     @Inject IconManager iconManager;
 
+    private List<DeviceHolder> devices = new ArrayList<>();
+
     private Icon findChargeIcon(boolean charging, float charge) {
         Map<Float, IconDescriptor> iconSet =
                 charging ? config.getChargingIcons() : config.getDischargingIcons();
@@ -56,30 +54,31 @@ public class BatteryWidget extends FlowCompositeWidget {
 
     @Periodic(20)
     void updateBattery() throws IOException {
-        int i = 0;
+        List<BatteryState> batteries = new ArrayList<>();
+
         Process process = new ProcessBuilder()
                 .command("upower", "-d")
                 .start();
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
 
-            boolean showCurrentDevice = true;
-            // just hope that the percentage appears before the time
-            float charge = 0;
+            BatteryState currentBattery = null;
 
             String line;
             while ((line = reader.readLine()) != null) {
-                Icon icon = null;
-                String text;
-                FontDescriptor style;
-
                 Matcher deviceMatcher = PATTERN_DEVICE.matcher(line);
                 if (deviceMatcher.matches()) {
-                    showCurrentDevice = !deviceMatcher.group(1).contains("DisplayDevice");
+                    if (currentBattery != null) {
+                        batteries.add(currentBattery);
+                        currentBattery = null;
+                    }
+                    if (!deviceMatcher.group(1).contains("DisplayDevice")) {
+                        currentBattery = new BatteryState();
+                    }
                     continue;
                 }
 
-                if (!showCurrentDevice) {
+                if (currentBattery == null) {
                     continue;
                 }
 
@@ -94,57 +93,96 @@ public class BatteryWidget extends FlowCompositeWidget {
                         durationF *= 60;
                     }
 
-                    int duration = Math.round(durationF);
-                    int minutes = (duration / 60) % 60;
-                    int hours = (duration / 60 / 60) % 60;
-
-                    StringBuilder builder = new StringBuilder();
-                    if (hours > 0) { builder.append(hours).append('h'); }
-                    builder.append(minutes).append('m');
-                    boolean charging = !durationMatcher.group(1).equals("empty");
-                    icon = findChargeIcon(charging, charge);
-
-                    text = builder.toString();
-                    style = config.getBatteryTime();
+                    currentBattery.setRemaining(Duration.ofSeconds(Math.round(durationF)));
+                    currentBattery.setCharging(!durationMatcher.group(1).equals("empty"));
                 } else {
                     Matcher percentageMatcher = PATTERN_PERCENTAGE.matcher(line);
                     if (percentageMatcher.matches()) {
                         int percentage = Integer.parseInt(percentageMatcher.group(1));
-                        charge = percentage / 100F;
-                        style = fontManager.compute(config.getBatteryTransition(), charge);
-                        text = percentage + "%";
+                        currentBattery.setCharge(percentage / 100F);
                     } else {
                         continue;
                     }
                 }
+            }
 
-                TextWidget widget;
-                if (i >= getWidgets().size()) {
-                    widget = new TextWidget();
-                    widget.setTextHeight(config.getHeight());
-                    if (getWidgets().isEmpty()) {
-                        widget.after(getAnchor(), Direction.HORIZONTAL);
-                    } else {
-                        widget.after(getWidgets().get(getWidgets().size() - 1), Direction.HORIZONTAL);
-                    }
-                    addWidget(widget);
-                } else {
-                    widget = (TextWidget) getWidgets().get(i);
-                }
-
-                widget.setText(text);
-                widget.setFont(fontSource.getFont(style));
-                widget.setIcon(icon);
-                widget.setPaddingLeft(icon == null ? 4 : 0);
-
-                i++;
+            if (currentBattery != null) {
+                batteries.add(currentBattery);
             }
         }
 
-        // remove newly unused widgets
-        if (i < getWidgets().size()) {
-            List<Widget> toRemove = new ArrayList<>(getWidgets().subList(i, getWidgets().size()));
-            toRemove.forEach(this::removeWidget);
+        Iterator<DeviceHolder> deviceIterator = devices.iterator();
+        for (BatteryState battery : batteries) {
+            DeviceHolder holder = deviceIterator.hasNext() ?
+                    deviceIterator.next() : new DeviceHolder();
+            holder.updateState(battery);
+        }
+
+        while (deviceIterator.hasNext()) {
+            deviceIterator.next().free();
+            deviceIterator.remove();
+        }
+    }
+
+    @Data
+    private static final class BatteryState {
+        private float charge;
+        private boolean charging = true; // if we get no duration info, we're charging at 100%
+        private Duration remaining = Duration.ZERO;
+    }
+
+    private class DeviceHolder {
+        final TextWidget percentage;
+        final TextWidget duration;
+        final IconWidget icon;
+
+        {
+            duration = new TextWidget();
+            duration.setFont(fontSource.getFont(config.getBatteryTime()));
+            Positioned anchor = devices.isEmpty() ?
+                    getAnchor() : devices.get(devices.size() - 1).icon;
+            duration.after(anchor, Direction.HORIZONTAL);
+            duration.setTextHeight(config.getHeight());
+            duration.setPaddingLeft(0);
+
+            percentage = new TextWidget();
+            percentage.after(duration, Direction.HORIZONTAL);
+            percentage.setTextHeight(config.getHeight());
+            percentage.setPaddingLeft(0);
+
+            icon = new IconWidget();
+            icon.setColor(fontManager.resolve(config.getBatteryTime()));
+            icon.after(percentage, Direction.HORIZONTAL);
+            icon.setTargetHeight(config.getHeight());
+
+            addWidget(duration);
+            addWidget(percentage);
+            addWidget(icon);
+        }
+
+        void updateState(BatteryState state) {
+            percentage.setText(Math.round(state.getCharge() * 100) + "%");
+            FontDescriptor transition = fontManager.compute(config.getBatteryTransition(), state.getCharge());
+            percentage.setFont(fontSource.getFont(transition));
+
+            StringBuilder durationStr = new StringBuilder();
+            long seconds = state.getRemaining().getSeconds();
+            if (seconds >= 60 * 60) {
+                durationStr.append(seconds / (60 * 60)).append('h');
+                seconds %= 60 * 60;
+            }
+            if (seconds >= 60) {
+                durationStr.append(seconds / 60).append('m');
+            }
+            duration.setText(durationStr.toString());
+
+            icon.setIcon(findChargeIcon(state.isCharging(), state.getCharge()));
+        }
+
+        void free() {
+            removeWidget(duration);
+            removeWidget(percentage);
+            removeWidget(icon);
         }
     }
 }
