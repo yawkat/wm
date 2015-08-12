@@ -30,6 +30,11 @@ public class Dbus {
         return implement(NetworkManager.class);
     }
 
+    @Provides
+    Power power() {
+        return implement(Power.class);
+    }
+
     @PostConstruct
     void startListeners() {
         caller.startListener(Bus.SYSTEM, eventBus);
@@ -144,7 +149,7 @@ public class Dbus {
 
         if (response.startsWith("int16")) {
             return Short.parseShort(getResponseBody(response));
-        } else if (response.startsWith("int16")) {
+        } else if (response.startsWith("uint16")) {
             return (short) Integer.parseUnsignedInt(getResponseBody(response));
         } else if (response.startsWith("int32")) {
             return Integer.parseInt(getResponseBody(response));

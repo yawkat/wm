@@ -1,5 +1,6 @@
 package at.yawk.wm.dock.module.widget;
 
+import at.yawk.wm.dbus.Power;
 import at.yawk.wm.dock.*;
 import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.dock.module.DockWidget;
@@ -11,14 +12,9 @@ import at.yawk.wm.x.icon.Icon;
 import at.yawk.wm.x.icon.IconDescriptor;
 import at.yawk.wm.x.icon.IconManager;
 import at.yawk.yarn.Component;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.inject.Inject;
 import lombok.Data;
 
@@ -28,17 +24,11 @@ import lombok.Data;
 @Component
 @DockWidget(position = DockWidget.Position.RIGHT, priority = -100)
 public class BatteryWidget extends FlowCompositeWidget {
-    private static final Pattern PATTERN_DEVICE =
-            Pattern.compile("Device: (.*)");
-    private static final Pattern PATTERN_DURATION =
-            Pattern.compile("\\s*time to (empty|full):\\s*([\\d,\\.]*) (hours|minutes|seconds)");
-    private static final Pattern PATTERN_PERCENTAGE =
-            Pattern.compile("\\s*percentage:\\s*(\\d*)%");
-
     @Inject DockConfig config;
     @Inject FontSource fontSource;
     @Inject FontManager fontManager;
     @Inject IconManager iconManager;
+    @Inject Power power;
 
     private List<DeviceHolder> devices = new ArrayList<>();
 
@@ -56,69 +46,41 @@ public class BatteryWidget extends FlowCompositeWidget {
     void updateBattery() throws IOException {
         List<BatteryState> batteries = new ArrayList<>();
 
-        Process process = new ProcessBuilder()
-                .command("upower", "-d")
-                .start();
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
-
-            BatteryState currentBattery = null;
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                Matcher deviceMatcher = PATTERN_DEVICE.matcher(line);
-                if (deviceMatcher.matches()) {
-                    if (currentBattery != null) {
-                        batteries.add(currentBattery);
-                        currentBattery = null;
-                    }
-                    if (!deviceMatcher.group(1).contains("DisplayDevice")) {
-                        currentBattery = new BatteryState();
-                    }
-                    continue;
-                }
-
-                if (currentBattery == null) {
-                    continue;
-                }
-
-                Matcher durationMatcher = PATTERN_DURATION.matcher(line);
-                if (durationMatcher.matches()) {
-                    float durationF = Float.parseFloat(durationMatcher.group(2).replace(',', '.'));
-                    switch (durationMatcher.group(3)) {
-                    case "hours":
-                        durationF *= 60;
-                        // FALL-THROUGH
-                    case "minutes":
-                        durationF *= 60;
-                    }
-
-                    currentBattery.setRemaining(Duration.ofSeconds(Math.round(durationF)));
-                    currentBattery.setCharging(!durationMatcher.group(1).equals("empty"));
-                } else {
-                    Matcher percentageMatcher = PATTERN_PERCENTAGE.matcher(line);
-                    if (percentageMatcher.matches()) {
-                        int percentage = Integer.parseInt(percentageMatcher.group(1));
-                        currentBattery.setCharge(percentage / 100F);
-                    } else {
-                        continue;
-                    }
-                }
-            }
-
-            if (currentBattery != null) {
-                batteries.add(currentBattery);
-            }
+        BatteryState state = new BatteryState();
+        state.setCharge((float) (power.getPercentage() / 100));
+        boolean charging;
+        switch (power.getState()) {
+        case 1:
+        case 4:
+            charging = true;
+            break;
+        default:
+            charging = false;
+            break;
         }
+        if (charging) {
+            state.setCharging(true);
+            state.setRemaining(Duration.ofSeconds(power.getTimeToFull()));
+        } else {
+            state.setCharging(false);
+            state.setRemaining(Duration.ofSeconds(power.getTimeToEmpty()));
+        }
+        batteries.add(state);
 
         Iterator<DeviceHolder> deviceIterator = devices.iterator();
         for (BatteryState battery : batteries) {
-            DeviceHolder holder = deviceIterator.hasNext() ?
-                    deviceIterator.next() : new DeviceHolder();
+            DeviceHolder holder;
+            if (deviceIterator != null && deviceIterator.hasNext()) {
+                holder = deviceIterator.next();
+            } else {
+                holder = new DeviceHolder();
+                devices.add(holder);
+                deviceIterator = null;
+            }
             holder.updateState(battery);
         }
 
-        while (deviceIterator.hasNext()) {
+        while (deviceIterator != null && deviceIterator.hasNext()) {
             deviceIterator.next().free();
             deviceIterator.remove();
         }
@@ -127,8 +89,8 @@ public class BatteryWidget extends FlowCompositeWidget {
     @Data
     private static final class BatteryState {
         private float charge;
-        private boolean charging = true; // if we get no duration info, we're charging at 100%
-        private Duration remaining = Duration.ZERO;
+        private boolean charging;
+        private Duration remaining;
     }
 
     private class DeviceHolder {

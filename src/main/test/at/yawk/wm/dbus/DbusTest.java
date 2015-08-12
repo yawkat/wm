@@ -10,8 +10,8 @@ import static org.testng.Assert.*;
 public class DbusTest {
     @Test(enabled = false)
     public void test() throws Exception {
-        MediaPlayer mediaPlayer = new Dbus().mediaPlayer();
-        System.out.println(mediaPlayer.getLoopStatus());
-        System.out.println(mediaPlayer.getPlaybackStatus());
+        Power power = new Dbus().power();
+        System.out.println(power.getTimeToEmpty());
+        System.out.println(power.getTimeToFull());
     }
 }
