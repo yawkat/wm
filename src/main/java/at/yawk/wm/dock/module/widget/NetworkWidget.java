@@ -41,18 +41,18 @@ public class NetworkWidget extends FlowCompositeWidget {
         up.after(getAnchor(), Direction.HORIZONTAL);
         addWidget(up);
 
-        iconWidget = new IconWidget();
-        iconWidget.setColor(fontManager.resolve(config.getNetIconFont()));
-        iconWidget.after(up, Direction.HORIZONTAL);
-        addWidget(iconWidget);
-
         down = new TextWidget();
         down.setFont(fontSource.getFont(config.getNetDownFont()));
-        down.after(iconWidget, Direction.HORIZONTAL);
+        down.after(up, Direction.HORIZONTAL);
         addWidget(down);
 
-        down.setPaddingRight(2);
-        up.setPaddingLeft(2);
+        iconWidget = new IconWidget();
+        iconWidget.setColor(fontManager.resolve(config.getNetIconFont()));
+        iconWidget.after(down, Direction.HORIZONTAL);
+        addWidget(iconWidget);
+
+        down.setPaddingLeft(2);
+        up.setPaddingLeft(0);
 
         networkManager.onStateChanged(() -> {
             updateOnline();
