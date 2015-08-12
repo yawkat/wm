@@ -2,17 +2,13 @@ package at.yawk.wm.dock.module.widget;
 
 import at.yawk.wm.dbus.Power;
 import at.yawk.wm.dock.*;
-import at.yawk.wm.dock.module.DockConfig;
-import at.yawk.wm.dock.module.DockWidget;
-import at.yawk.wm.dock.module.FontSource;
-import at.yawk.wm.dock.module.Periodic;
+import at.yawk.wm.dock.module.*;
 import at.yawk.wm.style.FontDescriptor;
 import at.yawk.wm.style.FontManager;
 import at.yawk.wm.x.icon.Icon;
 import at.yawk.wm.x.icon.IconDescriptor;
 import at.yawk.wm.x.icon.IconManager;
 import at.yawk.yarn.Component;
-import java.io.IOException;
 import java.time.Duration;
 import java.util.*;
 import javax.inject.Inject;
@@ -42,8 +38,16 @@ public class BatteryWidget extends FlowCompositeWidget {
         return iconManager.getIcon(descriptor);
     }
 
+    @Inject
+    void listen(RenderElf renderElf) {
+        power.onPropertiesChanged(() -> {
+            updateBattery();
+            renderElf.render();
+        });
+    }
+
     @Periodic(20)
-    void updateBattery() throws IOException {
+    synchronized void updateBattery() {
         List<BatteryState> batteries = new ArrayList<>();
 
         BatteryState state = new BatteryState();

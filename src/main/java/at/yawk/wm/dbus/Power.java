@@ -7,6 +7,10 @@ package at.yawk.wm.dbus;
 @ObjectPath(value = "/org/freedesktop/UPower/devices/DisplayDevice", bus = Bus.SYSTEM)
 @Interface("org.freedesktop.UPower.Device")
 public interface Power {
+    @Interface("org.freedesktop.DBus.Properties")
+    @DbusSignal("PropertiesChanged")
+    void onPropertiesChanged(Runnable listener);
+
     /**
      * http://upower.freedesktop.org/docs/Device.html#Device:State
      */
