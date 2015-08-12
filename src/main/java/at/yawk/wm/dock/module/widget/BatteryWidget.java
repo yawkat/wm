@@ -46,7 +46,7 @@ public class BatteryWidget extends FlowCompositeWidget {
         });
     }
 
-    @Periodic(20)
+    @Periodic(30)
     synchronized void updateBattery() {
         List<BatteryState> batteries = new ArrayList<>();
 
