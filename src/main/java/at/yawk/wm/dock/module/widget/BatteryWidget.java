@@ -11,6 +11,7 @@ import at.yawk.wm.x.icon.IconManager;
 import at.yawk.yarn.Component;
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
 import lombok.Data;
 
@@ -39,11 +40,11 @@ public class BatteryWidget extends FlowCompositeWidget {
     }
 
     @Inject
-    void listen(RenderElf renderElf) {
-        power.onPropertiesChanged(() -> {
+    void listen(Executor executor, RenderElf renderElf) {
+        power.onPropertiesChanged(() -> executor.execute(() -> {
             updateBattery();
             renderElf.render();
-        });
+        }));
     }
 
     @Periodic(30)

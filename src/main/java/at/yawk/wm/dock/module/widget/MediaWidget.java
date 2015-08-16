@@ -13,6 +13,7 @@ import at.yawk.wm.style.FontManager;
 import at.yawk.wm.x.icon.IconDescriptor;
 import at.yawk.wm.x.icon.IconManager;
 import at.yawk.yarn.Component;
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
 
 /**
@@ -29,16 +30,16 @@ public class MediaWidget extends FlowCompositeWidget {
     private IconWidget playing;
 
     @Inject
-    void init(FontManager fontManager) {
+    void init(Executor executor, FontManager fontManager) {
         playing = new IconWidget();
         playing.setColor(fontManager.resolve(config.getMediaFont()));
         playing.after(getAnchor(), Direction.HORIZONTAL);
         addWidget(playing);
 
-        mediaPlayer.onPropertiesChanged(() -> {
+        mediaPlayer.onPropertiesChanged(() -> executor.execute(() -> {
             update();
             renderElf.render();
-        });
+        }));
     }
 
     @Inject

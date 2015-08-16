@@ -125,7 +125,7 @@ class PeriodBuilder {
             boolean run = i == 0;
             if (run) {
                 try {
-                    handle.invokeWithArguments();
+                    handle.invokeExact();
                 } catch (Throwable t) {
                     log.error("Error while executing " + handle, t);
                 }

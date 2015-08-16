@@ -40,6 +40,7 @@ public class Main {
         synchronized (o) {
             o.wait();
         }
+        System.exit(0);
     }
 
     private static void start() {

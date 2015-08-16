@@ -1,15 +1,20 @@
 package at.yawk.wm.dbus;
 
+import at.yawk.dbus.client.annotation.*;
+
 /**
  * @author yawkat
  */
+@SystemBus
 @Destination("org.freedesktop.NetworkManager")
-@ObjectPath(value = "/org/freedesktop/NetworkManager", bus = Bus.SYSTEM)
+@ObjectPath("/org/freedesktop/NetworkManager")
 @Interface("org.freedesktop.NetworkManager")
 public interface NetworkManager {
-    @DbusProperty("Connectivity")
+    @GetProperty
+    @Member("Connectivity")
     int getConnectivity();
 
-    @DbusSignal("StateChanged")
+    @Member("StateChanged")
+    @Listener
     void onStateChanged(Runnable listener);
 }

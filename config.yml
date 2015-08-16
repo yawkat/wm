@@ -146,7 +146,7 @@ tac:
 launcher:
   shortcuts:
     firefox:
-      command: ["firefox"]
+      command: ["firefox-beta"]
       jail: true
     thunderbird:
       command: ["thunderbird"]

@@ -1,31 +1,37 @@
 package at.yawk.wm.dbus;
 
+import at.yawk.dbus.client.annotation.*;
+
 /**
  * @author yawkat
  */
+@SessionBus
 @Destination("org.mpris.MediaPlayer2.spotify")
 @ObjectPath("/org/mpris/MediaPlayer2")
 @Interface("org.mpris.MediaPlayer2.Player")
 public interface MediaPlayer {
-    @DbusMethod("PlayPause")
+    @Call
+    @Member("PlayPause")
     void playPause();
 
-    @DbusMethod("Stop")
+    @Call
+    @Member("Stop")
     void stop();
 
-    @DbusMethod("Previous")
+    @Call
+    @Member("Previous")
     void previous();
 
-    @DbusMethod("Next")
+    @Call
+    @Member("Next")
     void next();
 
-    @DbusProperty("PlaybackStatus")
+    @GetProperty
+    @Member("PlaybackStatus")
     String getPlaybackStatus();
 
-    @DbusProperty("LoopStatus")
-    String getLoopStatus();
-
     @Interface("org.freedesktop.DBus.Properties")
-    @DbusSignal("PropertiesChanged")
+    @Member("PropertiesChanged")
+    @Listener
     void onPropertiesChanged(Runnable listener);
 }

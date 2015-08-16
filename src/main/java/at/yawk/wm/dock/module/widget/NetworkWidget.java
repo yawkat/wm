@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
 
 /**
@@ -35,7 +36,7 @@ public class NetworkWidget extends FlowCompositeWidget {
     private final MovingAverage upAverage = new MovingAverage(0.8);
 
     @Inject
-    void init(FontSource fontSource, FontManager fontManager) {
+    void init(Executor executor, FontSource fontSource, FontManager fontManager) {
         up = new TextWidget();
         up.setFont(fontSource.getFont(config.getNetUpFont()));
         up.after(getAnchor(), Direction.HORIZONTAL);
@@ -54,10 +55,10 @@ public class NetworkWidget extends FlowCompositeWidget {
         down.setPaddingLeft(2);
         up.setPaddingLeft(0);
 
-        networkManager.onStateChanged(() -> {
+        networkManager.onStateChanged(() -> executor.execute(() -> {
             updateOnline();
             renderElf.render();
-        });
+        }));
     }
 
     @Periodic(value = 1, render = true)

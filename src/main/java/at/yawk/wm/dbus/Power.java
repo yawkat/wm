@@ -1,34 +1,42 @@
 package at.yawk.wm.dbus;
 
+import at.yawk.dbus.client.annotation.*;
+
 /**
  * @author yawkat
  */
+@SystemBus
 @Destination("org.freedesktop.UPower")
-@ObjectPath(value = "/org/freedesktop/UPower/devices/DisplayDevice", bus = Bus.SYSTEM)
+@ObjectPath("/org/freedesktop/UPower/devices/DisplayDevice")
 @Interface("org.freedesktop.UPower.Device")
 public interface Power {
     @Interface("org.freedesktop.DBus.Properties")
-    @DbusSignal("PropertiesChanged")
+    @Member("PropertiesChanged")
+    @Listener
     void onPropertiesChanged(Runnable listener);
 
     /**
      * http://upower.freedesktop.org/docs/Device.html#Device:State
      */
-    @DbusProperty("State")
+    @Member("State")
+    @GetProperty
     int getState();
 
     /**
      * @return seconds or 0 if charging
      */
-    @DbusProperty("TimeToEmpty")
+    @Member("TimeToEmpty")
+    @GetProperty
     long getTimeToEmpty();
 
     /**
      * @return seconds or 0 if not charging
      */
-    @DbusProperty("TimeToFull")
+    @Member("TimeToFull")
+    @GetProperty
     long getTimeToFull();
 
-    @DbusProperty("Percentage")
+    @Member("Percentage")
+    @GetProperty
     double getPercentage();
 }
