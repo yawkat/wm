@@ -47,8 +47,11 @@ public class BatteryWidget extends FlowCompositeWidget {
         }));
     }
 
-    @Periodic(30)
-    synchronized void updateBattery() {
+    private List<BatteryState> getBatteries() {
+        if (!power.isPresent()) {
+            return Collections.emptyList();
+        }
+
         List<BatteryState> batteries = new ArrayList<>();
 
         BatteryState state = new BatteryState();
@@ -71,6 +74,12 @@ public class BatteryWidget extends FlowCompositeWidget {
             state.setRemaining(Duration.ofSeconds(power.getTimeToEmpty()));
         }
         batteries.add(state);
+        return batteries;
+    }
+
+    @Periodic(30)
+    synchronized void updateBattery() {
+        List<BatteryState> batteries = getBatteries();
 
         Iterator<DeviceHolder> deviceIterator = devices.iterator();
         for (BatteryState battery : batteries) {

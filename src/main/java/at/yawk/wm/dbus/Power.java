@@ -15,6 +15,10 @@ public interface Power {
     @Listener
     void onPropertiesChanged(Runnable listener);
 
+    @Member("IsPresent")
+    @GetProperty
+    boolean isPresent();
+
     /**
      * http://upower.freedesktop.org/docs/Device.html#Device:State
      */
