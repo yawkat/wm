@@ -1,9 +1,8 @@
 package at.yawk.wm.tac;
 
-import at.yawk.wm.x.AbstractResource;
+import at.yawk.wm.x.*;
 import at.yawk.wm.x.Graphics;
 import at.yawk.wm.x.Window;
-import at.yawk.wm.x.XcbConnector;
 import at.yawk.wm.x.event.ExposeEvent;
 import at.yawk.wm.x.event.FocusLostEvent;
 import at.yawk.wm.x.event.KeyPressEvent;
@@ -72,7 +71,9 @@ public class TacUI extends AbstractResource implements Modal {
         int newHeight = entries.size() * config.getRowHeight();
 
         if (window == null) {
-            window = connector.getScreen().createWindow();
+            window = connector.getScreen().createWindow(
+                    EventGroup.PAINT, EventGroup.FOCUS, EventGroup.KEYBOARD
+            );
             window.addListener(ExposeEvent.class, evt -> {
                 window.acquireFocus();
                 render(true);

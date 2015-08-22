@@ -152,14 +152,14 @@ class EventManager implements Runnable {
         }
     }
 
-    public <E> void addEventHandler(Class<E> type, Context context, Consumer<E> handler) {
+    <E> void addEventHandler(Class<E> type, Context context, Consumer<E> handler) {
         eventHandlers
                 .computeIfAbsent(type, c -> new HashMap<>())
                 .computeIfAbsent(context, c -> new ArrayList<>())
                 .add(handler);
     }
 
-    public void destroyContext(Context context) {
+    void destroyContext(Context context) {
         eventHandlers.values().forEach(m -> m.keySet().remove(context));
     }
 

@@ -1,19 +1,13 @@
 package at.yawk.wm.paste;
 
 import at.yawk.wm.tac.Modal;
-import at.yawk.wm.x.Graphics;
-import at.yawk.wm.x.PixMap;
-import at.yawk.wm.x.Window;
-import at.yawk.wm.x.XcbConnector;
+import at.yawk.wm.x.*;
 import at.yawk.wm.x.event.*;
 import at.yawk.wm.x.image.BufferedLocalImage;
 import at.yawk.wm.x.image.LocalImage;
 import at.yawk.wm.x.image.SubImageView;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.imageio.ImageIO;
 import lombok.RequiredArgsConstructor;
 import sun.awt.X11.XKeySymConstants;
 
@@ -54,7 +48,10 @@ class ScreenshotOverlay implements Modal {
                    ((rgb >>> 1) & 0x7f);
         });
 
-        displayWindow = connector.getScreen().createWindow();
+        displayWindow = connector.getScreen().createWindow(
+                EventGroup.PAINT, EventGroup.MOUSE_MOTION, EventGroup.KEYBOARD,
+                EventGroup.MOUSE_PRESS
+        );
         displayGraphics = displayWindow.createGraphics();
 
         darkenedPixMap = displayWindow.createPixMap(capture.getWidth(), capture.getHeight());
