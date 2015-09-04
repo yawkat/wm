@@ -6,7 +6,6 @@ import at.yawk.password.client.PasswordClient;
 import at.yawk.password.model.PasswordBlob;
 import at.yawk.wm.Scheduler;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -29,7 +28,7 @@ class PasswordHolder {
     private final LocalStorageProvider storageProvider;
     private final Scheduler scheduler;
     private final ObjectMapper objectMapper;
-    private final InetSocketAddress remote;
+    private final String remote;
     /**
      * Password storage timeout in seconds.
      */
@@ -89,11 +88,8 @@ class PasswordHolder {
         HolderClaim noPasswordClaim = claim();
         if (noPasswordClaim != null) { return noPasswordClaim; }
 
-        PasswordClient client = PasswordClient.create();
-        client.setPassword(password.getBytes(StandardCharsets.UTF_8));
-        client.setObjectMapper(objectMapper);
-        client.setRemote(remote);
-        client.setLocalStorageProvider(storageProvider);
+        PasswordClient client = new PasswordClient(
+                remote, storageProvider, password.getBytes(StandardCharsets.UTF_8));
         ClientValue<PasswordBlob> value = client.load();
         synchronized (this) {
             if (holder == null) {
@@ -106,7 +102,7 @@ class PasswordHolder {
             HolderClaim claim = claim();
             assert claim != null;
             return claim;
-        }
+            }
     }
 
     /**

@@ -10,6 +10,7 @@ import at.yawk.wm.tac.*;
 import at.yawk.wm.x.XcbConnector;
 import at.yawk.wm.x.font.FontCache;
 import at.yawk.yarn.Component;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -40,7 +41,7 @@ public class PasswordManager {
     PasswordHolder holder;
 
     @Inject
-    void configure(ObjectMapper objectMapper) {
+    void configure() {
         if (!Files.isDirectory(passwordConfig.getCacheDir())) {
             try {
                 Files.createDirectories(passwordConfig.getCacheDir());
@@ -49,9 +50,9 @@ public class PasswordManager {
             }
         }
         holder = new PasswordHolder(
-                new MultiFileLocalStorageProvider(passwordConfig.getCacheDir()),
-                scheduler, objectMapper,
-                new InetSocketAddress(passwordConfig.getHost(), passwordConfig.getPort()),
+                new MultiFileLocalStorageProvider(passwordConfig.getCacheDir().toFile()),
+                scheduler, new ObjectMapper(),
+                passwordConfig.getRemote(),
                 passwordConfig.getTimeout()
         );
     }

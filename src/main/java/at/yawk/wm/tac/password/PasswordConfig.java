@@ -15,8 +15,7 @@ public class PasswordConfig {
      * Password storage timeout in seconds.
      */
     private int timeout;
-    private String host;
-    private int port = 80;
+    private String remote;
     private Color editorBackground;
     private FontDescriptor editorFont;
     private int editorWidth;
