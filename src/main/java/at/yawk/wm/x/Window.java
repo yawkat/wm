@@ -4,6 +4,8 @@ import at.yawk.wm.x.image.LocalImage;
 import java.awt.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Collections;
+import java.util.Set;
 import java.util.function.Consumer;
 import javax.annotation.concurrent.ThreadSafe;
 import lombok.Getter;
@@ -15,7 +17,7 @@ import org.freedesktop.xcb.*;
 @ThreadSafe
 public class Window extends AbstractResource {
     @Getter final Screen screen;
-    final int windowId;
+    @Getter final int windowId;
 
     final ResourceSet resources = new ResourceSet();
     ColorMap colorMap;
@@ -24,6 +26,7 @@ public class Window extends AbstractResource {
 
     private final MaskAttributeSet attributes = new MaskAttributeSet();
     private final MaskAttributeSet config = new MaskAttributeSet();
+    final Set<EventGroup> eventGroups;
 
     @Getter private int width;
     @Getter private int height;
@@ -34,27 +37,19 @@ public class Window extends AbstractResource {
     protected Window(Screen screen, int id) {
         this.screen = screen;
         this.windowId = id;
+        this.eventGroups = Collections.emptySet();
         this.colorMap = new LazyColorMap(screen);
         resources.register(colorMap);
     }
 
-    Window(Screen screen, int parent, int visual) {
+    Window(Screen screen, int parent, int visual, Set<EventGroup> eventGroups) {
         this.screen = screen;
+        this.eventGroups = eventGroups;
         this.colorMap = new LazyColorMap(screen);
         resources.register(colorMap);
 
         windowId = LibXcb.xcb_generate_id(screen.connector.connection);
-        attributes.set(xcb_cw_t.XCB_CW_EVENT_MASK,
-                       xcb_event_mask_t.XCB_EVENT_MASK_EXPOSURE |
-                       xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_PRESS |
-                       xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_RELEASE |
-                       xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_1_MOTION |
-                       xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_2_MOTION |
-                       xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_3_MOTION |
-                       xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_4_MOTION |
-                       xcb_event_mask_t.XCB_EVENT_MASK_BUTTON_5_MOTION |
-                       xcb_event_mask_t.XCB_EVENT_MASK_KEY_PRESS |
-                       xcb_event_mask_t.XCB_EVENT_MASK_FOCUS_CHANGE);
+        attributes.set(xcb_cw_t.XCB_CW_EVENT_MASK, EventGroup.getMask(eventGroups));
         MaskAttributeSet.Diff diff = attributes.flush();
         LibXcb.xcb_create_window(
                 screen.connector.connection,
@@ -135,7 +130,7 @@ public class Window extends AbstractResource {
         );
     }
 
-    void setPropertyAtom(String key, String atom) {
+    public void setPropertyAtom(String key, String atom) {
         int i = screen.connector.internAtom(atom);
         setProperty(
                 key,
@@ -166,6 +161,17 @@ public class Window extends AbstractResource {
     }
 
     public <E> Window addListener(Class<E> eventType, Consumer<E> handler) {
+        boolean maySubscribe = false;
+        for (EventGroup group : eventGroups) {
+            if (group.getEventClasses().contains(eventType)) {
+                maySubscribe = true;
+                break;
+            }
+        }
+        if (!maySubscribe) {
+            throw new UnsupportedOperationException(
+                    "Cannot subscribe to " + eventType.getName() + ", event groups are " + eventGroups);
+        }
         screen.connector.getEventManager().addEventHandler(
                 eventType, new EventManager.WindowContext(windowId), handler);
         return this;

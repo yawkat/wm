@@ -169,9 +169,9 @@ launcher:
     nautilus:
       command: ["nautilus", "--no-desktop"]
     minecraft yawkat:
-      command: ["minecraft", "yawkat"]
+      command: ["/home/yawkat/Development/Other/mcl/launcher.py", "yawkat"]
     minecraft jonalu:
-      command: ["minecraft", "jonas.konrad@googlemail.com"]
+      command: ["/home/yawkat/Development/Other/mcl/launcher.py", "jonas.konrad@googlemail.com"]
     steven yawkat:
       command: ["steven", "yawkat"]
     steven jonalu:

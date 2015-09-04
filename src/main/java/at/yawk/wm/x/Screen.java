@@ -1,5 +1,6 @@
 package at.yawk.wm.x;
 
+import java.util.*;
 import java.util.function.Consumer;
 import javax.annotation.concurrent.ThreadSafe;
 import org.freedesktop.xcb.xcb_screen_t;
@@ -35,8 +36,14 @@ public class Screen {
         return map;
     }
 
-    public Window createWindow() {
-        Window window = new Window(this, screen.getRoot(), screen.getRoot_visual());
+    public Window createWindow(EventGroup... groups) {
+        EnumSet<EventGroup> groupSet = EnumSet.noneOf(EventGroup.class);
+        Collections.addAll(groupSet, groups);
+        return createWindow(groupSet);
+    }
+
+    public Window createWindow(Set<EventGroup> groups) {
+        Window window = new Window(this, screen.getRoot(), screen.getRoot_visual(), groups);
         resources.register(window);
         return window;
     }
