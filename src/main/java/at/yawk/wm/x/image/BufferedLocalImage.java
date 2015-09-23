@@ -1,6 +1,9 @@
 package at.yawk.wm.x.image;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import lombok.Getter;
 
 /**
@@ -31,5 +34,9 @@ public class BufferedLocalImage extends LocalImage {
     @Override
     public void setRgb(int x, int y, int rgb) {
         image.setRGB(x, y, rgb | 0xff000000);
+    }
+
+    public static void saveImage(LocalImage image, File file) throws IOException {
+        ImageIO.write(image.as(BufferedLocalImage.TYPE).getImage(), "PNG", file);
     }
 }

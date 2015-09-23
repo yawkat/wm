@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.datatype.jdk7.Jdk7Module;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import java.awt.*;
 import java.io.IOException;
 
@@ -80,6 +81,7 @@ public class JacksonProvider {
         });
         yaml.registerModule(module);
         yaml.registerModule(new Jdk7Module());
+        yaml.registerModule(new JSR310Module());
         yaml.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 

@@ -133,6 +133,10 @@ dock:
   mediaFont: base0
   mediaPlaying: playing
   mediaPaused: paused
+  weather:
+    location: Erlangen,de
+    markColor: '#586e75'
+    rainColor: '#839496'
 tac:
   fontPrimary: tac_primary
   fontPrimarySelected: tac_primary_selected

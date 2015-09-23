@@ -1,5 +1,6 @@
 package at.yawk.wm.dock.module;
 
+import at.yawk.wm.dock.module.widget.WeatherWidget;
 import at.yawk.wm.style.FontDescriptor;
 import at.yawk.wm.style.FontTransition;
 import at.yawk.wm.x.icon.IconDescriptor;
@@ -46,6 +47,8 @@ public class DockConfig {
     private FontDescriptor mediaFont;
     private IconDescriptor mediaPlaying;
     private IconDescriptor mediaPaused;
+
+    private WeatherWidget.WeatherConfig weather;
 
     private int height;
 }
