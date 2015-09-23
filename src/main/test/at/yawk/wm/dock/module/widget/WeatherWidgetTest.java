@@ -19,6 +19,11 @@ public class WeatherWidgetTest {
         widget.dockConfig = new DockConfig();
         widget.dockConfig.setHeight(20);
         widget.dockConfig.setBackground(Color.BLACK);
+        WeatherWidget.WeatherConfig weatherConfig = new WeatherWidget.WeatherConfig();
+        weatherConfig.setLocation("Erlangen,de");
+        weatherConfig.setMarkColor(Color.WHITE);
+        weatherConfig.setRainColor(Color.BLUE);
+        widget.dockConfig.setWeather(weatherConfig);
         widget.fetchAndPaint();
     }
 }

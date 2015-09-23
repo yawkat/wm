@@ -8,14 +8,12 @@ import at.yawk.wm.x.Graphics;
 import at.yawk.wm.x.PixMap;
 import at.yawk.wm.x.XcbConnector;
 import at.yawk.wm.x.ZFormatImage;
-import at.yawk.wm.x.image.BufferedLocalImage;
 import at.yawk.wm.x.image.LocalImage;
 import at.yawk.yarn.Component;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -119,7 +117,8 @@ public class WeatherWidget extends Widget {
         // draw marks
         int markInterval = 6;
         OffsetDateTime mark = minTime.withSecond(0).withMinute(0);
-        mark = mark.withHour((mark.getHour() + 1) / markInterval * markInterval);
+        // round down to next multiple of markInterval
+        mark = mark.withHour(mark.getHour() / markInterval * markInterval);
         while (mark.isBefore(maxTime)) {
             if (!mark.isBefore(minTime)) {
                 int x = round(hoursDifference(minTime, mark) * xPerHour);
