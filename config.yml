@@ -133,10 +133,6 @@ dock:
   mediaFont: base0
   mediaPlaying: playing
   mediaPaused: paused
-  weather:
-    location: Erlangen,de
-    markColor: '#586e75'
-    rainColor: '#839496'
 tac:
   fontPrimary: tac_primary
   fontPrimarySelected: tac_primary_selected
@@ -195,3 +191,8 @@ wallpaper:
   backgroundColor: '#002b36'
 paste: 
   remote: http://s.yawk.at
+weather:
+  location: Erlangen,de
+  markColor: '#586e75'
+  rainColor: '#839496'
+  backgroundColor: '#002b36'

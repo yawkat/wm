@@ -1,6 +1,7 @@
 package at.yawk.wm;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -90,5 +91,15 @@ public class Util {
         try (InputStream in = Files.newInputStream(path)) {
             return ImageIO.read(in);
         }
+    }
+
+    public static String streamToString(InputStream in, int blockSize) throws IOException {
+        ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        byte[] bytes = new byte[blockSize];
+        int len;
+        while ((len = in.read(bytes)) != -1) {
+            buf.write(bytes, 0, len);
+        }
+        return buf.toString("UTF-8");
     }
 }

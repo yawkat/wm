@@ -6,6 +6,7 @@ import at.yawk.wm.x.Graphics;
 import at.yawk.wm.x.PixMap;
 import at.yawk.wm.x.Window;
 import at.yawk.wm.x.image.ByteArrayImage;
+import at.yawk.wm.x.image.LocalImage;
 import java.awt.*;
 import java.util.Iterator;
 import java.util.concurrent.Future;
@@ -28,6 +29,7 @@ public class Animator extends AbstractResource {
 
     private int canvasWidth;
     private int canvasHeight;
+    private PixMap pixMap;
 
     public Animator(AnimatedWallpaper wallpaper, Color backgroundColor, Scheduler scheduler,
                     Window window) {
@@ -45,21 +47,28 @@ public class Animator extends AbstractResource {
         // set the window background to the base frame
         Frame frame = wallpaper.getBaseFrame();
 
-        PixMap pixMap = window.createPixMap(window.getScreen().getWidth(), window.getScreen().getHeight());
+        pixMap = window.createPixMap(window.getScreen().getWidth(), window.getScreen().getHeight());
 
-        Graphics pixMapGraphics = pixMap.createGraphics();
-        pixMapGraphics.setForegroundColor(backgroundColor);
-        pixMapGraphics.setBackgroundColor(backgroundColor);
-        pixMapGraphics.fillRect(0, 0, window.getWidth(), window.getHeight());
-        pixMapGraphics.putImage(
-                (window.getWidth() - frame.getWidth()) / 2,
-                (window.getHeight() - frame.getHeight()) / 2,
-                new ByteArrayImage(frame.getWidth(), frame.getHeight(),
-                                   frame.getData(), 0, 3)
-        );
-        pixMapGraphics.close();
+        try (Graphics pixMapGraphics = pixMap.createGraphics()) {
+            pixMapGraphics.setForegroundColor(backgroundColor);
+            pixMapGraphics.setBackgroundColor(backgroundColor);
+            pixMapGraphics.fillRect(0, 0, window.getWidth(), window.getHeight());
+            pixMapGraphics.putImage(
+                    (window.getWidth() - frame.getWidth()) / 2,
+                    (window.getHeight() - frame.getHeight()) / 2,
+                    new ByteArrayImage(frame.getWidth(), frame.getHeight(),
+                                       frame.getData(), 0, 3)
+            );
+        }
 
         window.setBackgroundPixMap(pixMap);
+        window.clear();
+    }
+
+    void drawImage(LocalImage image, int x, int y) {
+        try (Graphics graphics = pixMap.createGraphics()) {
+            graphics.putImage(x, y, image);
+        }
         window.clear();
     }
 

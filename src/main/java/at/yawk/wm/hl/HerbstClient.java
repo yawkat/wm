@@ -43,14 +43,9 @@ public class HerbstClient {
 
     @SneakyThrows
     private String dispatch(String... action) {
-        InputStream in = stream(action);
-        ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        byte[] bytes = new byte[256];
-        int len;
-        while ((len = in.read(bytes)) != -1) {
-            buf.write(bytes, 0, len);
+        try (InputStream in = stream(action)) {
+            return Util.streamToString(in, 256);
         }
-        return buf.toString("UTF-8");
     }
 
     @PostConstruct

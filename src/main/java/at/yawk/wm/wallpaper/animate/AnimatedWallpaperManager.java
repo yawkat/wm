@@ -3,6 +3,7 @@ package at.yawk.wm.wallpaper.animate;
 import at.yawk.wm.Scheduler;
 import at.yawk.wm.x.Window;
 import at.yawk.wm.x.XcbConnector;
+import at.yawk.wm.x.image.LocalImage;
 import at.yawk.yarn.Component;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -61,6 +62,10 @@ public class AnimatedWallpaperManager {
         Window rootWindow = connector.getScreen().getRootWindow();
         animator = new Animator(wallpaper, wallpaperConfig.getBackgroundColor(), scheduler, rootWindow);
         animator.start();
+    }
+
+    public void drawImage(LocalImage image, int x, int y) {
+        animator.drawImage(image, x, y);
     }
 
     public Future<?> stop() {

@@ -1,6 +1,7 @@
 package at.yawk.wm;
 
 import at.yawk.wm.dock.module.DockConfig;
+import at.yawk.wm.plot.WeatherPlot;
 import at.yawk.wm.style.StyleConfig;
 import at.yawk.wm.tac.TacConfig;
 import at.yawk.wm.tac.launcher.LauncherConfig;
@@ -8,12 +9,15 @@ import at.yawk.wm.tac.password.PasswordConfig;
 import at.yawk.wm.wallpaper.animate.AnimatedWallpaperConfig;
 import at.yawk.wm.x.icon.IconConfig;
 import at.yawk.yarn.Provides;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 
 /**
  * @author yawkat
  */
 @Data
+@Getter(AccessLevel.NONE)
 class Config {
     private StyleConfig style;
     private DockConfig dock;
@@ -23,6 +27,7 @@ class Config {
     private AnimatedWallpaperConfig wallpaper;
     private at.yawk.paste.client.Config paste;
     private IconConfig icon;
+    private WeatherPlot.WeatherConfig weather;
 
     @Provides
     public StyleConfig getStyle() {
@@ -62,5 +67,10 @@ class Config {
     @Provides
     public IconConfig getIcon() {
         return icon;
+    }
+
+    @Provides
+    public WeatherPlot.WeatherConfig getWeather() {
+        return weather;
     }
 }
