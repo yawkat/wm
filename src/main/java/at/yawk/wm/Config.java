@@ -1,6 +1,7 @@
 package at.yawk.wm;
 
 import at.yawk.wm.dock.module.DockConfig;
+import at.yawk.wm.plot.TrafficPlot;
 import at.yawk.wm.plot.WeatherPlot;
 import at.yawk.wm.style.StyleConfig;
 import at.yawk.wm.tac.TacConfig;
@@ -28,6 +29,7 @@ class Config {
     private at.yawk.paste.client.Config paste;
     private IconConfig icon;
     private WeatherPlot.WeatherConfig weather;
+    private TrafficPlot.TrafficConfig traffic;
 
     @Provides
     public StyleConfig getStyle() {
@@ -72,5 +74,10 @@ class Config {
     @Provides
     public WeatherPlot.WeatherConfig getWeather() {
         return weather;
+    }
+
+    @Provides
+    public TrafficPlot.TrafficConfig getTraffic() {
+        return traffic;
     }
 }

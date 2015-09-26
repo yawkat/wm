@@ -196,3 +196,8 @@ weather:
   markColor: '#586e75'
   rainColor: '#839496'
   backgroundColor: '#002b36'
+traffic:
+  markColor: '#586e75'
+  internalColor: '#839496'
+  externalColor: '#93a1a1'
+  backgroundColor: '#002b36'
