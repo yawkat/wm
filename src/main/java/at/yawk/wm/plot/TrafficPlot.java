@@ -17,10 +17,8 @@ import java.net.URL;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -72,8 +70,6 @@ public class TrafficPlot {
                         p.getUsedTrafficExternal() / Y_MULTIPLIER,
                         p.getUsedTrafficInternal() / Y_MULTIPLIER })
                 .toArray(Object[][]::new);
-
-        System.out.println(Arrays.deepToString(table));
 
         LocalDateTime first = getTime(points.get(0));
         LocalDateTime min = first.with(DayOfWeek.MONDAY)

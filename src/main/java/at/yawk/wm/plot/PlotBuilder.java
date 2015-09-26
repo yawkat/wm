@@ -110,7 +110,6 @@ public class PlotBuilder {
                               "set term png font 'Source Code Pro,10' size " + width + ',' + height +
                               " transparent;set datafile separator \"\\t\";set object 1 rectangle from screen -0.1,-0" +
                               ".1 to screen 1.1,1.1 fillcolor " + parameterToString(backgroundColor) + " behind;");
-        System.out.println(new String(commandBuilder).trim());
         Process process = new ProcessBuilder("gnuplot", "-e", commandBuilder.toString())
                 .redirectError(ProcessBuilder.Redirect.PIPE)
                 .redirectInput(ProcessBuilder.Redirect.PIPE)
