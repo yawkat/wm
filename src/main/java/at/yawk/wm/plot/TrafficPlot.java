@@ -1,5 +1,6 @@
 package at.yawk.wm.plot;
 
+import at.yawk.hawo.traffic.BillingWeek;
 import at.yawk.hawo.traffic.TrafficPoint;
 import at.yawk.wm.Scheduler;
 import at.yawk.wm.dock.module.DockConfig;
@@ -14,7 +15,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -72,7 +72,7 @@ public class TrafficPlot {
                 .toArray(Object[][]::new);
 
         LocalDateTime first = getTime(points.get(0));
-        LocalDateTime min = first.with(DayOfWeek.MONDAY)
+        LocalDateTime min = first.with(BillingWeek.START)
                 .withHour(0).withMinute(0).withSecond(0);
         LocalDateTime max = min.plus(1, ChronoUnit.WEEKS);
 
