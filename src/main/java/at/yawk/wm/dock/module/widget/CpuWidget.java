@@ -58,6 +58,7 @@ public class CpuWidget extends TextWidget {
         long now = System.currentTimeMillis();
         if (lastTime != 0) {
             long timeDelta = now - lastTime;
+            if (timeDelta <= 0) { timeDelta = 1; } // prevent NaN
             long shareDelta = shares - lastShares;
             // shares are emitted at 100Hz, time at 1000Hz (1000ms/s) so we need to do *10
             double usage = shareDelta * 10. / timeDelta / cpuCount;
