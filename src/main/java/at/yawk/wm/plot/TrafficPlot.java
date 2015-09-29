@@ -46,7 +46,7 @@ public class TrafficPlot {
             try {
                 poll();
             } catch (IOException | InterruptedException e) {
-                log.info("Failed to plot weather", e);
+                log.info("Failed to plot traffic", e);
             }
         }, 0, 5, TimeUnit.MINUTES);
     }
@@ -74,6 +74,7 @@ public class TrafficPlot {
         LocalDateTime first = getTime(points.get(0));
         LocalDateTime min = first.with(BillingWeek.START)
                 .withHour(0).withMinute(0).withSecond(0);
+        if (min.isAfter(first)) { min = min.minus(1, ChronoUnit.WEEKS); }
         LocalDateTime max = min.plus(1, ChronoUnit.WEEKS);
 
         return new PlotBuilder()

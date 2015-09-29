@@ -17,6 +17,11 @@ public class TrafficPlotTest {
     public void testPollImage() throws Exception {
         TrafficPlot plot = new TrafficPlot();
         plot.objectMapper = new ObjectMapper().findAndRegisterModules();
+        plot.config = new TrafficPlot.TrafficConfig();
+        plot.config.setBackgroundColor(Color.BLACK);
+        plot.config.setExternalColor(Color.GREEN);
+        plot.config.setInternalColor(Color.BLUE);
+        plot.config.setMarkColor(Color.GRAY);
 
         open(plot.pollImage());
     }

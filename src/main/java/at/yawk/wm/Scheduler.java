@@ -27,6 +27,7 @@ public class Scheduler implements Executor {
         return service.schedule(wrap(task), delay, unit);
     }
 
+    @Override
     public void execute(Runnable task) {
         service.execute(wrap(task));
     }
