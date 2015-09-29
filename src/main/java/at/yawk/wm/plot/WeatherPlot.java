@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -62,23 +63,33 @@ public class WeatherPlot {
         try (InputStream in = new URL(url).openStream()) {
             forecast = objectMapper.readValue(in, Forecast.class);
         }
+        Instant start = Instant.now();
+        // three days max
+        Instant deadline = start.plus(60 * 60 * 24 * 3, ChronoUnit.SECONDS);
 
         List<ForecastEntry> entries = forecast.getEntries();
-        entries.removeIf(e -> e.getRain() == null || e.getRain().getThreeHour() == null);
+        entries.removeIf(e -> e.getTime().isAfter(deadline));
         entries.sort(Comparator.comparing(ForecastEntry::getTime));
 
         Object[][] table = entries.stream()
-                .map(e -> new Object[]{ format(e.getTime()), e.getRain().getThreeHour() })
+                .map(e -> {
+                    double mm = e.getRain() == null ?
+                            0 :
+                            e.getRain().getThreeHour();
+                    return new Object[]{ format(e.getTime()), mm };
+                })
                 .toArray(Object[][]::new);
 
         return new PlotBuilder()
                 .command(WeatherPlot.class.getResource("weather.gp"))
-                .parameter("start", format(entries.get(0).getTime()))
+                .parameter("start0Day", getDateTime(start).withHour(0).withMinute(0).withSecond(0).format(DATE_FORMAT))
+                .parameter("start", format(start))
                 .parameter("end", format(entries.get(entries.size() - 1).getTime()))
                 .parameter("rain", config.getRainColor())
                 .parameter("grid", config.getMarkColor())
                 .dataArray(table)
                 .plot(config.getBackgroundColor(), 400, 300);
+
     }
 
     private String format(Instant time) {
