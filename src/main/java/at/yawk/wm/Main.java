@@ -11,8 +11,7 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -65,19 +64,16 @@ public class Main {
 
     @Provides
     Scheduler scheduledExecutor() {
-        return new Scheduler(new ScheduledThreadPoolExecutor(1) {
-            AtomicInteger threadId = new AtomicInteger(0);
+        AtomicInteger threadId = new AtomicInteger(0);
+        ThreadFactory threadFactory = r -> {
+            Thread thread = new Thread(r);
+            thread.setPriority(Thread.MIN_PRIORITY);
+            thread.setName("Pool thread #" + threadId.incrementAndGet());
+            return thread;
+        };
 
-            {
-                setThreadFactory(r -> {
-                    Thread thread = new Thread(r);
-                    thread.setPriority(Thread.MIN_PRIORITY);
-                    thread.setName("Pool thread #" + threadId.incrementAndGet());
-                    return thread;
-                });
-                setMaximumPoolSize(16);
-                setKeepAliveTime(20, TimeUnit.SECONDS);
-            }
-        });
+        ScheduledExecutorService scheduledService = Executors.newScheduledThreadPool(1, threadFactory);
+        ExecutorService immediateService = Executors.newCachedThreadPool(threadFactory);
+        return new Scheduler(scheduledService, immediateService);
     }
 }
