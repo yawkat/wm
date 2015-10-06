@@ -4,6 +4,9 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,7 +23,7 @@ public class Scheduler implements Executor {
     private final Executor immediateService;
 
     public Future<?> scheduleAtFixedRate(Runnable task, long initialDelay, long interval, TimeUnit unit) {
-        return scheduledService.scheduleAtFixedRate(delegating(task), initialDelay, interval, unit);
+        return scheduledService.scheduleAtFixedRate(delegating(locked(task)), initialDelay, interval, unit);
     }
 
     public Future<?> schedule(Runnable task, long delay, TimeUnit unit) {
@@ -28,11 +31,11 @@ public class Scheduler implements Executor {
     }
 
     @Override
-    public void execute(Runnable task) {
+    public void execute(@Nonnull Runnable task) {
         delegating(task).run();
     }
 
-    private Runnable delegating(Runnable task) {
+    private Runnable delegating(@Nonnull Runnable task) {
         return () -> immediateService.execute(() -> {
             try {
                 task.run();
@@ -42,12 +45,14 @@ public class Scheduler implements Executor {
         });
     }
 
-    private static Runnable wrap(Runnable task) {
+    private static Runnable locked(Runnable runnable) {
+        Lock lock = new ReentrantLock(true);
         return () -> {
+            lock.lock();
             try {
-                task.run();
-            } catch (Throwable t) {
-                log.error("Error in task", t);
+                runnable.run();
+            } finally {
+                lock.unlock();
             }
         };
     }
