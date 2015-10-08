@@ -122,6 +122,8 @@ public class Launcher {
                                 // wait for animation to finish
                             } catch (Exception ignored) {}
                             super.onUsed();
+
+                            System.exit(0);
                         }
                     },
 
