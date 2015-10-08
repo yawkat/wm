@@ -4,6 +4,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import javax.annotation.Nonnull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -12,32 +16,43 @@ import lombok.extern.slf4j.Slf4j;
  * @author yawkat
  */
 @Slf4j
+@RequiredArgsConstructor
 public class Scheduler implements Executor {
-    private final ScheduledExecutorService service;
-
-    public Scheduler(ScheduledExecutorService service) {
-        this.service = service;
-    }
+    // we use a scheduled service for timing and then delegate execution to a cached thread pool
+    private final ScheduledExecutorService scheduledService;
+    private final Executor immediateService;
 
     public Future<?> scheduleAtFixedRate(Runnable task, long initialDelay, long interval, TimeUnit unit) {
-        return service.scheduleAtFixedRate(wrap(task), initialDelay, interval, unit);
+        return scheduledService.scheduleAtFixedRate(delegating(locked(task)), initialDelay, interval, unit);
     }
 
     public Future<?> schedule(Runnable task, long delay, TimeUnit unit) {
-        return service.schedule(wrap(task), delay, unit);
+        return scheduledService.schedule(delegating(task), delay, unit);
     }
 
     @Override
-    public void execute(Runnable task) {
-        service.execute(wrap(task));
+    public void execute(@Nonnull Runnable task) {
+        delegating(task).run();
     }
 
-    private static Runnable wrap(Runnable task) {
-        return () -> {
+    private Runnable delegating(@Nonnull Runnable task) {
+        return () -> immediateService.execute(() -> {
             try {
                 task.run();
             } catch (Throwable t) {
                 log.error("Error in task", t);
+            }
+        });
+    }
+
+    private static Runnable locked(Runnable runnable) {
+        Lock lock = new ReentrantLock(true);
+        return () -> {
+            lock.lock();
+            try {
+                runnable.run();
+            } finally {
+                lock.unlock();
             }
         };
     }
