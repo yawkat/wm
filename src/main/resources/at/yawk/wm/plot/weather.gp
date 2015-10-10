@@ -18,4 +18,4 @@ set tic scale 0
 set xtics "$start0Day",86400,"$end" offset 7
 set mxtics 4
 
-plot '<cat' using 1:2 with boxes lc $rain
+plot $file using 1:2 with boxes lc $rain

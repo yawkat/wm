@@ -17,4 +17,4 @@ set grid ytics ls 50
 set tic scale 0
 set xtics "$minMidDay",86400,"$max"
 
-plot '<cat' using 1:2 with boxes lc $external, '<cat' using 1:3 with boxes lc $internal
+plot $file using 1:2 with boxes lc $external, $file using 1:3 with boxes lc $internal

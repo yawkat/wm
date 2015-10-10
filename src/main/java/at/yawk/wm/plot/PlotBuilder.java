@@ -7,6 +7,8 @@ import java.io.*;
 import java.lang.reflect.Array;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.imageio.ImageIO;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +50,9 @@ public class PlotBuilder {
         if (value instanceof Color) {
             Color c = (Color) value;
             return "rgb \'#" + Integer.toHexString(c.getRGB() & 0xffffff) + '\'';
+        }
+        if (value instanceof Path) {
+            return "'" + ((Path) value).toAbsolutePath() + '\'';
         }
         return value.toString();
     }
@@ -106,6 +111,14 @@ public class PlotBuilder {
     }
 
     public BufferedImage plot(Color backgroundColor, int width, int height) throws IOException, InterruptedException {
+        Path tmp = Files.createTempFile(null, null);
+        try (OutputStream out = Files.newOutputStream(tmp)) {
+            if (data != null) {
+                out.write(data);
+            }
+        }
+
+        parameter("file", tmp);
         commandBuilder.insert(0,
                               "set term png font 'Source Code Pro,10' size " + width + ',' + height +
                               " transparent;set datafile separator \"\\t\";set object 1 rectangle from screen -0.1,-0" +
@@ -115,11 +128,6 @@ public class PlotBuilder {
                 .redirectInput(ProcessBuilder.Redirect.PIPE)
                 .redirectOutput(ProcessBuilder.Redirect.PIPE)
                 .start();
-        try (OutputStream outputStream = process.getOutputStream()) {
-            if (data != null) {
-                outputStream.write(data);
-            }
-        }
         int ret = process.waitFor();
         try (InputStream err = process.getErrorStream()) {
             String errorString = Util.streamToString(err, 512);
@@ -127,6 +135,7 @@ public class PlotBuilder {
                 log.warn("gnuplot stderr: {}", errorString);
             }
         }
+        Files.deleteIfExists(tmp);
         if (ret != 0) {
             throw new IOException("Return code " + ret);
         }
