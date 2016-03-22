@@ -4,7 +4,6 @@ import at.yawk.wm.x.AbstractResource;
 import at.yawk.wm.x.XUtil;
 import at.yawk.wm.x.image.ByteArrayImage;
 import java.nio.ByteBuffer;
-import lombok.RequiredArgsConstructor;
 import org.freedesktop.xcb.LibXcb;
 import org.freedesktop.xcb.SWIGTYPE_p_xcb_connection_t;
 import org.freedesktop.xcb.xcb_format_t;
@@ -12,7 +11,6 @@ import org.freedesktop.xcb.xcb_format_t;
 /**
  * @author yawkat
  */
-@RequiredArgsConstructor
 class GlyphRenderer extends AbstractResource {
     private final SWIGTYPE_p_xcb_connection_t connection;
     private final xcb_format_t format;
@@ -25,6 +23,15 @@ class GlyphRenderer extends AbstractResource {
 
     private boolean pixmapLoaded;
     private int pixmapId;
+
+    @java.beans.ConstructorProperties({ "connection", "format", "rootDrawable", "depth", "file" })
+    public GlyphRenderer(SWIGTYPE_p_xcb_connection_t connection, xcb_format_t format, int rootDrawable, short depth, GlyphFile file) {
+        this.connection = connection;
+        this.format = format;
+        this.rootDrawable = rootDrawable;
+        this.depth = depth;
+        this.file = file;
+    }
 
     /**
      * @param drawable  target drawable

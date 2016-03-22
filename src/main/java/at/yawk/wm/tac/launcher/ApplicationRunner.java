@@ -10,14 +10,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Singleton;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 /**
  * @author yawkat
  */
-@Slf4j
 @Singleton
 public class ApplicationRunner {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(ApplicationRunner.class);
     private final AtomicInteger processCounter = new AtomicInteger(0);
 
     public void run(Command command) {

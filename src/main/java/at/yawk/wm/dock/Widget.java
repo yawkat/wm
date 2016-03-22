@@ -4,8 +4,6 @@ import at.yawk.wm.x.Graphics;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @author yawkat
@@ -13,14 +11,14 @@ import lombok.Setter;
 public abstract class Widget implements Positioned {
     private static final boolean OPTIMIZE_REPAINT = false;
 
-    @Getter Origin origin = Origin.TOP_LEFT;
-    @Getter private int x;
-    @Getter private int y;
-    @Getter @Setter private int z;
-    @Getter private int width;
-    @Getter private int height;
+    Origin origin = Origin.TOP_LEFT;
+    private int x;
+    private int y;
+    private int z;
+    private int width;
+    private int height;
 
-    @Getter @Setter Visibility visibility = Visibility.VISIBLE;
+    Visibility visibility = Visibility.VISIBLE;
 
     int lastX = 0;
     int lastY = 0;
@@ -169,6 +167,42 @@ public abstract class Widget implements Positioned {
             this.height = height;
             markGeometryDirty();
         }
+    }
+
+    public Origin getOrigin() {
+        return this.origin;
+    }
+
+    public int getX() {
+        return this.x;
+    }
+
+    public int getY() {
+        return this.y;
+    }
+
+    public int getZ() {
+        return this.z;
+    }
+
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
+    }
+
+    public Visibility getVisibility() {
+        return this.visibility;
+    }
+
+    public void setZ(int z) {
+        this.z = z;
+    }
+
+    public void setVisibility(Visibility visibility) {
+        this.visibility = visibility;
     }
 
     public enum Visibility {

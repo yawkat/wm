@@ -5,19 +5,15 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.concurrent.NotThreadSafe;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 /**
  * @author yawkat
  */
-@Slf4j
 @NotThreadSafe
-@RequiredArgsConstructor
 class PeriodBuilder {
     /*
      * This class takes periodic tasks and uses dark magic to reduce them to as few
@@ -27,9 +23,15 @@ class PeriodBuilder {
      */
 
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(PeriodBuilder.class);
 
     private final RenderElf renderElf;
     private final Set<Bucket> buckets = new HashSet<>();
+
+    @java.beans.ConstructorProperties({ "renderElf" })
+    public PeriodBuilder(RenderElf renderElf) {
+        this.renderElf = renderElf;
+    }
 
     @SneakyThrows(IllegalAccessException.class)
     public void scan(Object o, Method method) {
@@ -80,12 +82,16 @@ class PeriodBuilder {
         }
     }
 
-    @RequiredArgsConstructor
     private static final class Bucket implements Runnable {
         private final RenderElf renderElf;
 
         private final List<Node> nodes = new ArrayList<>();
         private int interval;
+
+        @java.beans.ConstructorProperties({ "renderElf" })
+        public Bucket(RenderElf renderElf) {
+            this.renderElf = renderElf;
+        }
 
         void setInterval(int newInterval) {
             if (this.interval == newInterval) { return; }
@@ -113,13 +119,18 @@ class PeriodBuilder {
         }
     }
 
-    @RequiredArgsConstructor
     private static final class Node {
         private final MethodHandle handle;
         private final boolean render;
 
         private int tickInterval = 1;
         private int i = 0;
+
+        @java.beans.ConstructorProperties({ "handle", "render" })
+        public Node(MethodHandle handle, boolean render) {
+            this.handle = handle;
+            this.render = render;
+        }
 
         boolean run() {
             boolean run = i == 0;

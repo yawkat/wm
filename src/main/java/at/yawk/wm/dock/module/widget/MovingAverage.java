@@ -1,16 +1,17 @@
 package at.yawk.wm.dock.module.widget;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 /**
  * @author yawkat
  */
-@RequiredArgsConstructor
 class MovingAverage {
     private final double base;
     private long lastTime = 0;
-    @Getter private double average;
+    private double average;
+
+    @java.beans.ConstructorProperties({ "base" })
+    public MovingAverage(double base) {
+        this.base = base;
+    }
 
     public void offer(double value) {
         long now = System.currentTimeMillis();
@@ -22,5 +23,9 @@ class MovingAverage {
             average = average * remainderDeltaBase + value * (1 - remainderDeltaBase);
         }
         lastTime = now;
+    }
+
+    public double getAverage() {
+        return this.average;
     }
 }

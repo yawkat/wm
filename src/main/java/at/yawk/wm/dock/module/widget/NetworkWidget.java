@@ -72,9 +72,9 @@ public class NetworkWidget extends FlowCompositeWidget {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith("IpExtInOctets")) {
-                    downOctets = Long.parseUnsignedLong(Util.split(line, ' ', 2).get(1));
+                    downOctets = Long.parseUnsignedLong(Util.INSTANCE.split(line, ' ', 2).get(1));
                 } else if (line.startsWith("IpExtOutOctets")) {
-                    upOctets = Long.parseUnsignedLong(Util.split(line, ' ', 2).get(1));
+                    upOctets = Long.parseUnsignedLong(Util.INSTANCE.split(line, ' ', 2).get(1));
                 }
             }
         }

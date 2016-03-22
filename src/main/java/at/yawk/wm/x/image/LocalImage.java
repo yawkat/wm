@@ -1,16 +1,17 @@
 package at.yawk.wm.x.image;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 /**
  * @author yawkat
  */
-@Getter
-@RequiredArgsConstructor
 public abstract class LocalImage {
     private final int width;
     private final int height;
+
+    @java.beans.ConstructorProperties({ "width", "height" })
+    public LocalImage(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
 
     public abstract LocalImageType<?> getType();
 
@@ -104,5 +105,13 @@ public abstract class LocalImage {
      */
     public LocalImage copy() {
         return copy(getType());
+    }
+
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
     }
 }

@@ -11,13 +11,13 @@ import java.awt.*;
 import java.util.Iterator;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 /**
  * @author yawkat
  */
-@Slf4j
 public class Animator extends AbstractResource {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(Animator.class);
     private final Color backgroundColor;
     private final AnimatedWallpaper wallpaper;
     private final Scheduler scheduler;

@@ -6,23 +6,22 @@ import at.yawk.wm.x.Window;
 import at.yawk.wm.x.event.ExposeEvent;
 import java.awt.*;
 import javax.annotation.concurrent.ThreadSafe;
-import lombok.Getter;
 
 /**
  * @author yawkat
  */
 @ThreadSafe
 public class Dock extends AbstractResource {
-    @Getter private final Window window;
+    private final Window window;
     private final Graphics windowGraphics;
     private final Color backgroundColor;
     private PixMap buffer = null;
-    @Getter private Graphics graphics;
+    private Graphics graphics;
 
     private final LayoutManager layoutManager = new LayoutManager();
 
-    @Getter private final WidgetSet left;
-    @Getter private final WidgetSet right;
+    private final WidgetSet left;
+    private final WidgetSet right;
 
     private final Anchor leftAnchor = new Anchor();
     private final Anchor rightAnchor = new Anchor();
@@ -76,5 +75,21 @@ public class Dock extends AbstractResource {
 
     public void show() {
         window.show();
+    }
+
+    public Window getWindow() {
+        return this.window;
+    }
+
+    public Graphics getGraphics() {
+        return this.graphics;
+    }
+
+    public WidgetSet getLeft() {
+        return this.left;
+    }
+
+    public WidgetSet getRight() {
+        return this.right;
     }
 }

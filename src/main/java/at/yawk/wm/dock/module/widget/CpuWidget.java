@@ -48,7 +48,7 @@ public class CpuWidget extends TextWidget {
             }
         }
 
-        List<String> items = Util.split(firstLine, ' ', 4);
+        List<String> items = Util.INSTANCE.split(firstLine, ' ', 4);
         long shares = Long.parseUnsignedLong(items.get(1)) +
                       Long.parseUnsignedLong(items.get(2)) +
                       Long.parseUnsignedLong(items.get(3));

@@ -7,16 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
 import org.freedesktop.xcb.*;
+import org.slf4j.Logger;
 
 /**
  * @author yawkat
  */
-@Slf4j
-@RequiredArgsConstructor
 class EventManager implements Runnable {
     private static final Map<Integer, String> ERROR_MESSAGES = new HashMap<Integer, String>() {{
         put(3, "Argument is not a window");
@@ -26,6 +22,7 @@ class EventManager implements Runnable {
         put(13, "Argument is not a graphics context");
         put(16, "Expected different data length from arguments");
     }};
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(EventManager.class);
 
     private final XcbConnector connector;
 
@@ -35,6 +32,11 @@ class EventManager implements Runnable {
     private short xkbEventCode;
 
     Throwable lastFlushStackTrace = null;
+
+    @java.beans.ConstructorProperties({ "connector" })
+    public EventManager(XcbConnector connector) {
+        this.connector = connector;
+    }
 
     @Override
     public void run() {
@@ -165,8 +167,35 @@ class EventManager implements Runnable {
 
     interface Context {}
 
-    @Value
     static class WindowContext implements Context {
         private final int window;
+
+        @java.beans.ConstructorProperties({ "window" })
+        public WindowContext(int window) {
+            this.window = window;
+        }
+
+        public int getWindow() {
+            return this.window;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) { return true; }
+            if (!(o instanceof WindowContext)) { return false; }
+            final WindowContext other = (WindowContext) o;
+            if (this.window != other.window) { return false; }
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            result = result * PRIME + this.window;
+            return result;
+        }
+
+        public String toString() {
+            return "at.yawk.wm.x.EventManager.WindowContext(window=" + this.window + ")";
+        }
     }
 }

@@ -4,7 +4,6 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.concurrent.ThreadSafe;
-import lombok.Value;
 import org.freedesktop.xcb.*;
 
 /**
@@ -54,12 +53,53 @@ class ColorMapImpl extends ColorMap {
         LibXcb.xcb_free_colormap(connector.connection, colormapId);
     }
 
-    @Value
     private static class ColorDesc {
         // uint16 (0-65535)
 
         private final int r;
         private final int g;
         private final int b;
+
+        @java.beans.ConstructorProperties({ "r", "g", "b" })
+        public ColorDesc(int r, int g, int b) {
+            this.r = r;
+            this.g = g;
+            this.b = b;
+        }
+
+        public int getR() {
+            return this.r;
+        }
+
+        public int getG() {
+            return this.g;
+        }
+
+        public int getB() {
+            return this.b;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) { return true; }
+            if (!(o instanceof ColorDesc)) { return false; }
+            final ColorDesc other = (ColorDesc) o;
+            if (this.r != other.r) { return false; }
+            if (this.g != other.g) { return false; }
+            if (this.b != other.b) { return false; }
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            result = result * PRIME + this.r;
+            result = result * PRIME + this.g;
+            result = result * PRIME + this.b;
+            return result;
+        }
+
+        public String toString() {
+            return "at.yawk.wm.x.ColorMapImpl.ColorDesc(r=" + this.r + ", g=" + this.g + ", b=" + this.b + ")";
+        }
     }
 }

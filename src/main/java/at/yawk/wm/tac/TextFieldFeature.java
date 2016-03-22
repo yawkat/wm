@@ -2,7 +2,6 @@ package at.yawk.wm.tac;
 
 import at.yawk.wm.x.event.KeyPressEvent;
 import java.util.stream.Stream;
-import lombok.Getter;
 import sun.awt.X11.XKeySymConstants;
 
 /**
@@ -11,7 +10,7 @@ import sun.awt.X11.XKeySymConstants;
 public class TextFieldFeature extends Feature {
     private TextFieldEntry entry = new TextFieldEntry();
     private TacUI ui;
-    @Getter private String text = "";
+    private String text = "";
 
     @Override
     public void onAdd(TacUI ui) {
@@ -61,6 +60,10 @@ public class TextFieldFeature extends Feature {
 
     protected String format(String text) {
         return text;
+    }
+
+    public String getText() {
+        return this.text;
     }
 
     private class TextFieldEntry extends Entry {

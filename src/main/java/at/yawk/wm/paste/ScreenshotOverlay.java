@@ -8,13 +8,11 @@ import at.yawk.wm.x.image.LocalImage;
 import at.yawk.wm.x.image.SubImageView;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import sun.awt.X11.XKeySymConstants;
 
 /**
  * @author yawkat
  */
-@RequiredArgsConstructor
 class ScreenshotOverlay implements Modal {
     private final PasteManager pasteManager;
     private final XcbConnector connector;
@@ -32,6 +30,12 @@ class ScreenshotOverlay implements Modal {
     private int startY;
     private int endX;
     private int endY;
+
+    @java.beans.ConstructorProperties({ "pasteManager", "connector" })
+    public ScreenshotOverlay(PasteManager pasteManager, XcbConnector connector) {
+        this.pasteManager = pasteManager;
+        this.connector = connector;
+    }
 
     public void capture() {
         Window rootWindow = connector.getScreen().getRootWindow();

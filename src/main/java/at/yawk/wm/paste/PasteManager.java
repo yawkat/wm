@@ -15,14 +15,14 @@ import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 /**
  * @author yawkat
  */
 @Singleton
-@Slf4j
 public class PasteManager {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(PasteManager.class);
     private PasteClient client;
     private ClipboardHelper clipboardHelper;
 

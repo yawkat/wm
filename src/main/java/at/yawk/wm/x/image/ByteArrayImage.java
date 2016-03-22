@@ -1,12 +1,10 @@
 package at.yawk.wm.x.image;
 
 import java.util.Arrays;
-import lombok.Getter;
 
 /**
  * @author yawkat
  */
-@Getter
 public class ByteArrayImage extends LocalImage {
     public static final LocalImageType<ByteArrayImage> TYPE = (width, height) ->
             new ByteArrayImage(width, height, new byte[width * height * 3], 0, 3);
@@ -73,5 +71,17 @@ public class ByteArrayImage extends LocalImage {
             return (I) new ByteArrayImage(getWidth(), getHeight(), copyBytes, 0, pixelOffset);
         }
         return super.copy(copyType);
+    }
+
+    public byte[] getBytes() {
+        return this.bytes;
+    }
+
+    public int getStart() {
+        return this.start;
+    }
+
+    public int getPixelOffset() {
+        return this.pixelOffset;
     }
 }

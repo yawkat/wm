@@ -5,12 +5,10 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Data;
 
 /**
  * @author yawkat
  */
-@Data
 public class FrameAnimation {
     private long interval;
     private List<Frame> frames;
@@ -42,5 +40,52 @@ public class FrameAnimation {
             animation.getFrames().add(Frame.read(input));
         }
         return animation;
+    }
+
+    public long getInterval() {
+        return this.interval;
+    }
+
+    public List<Frame> getFrames() {
+        return this.frames;
+    }
+
+    public void setInterval(long interval) {
+        this.interval = interval;
+    }
+
+    public void setFrames(List<Frame> frames) {
+        this.frames = frames;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) { return true; }
+        if (!(o instanceof FrameAnimation)) { return false; }
+        final FrameAnimation other = (FrameAnimation) o;
+        if (!other.canEqual((Object) this)) { return false; }
+        if (this.interval != other.interval) { return false; }
+        final Object this$frames = this.frames;
+        final Object other$frames = other.frames;
+        if (this$frames == null ? other$frames != null : !this$frames.equals(other$frames)) { return false; }
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final long $interval = this.interval;
+        result = result * PRIME + (int) ($interval >>> 32 ^ $interval);
+        final Object $frames = this.frames;
+        result = result * PRIME + ($frames == null ? 0 : $frames.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof FrameAnimation;
+    }
+
+    public String toString() {
+        return "at.yawk.wm.wallpaper.animate.FrameAnimation(interval=" + this.interval + ", frames=" + this.frames +
+               ")";
     }
 }

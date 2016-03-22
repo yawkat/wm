@@ -1,11 +1,8 @@
 package at.yawk.wm.x.event;
 
-import lombok.RequiredArgsConstructor;
-
 /**
  * @author yawkat
  */
-@RequiredArgsConstructor
 public enum Button {
     LEFT(1),
     MIDDLE(2),
@@ -14,4 +11,9 @@ public enum Button {
     SCROLL_DOWN(5);
 
     final int id;
+
+    @java.beans.ConstructorProperties({ "id" })
+    private Button(int id) {
+        this.id = id;
+    }
 }

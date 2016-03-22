@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import javax.inject.Singleton;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 /**
  * @author yawkat
  */
-@Slf4j
 @Singleton
 public class HerbstEventBus {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(HerbstEventBus.class);
     private final List<ShutdownEvent.Handler> shutdownEventHandlers = new ArrayList<>();
     private final List<TagEvent.Handler> tagEventHandlers = new ArrayList<>();
     private final List<TitleEvent.Handler> titleEventHandlers = new ArrayList<>();

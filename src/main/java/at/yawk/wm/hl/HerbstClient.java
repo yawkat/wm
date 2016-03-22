@@ -11,12 +11,10 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.xml.bind.DatatypeConverter;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
-@Slf4j
 @Singleton
 public class HerbstClient {
     @Inject Provider<HerbstEventBus> eventBus;
@@ -43,7 +41,7 @@ public class HerbstClient {
     @SneakyThrows
     private String dispatch(String... action) {
         try (InputStream in = stream(action)) {
-            return Util.streamToString(in, 256);
+            return Util.INSTANCE .streamToString(in, 256);
         }
     }
 
@@ -53,7 +51,7 @@ public class HerbstClient {
                     stream("--idle"), StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = in.readLine()) != null) {
-                    List<String> components = Util.split(line, '\t', 4);
+                    List<String> components = Util.INSTANCE.split(line, '\t', 4);
                     String verb = components.get(0);
                     switch (verb) {
                     case "tag_changed":
@@ -87,7 +85,7 @@ public class HerbstClient {
     }
 
     public List<Tag> getTags() {
-        return Util.split(
+        return Util.INSTANCE.split(
                 dispatch("tag_status"),
                 '\t',
                 Integer.MAX_VALUE

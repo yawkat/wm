@@ -19,17 +19,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
-import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 /**
  * @author yawkat
  */
-@Slf4j
 @Singleton
 public class IconManager {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(IconManager.class);
     @Inject IconConfig config;
     @Inject Screen screen;
 
@@ -100,7 +98,7 @@ public class IconManager {
             LocalImage[] images = new LocalImage[descriptorCount];
             for (Map.Entry<IconDescriptor, Path> entry : config.getIcons().entrySet()) {
                 int index = descriptorIndices.get(entry.getKey());
-                BufferedImage alphaImage = Util.loadImage(entry.getValue());
+                BufferedImage alphaImage = Util.INSTANCE.loadImage(entry.getValue());
                 BufferedImage maskImage = new BufferedImage(alphaImage.getWidth(),
                                                             alphaImage.getHeight(),
                                                             BufferedImage.TYPE_3BYTE_BGR);
@@ -185,13 +183,57 @@ public class IconManager {
         return new IconImpl(index);
     }
 
-    @Value
     private static final class ColorPair {
         private final Color foreground;
         private final Color background;
+
+        @java.beans.ConstructorProperties({ "foreground", "background" })
+        public ColorPair(Color foreground, Color background) {
+            this.foreground = foreground;
+            this.background = background;
+        }
+
+        public Color getForeground() {
+            return this.foreground;
+        }
+
+        public Color getBackground() {
+            return this.background;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) { return true; }
+            if (!(o instanceof ColorPair)) { return false; }
+            final ColorPair other = (ColorPair) o;
+            final Object this$foreground = this.foreground;
+            final Object other$foreground = other.foreground;
+            if (this$foreground == null ? other$foreground != null : !this$foreground.equals(other$foreground)) {
+                return false;
+            }
+            final Object this$background = this.background;
+            final Object other$background = other.background;
+            if (this$background == null ? other$background != null : !this$background.equals(other$background)) {
+                return false;
+            }
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $foreground = this.foreground;
+            result = result * PRIME + ($foreground == null ? 0 : $foreground.hashCode());
+            final Object $background = this.background;
+            result = result * PRIME + ($background == null ? 0 : $background.hashCode());
+            return result;
+        }
+
+        public String toString() {
+            return "at.yawk.wm.x.icon.IconManager.ColorPair(foreground=" + this.foreground + ", background=" +
+                   this.background + ")";
+        }
     }
 
-    @EqualsAndHashCode
     private class IconImpl implements Icon {
         private final int xOffset;
         private final short width;
@@ -216,6 +258,30 @@ public class IconManager {
         @Override
         public int getHeight() {
             return height;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) { return true; }
+            if (!(o instanceof IconImpl)) { return false; }
+            final IconImpl other = (IconImpl) o;
+            if (!other.canEqual((Object) this)) { return false; }
+            if (this.xOffset != other.xOffset) { return false; }
+            if (this.getWidth() != other.getWidth()) { return false; }
+            if (this.getHeight() != other.getHeight()) { return false; }
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            result = result * PRIME + this.xOffset;
+            result = result * PRIME + this.getWidth();
+            result = result * PRIME + this.getHeight();
+            return result;
+        }
+
+        protected boolean canEqual(Object other) {
+            return other instanceof IconImpl;
         }
     }
 }

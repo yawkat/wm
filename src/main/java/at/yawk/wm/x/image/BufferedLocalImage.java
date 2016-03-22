@@ -1,11 +1,9 @@
 package at.yawk.wm.x.image;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import lombok.Getter;
 
 /**
  * @author yawkat
@@ -14,7 +12,6 @@ public class BufferedLocalImage extends LocalImage {
     public static final LocalImageType<BufferedLocalImage> TYPE = (width, height) ->
             new BufferedLocalImage(new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR));
 
-    @Getter
     private final BufferedImage image;
 
     public BufferedLocalImage(BufferedImage image) {
@@ -39,5 +36,9 @@ public class BufferedLocalImage extends LocalImage {
 
     public static void saveImage(LocalImage image, File file) throws IOException {
         ImageIO.write(image.as(BufferedLocalImage.TYPE).getImage(), "PNG", file);
+    }
+
+    public BufferedImage getImage() {
+        return this.image;
     }
 }

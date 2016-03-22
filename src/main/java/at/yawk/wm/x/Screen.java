@@ -1,6 +1,8 @@
 package at.yawk.wm.x;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.function.Consumer;
 import javax.annotation.concurrent.ThreadSafe;
 import org.freedesktop.xcb.xcb_screen_t;

@@ -6,12 +6,10 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
-import lombok.Getter;
 
 /**
  * @author yawkat
  */
-@Getter
 class TextEditorWindow {
     private final Window window;
     private final JTextArea field;
@@ -71,5 +69,13 @@ class TextEditorWindow {
         } else if (window instanceof Dialog) {
             ((Dialog) window).setTitle(title);
         }
+    }
+
+    public Window getWindow() {
+        return this.window;
+    }
+
+    public JTextArea getField() {
+        return this.field;
     }
 }

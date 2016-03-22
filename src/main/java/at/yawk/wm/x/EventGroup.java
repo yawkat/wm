@@ -4,13 +4,11 @@ import at.yawk.wm.x.event.*;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import lombok.Getter;
 import org.freedesktop.xcb.xcb_event_mask_t;
 
 /**
  * @author yawkat
  */
-@Getter
 public enum EventGroup {
     PAINT(
             xcb_event_mask_t.XCB_EVENT_MASK_EXPOSURE,
@@ -56,5 +54,13 @@ public enum EventGroup {
             mask |= group.mask;
         }
         return mask;
+    }
+
+    public int getMask() {
+        return this.mask;
+    }
+
+    public Set<Class<?>> getEventClasses() {
+        return this.eventClasses;
     }
 }

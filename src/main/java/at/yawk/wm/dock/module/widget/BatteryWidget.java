@@ -12,7 +12,6 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Executor;
 import javax.inject.Inject;
-import lombok.Data;
 
 /**
  * @author yawkat
@@ -98,11 +97,66 @@ public class BatteryWidget extends FlowCompositeWidget {
         }
     }
 
-    @Data
     private static final class BatteryState {
         private float charge;
         private boolean charging;
         private Duration remaining;
+
+        public BatteryState() {
+        }
+
+        public float getCharge() {
+            return this.charge;
+        }
+
+        public boolean isCharging() {
+            return this.charging;
+        }
+
+        public Duration getRemaining() {
+            return this.remaining;
+        }
+
+        public void setCharge(float charge) {
+            this.charge = charge;
+        }
+
+        public void setCharging(boolean charging) {
+            this.charging = charging;
+        }
+
+        public void setRemaining(Duration remaining) {
+            this.remaining = remaining;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) { return true; }
+            if (!(o instanceof BatteryState)) { return false; }
+            final BatteryState other = (BatteryState) o;
+            if (Float.compare(this.charge, other.charge) != 0) { return false; }
+            if (this.charging != other.charging) { return false; }
+            final Object this$remaining = this.remaining;
+            final Object other$remaining = other.remaining;
+            if (this$remaining == null ? other$remaining != null : !this$remaining.equals(other$remaining)) {
+                return false;
+            }
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            result = result * PRIME + Float.floatToIntBits(this.charge);
+            result = result * PRIME + (this.charging ? 79 : 97);
+            final Object $remaining = this.remaining;
+            result = result * PRIME + ($remaining == null ? 0 : $remaining.hashCode());
+            return result;
+        }
+
+        public String toString() {
+            return "at.yawk.wm.dock.module.widget.BatteryWidget.BatteryState(charge=" + this.charge + ", charging=" +
+                   this.charging + ", remaining=" + this.remaining + ")";
+        }
     }
 
     private class DeviceHolder {

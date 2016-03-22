@@ -4,14 +4,12 @@ import at.yawk.wm.x.AbstractResource;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
 import org.freedesktop.xcb.SWIGTYPE_p_xcb_connection_t;
 import org.freedesktop.xcb.xcb_format_t;
 
 /**
  * @author yawkat
  */
-@RequiredArgsConstructor
 public class FontRenderer extends AbstractResource {
     private final GlyphFont manager;
 
@@ -22,6 +20,16 @@ public class FontRenderer extends AbstractResource {
 
     private final Map<GlyphFile, GlyphRenderer> handlerMap =
             Collections.synchronizedMap(new IdentityHashMap<>());
+
+    @java.beans.ConstructorProperties({ "manager", "connection", "format", "rootDrawable", "depth" })
+    public FontRenderer(GlyphFont manager, SWIGTYPE_p_xcb_connection_t connection, xcb_format_t format, int
+            rootDrawable, short depth) {
+        this.manager = manager;
+        this.connection = connection;
+        this.format = format;
+        this.rootDrawable = rootDrawable;
+        this.depth = depth;
+    }
 
     private GlyphFile getFile(char c) {
         return manager.resolveGlyphFile(c);

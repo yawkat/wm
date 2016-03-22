@@ -1,17 +1,18 @@
 package at.yawk.wm.style;
 
 import java.awt.*;
-import lombok.Data;
 
 /**
  * @author yawkat
  */
-@Data
 public class FontTransition {
     private static final int PRECISION = 20;
 
     private FontDescriptor low;
     private FontDescriptor high;
+
+    public FontTransition() {
+    }
 
     FontStyle computeStyle(FontManager fontManager, float value) {
         FontStyle lowStyle = fontManager.resolve(low);
@@ -40,5 +41,53 @@ public class FontTransition {
 
     private static float[] toHSB(Color color) {
         return Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+    }
+
+    public FontDescriptor getLow() {
+        return this.low;
+    }
+
+    public FontDescriptor getHigh() {
+        return this.high;
+    }
+
+    public void setLow(FontDescriptor low) {
+        this.low = low;
+    }
+
+    public void setHigh(FontDescriptor high) {
+        this.high = high;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) { return true; }
+        if (!(o instanceof FontTransition)) { return false; }
+        final FontTransition other = (FontTransition) o;
+        if (!other.canEqual((Object) this)) { return false; }
+        final Object this$low = this.low;
+        final Object other$low = other.low;
+        if (this$low == null ? other$low != null : !this$low.equals(other$low)) { return false; }
+        final Object this$high = this.high;
+        final Object other$high = other.high;
+        if (this$high == null ? other$high != null : !this$high.equals(other$high)) { return false; }
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $low = this.low;
+        result = result * PRIME + ($low == null ? 0 : $low.hashCode());
+        final Object $high = this.high;
+        result = result * PRIME + ($high == null ? 0 : $high.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof FontTransition;
+    }
+
+    public String toString() {
+        return "at.yawk.wm.style.FontTransition(low=" + this.low + ", high=" + this.high + ")";
     }
 }

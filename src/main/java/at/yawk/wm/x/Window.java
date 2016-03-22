@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.function.Consumer;
 import javax.annotation.concurrent.ThreadSafe;
-import lombok.Getter;
 import org.freedesktop.xcb.*;
 
 /**
@@ -16,20 +15,20 @@ import org.freedesktop.xcb.*;
  */
 @ThreadSafe
 public class Window extends AbstractResource {
-    @Getter final Screen screen;
-    @Getter final int windowId;
+    final Screen screen;
+    final int windowId;
 
     final ResourceSet resources = new ResourceSet();
     ColorMap colorMap;
 
-    @Getter boolean visible = false;
+    boolean visible = false;
 
     private final MaskAttributeSet attributes = new MaskAttributeSet();
     private final MaskAttributeSet config = new MaskAttributeSet();
     final Set<EventGroup> eventGroups;
 
-    @Getter private int width;
-    @Getter private int height;
+    private int width;
+    private int height;
 
     /**
      * @see RootWindow
@@ -232,5 +231,25 @@ public class Window extends AbstractResource {
         data.position(0);
         data.limit(LibXcb.xcb_get_image_data_length(reply));
         return new ZFormatImage(width, height, data.slice());
+    }
+
+    public Screen getScreen() {
+        return this.screen;
+    }
+
+    public int getWindowId() {
+        return this.windowId;
+    }
+
+    public boolean isVisible() {
+        return this.visible;
+    }
+
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
     }
 }

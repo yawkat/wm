@@ -4,12 +4,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.concurrent.ThreadSafe;
-import lombok.Getter;
 
 /**
  * @author yawkat
  */
-@Getter
 @ThreadSafe
 final class Anchor implements Positioned {
     private int x;
@@ -53,5 +51,17 @@ final class Anchor implements Positioned {
             this.y = y;
             invokeGeometryListeners();
         }
+    }
+
+    public int getX() {
+        return this.x;
+    }
+
+    public int getY() {
+        return this.y;
+    }
+
+    public Set<Runnable> getGeometryListeners() {
+        return this.geometryListeners;
     }
 }

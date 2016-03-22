@@ -18,13 +18,13 @@ import java.util.Map;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 /**
  * @author yawkat
  */
-@Slf4j
 public class PasswordManager {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(PasswordManager.class);
     @Inject TacConfig tacConfig;
     @Inject DockConfig dockConfig;
     @Inject PasswordConfig passwordConfig;
@@ -197,7 +197,7 @@ public class PasswordManager {
                 Stream<PasswordEntry> entries = holder.getPasswords().getPasswords()
                         .stream()
                         .map(at.yawk.password.model.PasswordEntry::getName)
-                        .filter(name -> Util.containsIgnoreCaseAscii(name, search))
+                        .filter(name -> Util.INSTANCE.containsIgnoreCaseAscii(name, search))
                         .sorted(String.CASE_INSENSITIVE_ORDER)
                         .map(name -> this.entries.computeIfAbsent(name, n -> new PasswordEntry(this, n)));
                 ui.setEntries(entries);

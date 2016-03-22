@@ -17,15 +17,15 @@ import java.util.Map;
 import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 /**
  * @author yawkat
  */
 @Singleton
-@Slf4j
 public class Launcher {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(Launcher.class);
     @Inject TacConfig tacConfig;
     @Inject DockConfig dockConfig;
     @Inject LauncherConfig launcherConfig;
@@ -171,9 +171,9 @@ public class Launcher {
             }
             ui.setEntries(entryStream.filter(e -> {
                 if (searchMode) {
-                    return Util.containsIgnoreCaseAscii(e.getDescriptor().getTitle(), filter);
+                    return Util.INSTANCE.containsIgnoreCaseAscii(e.getDescriptor().getTitle(), filter);
                 } else {
-                    return Util.startsWithIgnoreCaseAscii(e.getDescriptor().getTitle(), filter);
+                    return Util.INSTANCE.startsWithIgnoreCaseAscii(e.getDescriptor().getTitle(), filter);
                 }
             }));
         }

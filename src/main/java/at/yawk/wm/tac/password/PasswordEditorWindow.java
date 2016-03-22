@@ -2,13 +2,13 @@ package at.yawk.wm.tac.password;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 /**
  * @author yawkat
  */
-@Slf4j
 class PasswordEditorWindow extends TextEditorWindow {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(PasswordEditorWindow.class);
     private final PasswordManager manager;
     private final at.yawk.password.model.PasswordEntry entry;
     private final PasswordHolder.HolderClaim claim;

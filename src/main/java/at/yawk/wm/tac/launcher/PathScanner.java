@@ -9,13 +9,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 /**
  * @author yawkat
  */
-@Slf4j
 class PathScanner {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(PathScanner.class);
     private final List<Path> path;
     private List<String> applications;
 

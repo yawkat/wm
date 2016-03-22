@@ -10,17 +10,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 import javax.inject.Singleton;
-import lombok.extern.slf4j.Slf4j;
 import org.freedesktop.xcb.*;
+import org.slf4j.Logger;
 import xcb4j.LibXcbLoader;
 
 /**
  * @author yawkat
  */
 @Singleton
-@Slf4j
 public class XcbConnector implements Resource {
     private static final boolean DEBUG_ERRORS = false;
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(XcbConnector.class);
 
     static { LibXcbLoader.load(); }
 

@@ -12,7 +12,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
-import lombok.Value;
 
 /**
  * @author yawkat
@@ -28,10 +27,50 @@ class AnimationBuilder {
         EMPTY_FRAME.setData(new byte[0]);
     }
 
-    @Value
     private static class ImageHolder {
         long time;
         BufferedImage image;
+
+        @java.beans.ConstructorProperties({ "time", "image" })
+        public ImageHolder(long time, BufferedImage image) {
+            this.time = time;
+            this.image = image;
+        }
+
+        public long getTime() {
+            return this.time;
+        }
+
+        public BufferedImage getImage() {
+            return this.image;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) { return true; }
+            if (!(o instanceof ImageHolder)) { return false; }
+            final ImageHolder other = (ImageHolder) o;
+            if (this.time != other.time) { return false; }
+            final Object this$image = this.image;
+            final Object other$image = other.image;
+            if (this$image == null ? other$image != null : !this$image.equals(other$image)) { return false; }
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final long $time = this.time;
+            result = result * PRIME + (int) ($time >>> 32 ^ $time);
+            final Object $image = this.image;
+            result = result * PRIME + ($image == null ? 0 : $image.hashCode());
+            return result;
+        }
+
+        public String toString() {
+            return "at.yawk.wm.wallpaper.animate.AnimationBuilder.ImageHolder(time=" + this.time + ", image=" +
+                   this.image +
+                   ")";
+        }
     }
 
     /**
@@ -52,7 +91,7 @@ class AnimationBuilder {
      * The number represents the milliseconds when to show the frame. Every image must have the same size.
      */
     public static AnimatedWallpaper loadDirectory(Path animationDirectory) throws IOException {
-        BufferedImage base = Util.loadImage(animationDirectory.resolve("base.png"));
+        BufferedImage base = Util.INSTANCE.loadImage(animationDirectory.resolve("base.png"));
 
         AnimatedWallpaper wallpaper = new AnimatedWallpaper();
         wallpaper.setBaseFrame(createFrame(base, null, 0, 0, base.getWidth(), base.getHeight()));
@@ -67,7 +106,7 @@ class AnimationBuilder {
             Matcher matcher = framePattern.matcher(path.getFileName().toString());
             if (matcher.matches()) {
                 long time = Long.parseUnsignedLong(matcher.group(2));
-                ImageHolder holder = new ImageHolder(time, Util.loadImage(path));
+                ImageHolder holder = new ImageHolder(time, Util.INSTANCE.loadImage(path));
                 (matcher.group(1).equals("start") ? start : stop).add(holder);
             }
         }

@@ -1,6 +1,5 @@
 package at.yawk.wm.x;
 
-import lombok.Getter;
 import org.freedesktop.xcb.LibXcb;
 
 /**
@@ -10,8 +9,8 @@ public class PixMap extends AbstractResource implements PixMapArea {
     final XcbConnector connector;
     final ColorMap colorMap;
     final int id;
-    @Getter final int width;
-    @Getter final int height;
+    final int width;
+    final int height;
 
     final ResourceSet resources = new ResourceSet();
 
@@ -48,5 +47,13 @@ public class PixMap extends AbstractResource implements PixMapArea {
     @Override
     public PixMapArea getArea(int x, int y, int width, int height) {
         return new PixMapAreaImpl(this, x, y, width, height);
+    }
+
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
     }
 }

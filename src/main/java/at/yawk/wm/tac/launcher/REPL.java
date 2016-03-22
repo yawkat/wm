@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-import lombok.Value;
 
 /**
  * @author yawkat
@@ -97,9 +96,46 @@ class REPL {
         }
     }
 
-    @Value
     private static class Result {
         int code;
         String message;
+
+        @java.beans.ConstructorProperties({ "code", "message" })
+        public Result(int code, String message) {
+            this.code = code;
+            this.message = message;
+        }
+
+        public int getCode() {
+            return this.code;
+        }
+
+        public String getMessage() {
+            return this.message;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) { return true; }
+            if (!(o instanceof Result)) { return false; }
+            final Result other = (Result) o;
+            if (this.code != other.code) { return false; }
+            final Object this$message = this.message;
+            final Object other$message = other.message;
+            if (this$message == null ? other$message != null : !this$message.equals(other$message)) { return false; }
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            result = result * PRIME + this.code;
+            final Object $message = this.message;
+            result = result * PRIME + ($message == null ? 0 : $message.hashCode());
+            return result;
+        }
+
+        public String toString() {
+            return "at.yawk.wm.tac.launcher.REPL.Result(code=" + this.code + ", message=" + this.message + ")";
+        }
     }
 }

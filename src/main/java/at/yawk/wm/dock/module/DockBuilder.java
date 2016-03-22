@@ -13,14 +13,14 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 /**
  * @author yawkat
  */
 @Singleton
-@Slf4j
 public class DockBuilder implements RenderElf {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(DockBuilder.class);
     @Inject DockConfig config;
     @Inject Screen screen;
     @Inject GlobalResourceRegistry globalResourceRegistry;

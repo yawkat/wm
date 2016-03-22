@@ -7,17 +7,14 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import javax.annotation.Nullable;
-import lombok.Getter;
-import lombok.ToString;
 
 /**
  * @author yawkat
  */
-@ToString(of = "style")
 public class GlyphFont {
     private static final char GLYPH_FILE_LENGTH = 256;
 
-    @Getter private final FontStyle style;
+    private final FontStyle style;
     @Nullable private final Path cacheRoot;
 
     private byte cellWidth;
@@ -117,5 +114,13 @@ public class GlyphFont {
             height = Math.max(height, glyphFile.getHeight(c));
         }
         return new Dimension(width, height);
+    }
+
+    public String toString() {
+        return "at.yawk.wm.x.font.GlyphFont(style=" + this.style + ")";
+    }
+
+    public FontStyle getStyle() {
+        return this.style;
     }
 }

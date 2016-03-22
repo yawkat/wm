@@ -4,14 +4,14 @@ import at.yawk.dbus.client.DbusClient;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import javax.inject.Singleton;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 /**
  * @author yawkat
  */
 @Singleton
-@Slf4j
 public class Dbus extends AbstractModule {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(Dbus.class);
     private final DbusClient client = new DbusClient();
 
     @Override

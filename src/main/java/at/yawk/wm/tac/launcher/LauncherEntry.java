@@ -3,16 +3,15 @@ package at.yawk.wm.tac.launcher;
 import at.yawk.wm.tac.Entry;
 import at.yawk.wm.tac.EntryState;
 import at.yawk.wm.tac.TacUI;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 /**
  * @author yawkat
  */
-@Slf4j
 class LauncherEntry extends Entry {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(LauncherEntry.class);
     protected final TacUI ui;
-    @Getter private final EntryDescriptor descriptor;
+    private final EntryDescriptor descriptor;
     private final ApplicationRunner applicationRunner;
 
     public LauncherEntry(TacUI ui, EntryDescriptor descriptor, ApplicationRunner applicationRunner) {
@@ -26,5 +25,9 @@ class LauncherEntry extends Entry {
     public void onUsed() {
         ui.close();
         applicationRunner.run(descriptor.getCommand());
+    }
+
+    public EntryDescriptor getDescriptor() {
+        return this.descriptor;
     }
 }

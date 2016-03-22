@@ -4,12 +4,10 @@ import at.yawk.wm.x.image.LocalImage;
 import at.yawk.wm.x.image.LocalImageType;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import lombok.Getter;
 
 /**
  * @author yawkat
  */
-@Getter
 public class ZFormatImage extends LocalImage {
     public static final LocalImageType<ZFormatImage> TYPE = (width, height) ->
             new ZFormatImage(width, height,
@@ -74,5 +72,9 @@ public class ZFormatImage extends LocalImage {
             return (I) copy;
         }
         return super.copy(copyType);
+    }
+
+    public ByteBuffer getBuffer() {
+        return this.buffer;
     }
 }

@@ -12,9 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 /**
  * Holds password info until a timeout occurs (auto password lock). Holders have two states: <i>Claimed</i> and
@@ -22,9 +20,8 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author yawkat
  */
-@Slf4j
-@RequiredArgsConstructor
 class PasswordHolder {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(PasswordHolder.class);
     private final LocalStorageProvider storageProvider;
     private final Scheduler scheduler;
     private final ObjectMapper objectMapper;
@@ -38,6 +35,16 @@ class PasswordHolder {
 
     private int claimCount = 0;
     private Holder holder = null;
+
+    @java.beans.ConstructorProperties({ "storageProvider", "scheduler", "objectMapper", "remote", "timeout" })
+    public PasswordHolder(LocalStorageProvider storageProvider, Scheduler scheduler, ObjectMapper objectMapper,
+                          String remote, int timeout) {
+        this.storageProvider = storageProvider;
+        this.scheduler = scheduler;
+        this.objectMapper = objectMapper;
+        this.remote = remote;
+        this.timeout = timeout;
+    }
 
     /**
      * Try to claim this holder without supplying a password.
@@ -173,11 +180,59 @@ class PasswordHolder {
         };
     }
 
-    @Value
     private static class Holder {
         private final PasswordClient client;
         private final PasswordBlob blob;
         private final boolean fromLocalStorage;
+
+        @java.beans.ConstructorProperties({ "client", "blob", "fromLocalStorage" })
+        public Holder(PasswordClient client, PasswordBlob blob, boolean fromLocalStorage) {
+            this.client = client;
+            this.blob = blob;
+            this.fromLocalStorage = fromLocalStorage;
+        }
+
+        public PasswordClient getClient() {
+            return this.client;
+        }
+
+        public PasswordBlob getBlob() {
+            return this.blob;
+        }
+
+        public boolean isFromLocalStorage() {
+            return this.fromLocalStorage;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) { return true; }
+            if (!(o instanceof Holder)) { return false; }
+            final Holder other = (Holder) o;
+            final Object this$client = this.client;
+            final Object other$client = other.client;
+            if (this$client == null ? other$client != null : !this$client.equals(other$client)) { return false; }
+            final Object this$blob = this.blob;
+            final Object other$blob = other.blob;
+            if (this$blob == null ? other$blob != null : !this$blob.equals(other$blob)) { return false; }
+            if (this.fromLocalStorage != other.fromLocalStorage) { return false; }
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $client = this.client;
+            result = result * PRIME + ($client == null ? 0 : $client.hashCode());
+            final Object $blob = this.blob;
+            result = result * PRIME + ($blob == null ? 0 : $blob.hashCode());
+            result = result * PRIME + (this.fromLocalStorage ? 79 : 97);
+            return result;
+        }
+
+        public String toString() {
+            return "at.yawk.wm.tac.password.PasswordHolder.Holder(client=" + this.client + ", blob=" + this.blob +
+                   ", fromLocalStorage=" + this.fromLocalStorage + ")";
+        }
     }
 
     public interface HolderClaim {

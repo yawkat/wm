@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.Getter;
 
 /**
  * @author yawkat
@@ -32,7 +31,6 @@ public class TacUI extends AbstractResource implements Modal {
     private Graphics graphics;
 
     private List<EntryState> lastEntries = Collections.emptyList();
-    @Getter
     private List<Entry> entries = Collections.emptyList();
 
     private final GlyphFont primaryNormal;
@@ -155,5 +153,9 @@ public class TacUI extends AbstractResource implements Modal {
     public void addFeature(Feature feature) {
         feature.onAdd(this);
         features.add(feature);
+    }
+
+    public List<Entry> getEntries() {
+        return this.entries;
     }
 }

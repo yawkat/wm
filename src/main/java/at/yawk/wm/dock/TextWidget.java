@@ -6,13 +6,10 @@ import at.yawk.wm.x.icon.Icon;
 import java.awt.*;
 import java.util.Objects;
 import javax.annotation.Nullable;
-import lombok.AccessLevel;
-import lombok.Getter;
 
 /**
  * @author yawkat
  */
-@Getter
 public class TextWidget extends Widget {
     private String text;
     @Nullable private Icon icon;
@@ -29,13 +26,9 @@ public class TextWidget extends Widget {
         setText(text);
     }
 
-    @Getter(AccessLevel.NONE)
     private String layoutText;
-    @Getter(AccessLevel.NONE)
     private Dimension layoutTextBounds;
-    @Getter(AccessLevel.NONE)
     private int boxWidth;
-    @Getter(AccessLevel.NONE)
     private int boxHeight;
 
     @Override
@@ -126,5 +119,30 @@ public class TextWidget extends Widget {
             this.icon = icon;
             markDirty();
         }
+    }
+
+    public String getText() {
+        return this.text;
+    }
+
+    @Nullable
+    public Icon getIcon() {
+        return this.icon;
+    }
+
+    public GlyphFont getFont() {
+        return this.font;
+    }
+
+    public int getTextHeight() {
+        return this.textHeight;
+    }
+
+    public int getPaddingLeft() {
+        return this.paddingLeft;
+    }
+
+    public int getPaddingRight() {
+        return this.paddingRight;
     }
 }

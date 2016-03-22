@@ -3,16 +3,13 @@ package at.yawk.wm.dock;
 import at.yawk.wm.x.Graphics;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
 
 /**
  * @author yawkat
  */
 public class FlowCompositeWidget extends Widget {
-    @Getter
     private final List<Widget> widgets = new ArrayList<>();
 
-    @Getter
     private final Anchor anchor = new Anchor();
 
     @Override
@@ -59,5 +56,13 @@ public class FlowCompositeWidget extends Widget {
         for (Widget widget : widgets) {
             widget.doRender(graphics);
         }
+    }
+
+    public List<Widget> getWidgets() {
+        return this.widgets;
+    }
+
+    public Anchor getAnchor() {
+        return this.anchor;
     }
 }
