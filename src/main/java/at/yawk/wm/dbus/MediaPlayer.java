@@ -1,6 +1,7 @@
 package at.yawk.wm.dbus;
 
 import at.yawk.dbus.client.annotation.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author yawkat
@@ -9,6 +10,7 @@ import at.yawk.dbus.client.annotation.*;
 @Destination("org.mpris.MediaPlayer2.spotify")
 @ObjectPath("/org/mpris/MediaPlayer2")
 @Interface("org.mpris.MediaPlayer2.Player")
+@Timeout(value = 1, unit = TimeUnit.SECONDS)
 public interface MediaPlayer {
     @Call
     @Member("PlayPause")

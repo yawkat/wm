@@ -157,7 +157,7 @@ launcher:
     subl:
       command: ["subl"]
     intellij:
-      command: ["intellij-idea-ultimate-edition"]
+      command: ["idea-ue-eap"]
     android-studio:
       command: ["android-studio"]
     genpw16:
@@ -176,11 +176,13 @@ launcher:
       command: ["steven", "yawkat"]
     steven jonalu:
       command: ["steven", "jonas.konrad@googlemail.com"]
+    windows:
+      command: ["/home/yawkat/windows.sh"]
   shutdownCommand: ["systemctl", "poweroff"]
 password: 
   cacheDir: "/home/yawkat/.local/share/password"
   timeout: 600
-  remote: http://pw.yawk.at
+  remote: https://pw.yawk.at
   editorBackground: '#002b36'
   editorFont: base0
   editorWidth: 400
@@ -190,7 +192,7 @@ wallpaper:
   input: wallpaper
   backgroundColor: '#002b36'
 paste: 
-  remote: http://s.yawk.at
+  remote: https://s.yawk.at
 weather:
   location: Erlangen,de
   markColor: '#586e75'

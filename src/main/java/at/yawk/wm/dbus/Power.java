@@ -1,6 +1,7 @@
 package at.yawk.wm.dbus;
 
 import at.yawk.dbus.client.annotation.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author yawkat
@@ -9,6 +10,7 @@ import at.yawk.dbus.client.annotation.*;
 @Destination("org.freedesktop.UPower")
 @ObjectPath("/org/freedesktop/UPower/devices/DisplayDevice")
 @Interface("org.freedesktop.UPower.Device")
+@Timeout(value = 1, unit = TimeUnit.SECONDS)
 public interface Power {
     @Interface("org.freedesktop.DBus.Properties")
     @Member("PropertiesChanged")
