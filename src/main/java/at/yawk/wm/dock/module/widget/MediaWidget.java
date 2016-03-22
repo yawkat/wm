@@ -6,11 +6,9 @@ import at.yawk.wm.dock.FlowCompositeWidget;
 import at.yawk.wm.dock.IconWidget;
 import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.dock.module.DockWidget;
-import at.yawk.wm.dock.module.Periodic;
 import at.yawk.wm.dock.module.RenderElf;
 import at.yawk.wm.hl.HerbstClient;
 import at.yawk.wm.style.FontManager;
-import at.yawk.wm.x.icon.IconDescriptor;
 import at.yawk.wm.x.icon.IconManager;
 import java.util.concurrent.Executor;
 import javax.inject.Inject;
@@ -28,7 +26,7 @@ public class MediaWidget extends FlowCompositeWidget {
     @Inject FontManager fontManager;
     @Inject HerbstClient herbstClient;
 
-    private IconWidget playing;
+    private IconWidget playing; // todo
 
     @Override
     public void init() {
@@ -36,11 +34,6 @@ public class MediaWidget extends FlowCompositeWidget {
         playing.setColor(fontManager.resolve(config.getMediaFont()));
         playing.after(getAnchor(), Direction.HORIZONTAL);
         addWidget(playing);
-
-        mediaPlayer.onPropertiesChanged(() -> executor.execute(() -> {
-            update();
-            renderElf.render();
-        }));
 
         herbstClient.addKeyHandler("Mod4-Pause", mediaPlayer::playPause);
         herbstClient.addKeyHandler("Mod4-Insert", mediaPlayer::previous);
@@ -50,16 +43,5 @@ public class MediaWidget extends FlowCompositeWidget {
         herbstClient.addKeyHandler("XF86AudioStop", mediaPlayer::stop);
         herbstClient.addKeyHandler("XF86AudioPrevious", mediaPlayer::previous);
         herbstClient.addKeyHandler("XF86AudioNext", mediaPlayer::next);
-    }
-
-    @Periodic(value = 30, render = true)
-    void update() {
-        IconDescriptor icon;
-        if (mediaPlayer.getPlaybackStatus().equals("Playing")) {
-            icon = config.getMediaPlaying();
-        } else {
-            icon = config.getMediaPaused();
-        }
-        playing.setIcon(iconManager.getIconOrNull(icon));
     }
 }

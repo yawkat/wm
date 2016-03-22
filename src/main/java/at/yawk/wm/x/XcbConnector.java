@@ -56,6 +56,7 @@ public class XcbConnector implements Resource {
         for (int i = 0; i < screenId; i++) {
             LibXcb.xcb_screen_next(itr);
         }
+        System.out.println("screenId: " + screenId);
         screen = new Screen(this, itr.getData());
         log.debug("Screen: width={} height={} depth={}",
                   screen.screen.getWidth_in_pixels(),
