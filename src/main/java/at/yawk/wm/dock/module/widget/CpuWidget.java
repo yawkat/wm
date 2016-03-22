@@ -8,20 +8,17 @@ import at.yawk.wm.dock.module.FontSource;
 import at.yawk.wm.dock.module.Periodic;
 import at.yawk.wm.style.FontManager;
 import at.yawk.wm.x.icon.IconManager;
-import at.yawk.yarn.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
  * @author yawkat
  */
-@Component
 @DockWidget(position = DockWidget.Position.RIGHT, priority = 100)
 public class CpuWidget extends TextWidget {
     private static final Path STAT_PATH = Paths.get("/proc/stat");
@@ -35,8 +32,8 @@ public class CpuWidget extends TextWidget {
     private long lastTime = 0;
     private long lastShares = 0;
 
-    @PostConstruct
-    void initIcon() {
+    @Override
+    public void init() {
         setIcon(iconManager.getIconOrNull(dockConfig.getCpuIcon()));
     }
 

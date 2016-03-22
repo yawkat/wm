@@ -1,17 +1,17 @@
 package at.yawk.wm.style;
 
-import at.yawk.yarn.Component;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * @author yawkat
  */
-@Component
+@Singleton
 public class FontManager {
     private Map<FontDescriptor, FontStyle> fonts;
 

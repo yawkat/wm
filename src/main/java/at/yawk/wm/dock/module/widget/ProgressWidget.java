@@ -7,7 +7,6 @@ import at.yawk.wm.dock.module.DockWidget;
 import at.yawk.wm.progress.ProgressManager;
 import at.yawk.wm.progress.ProgressTask;
 import at.yawk.wm.x.Graphics;
-import at.yawk.yarn.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +15,6 @@ import javax.inject.Inject;
 /**
  * @author yawkat
  */
-@Component
 @DockWidget(position = DockWidget.Position.RIGHT, priority = Integer.MAX_VALUE)
 public class ProgressWidget extends Widget {
     private final List<ProgressTask> tasks = Collections.synchronizedList(new ArrayList<>());

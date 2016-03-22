@@ -1,11 +1,11 @@
 package at.yawk.wm.tac;
 
-import at.yawk.yarn.Component;
+import javax.inject.Singleton;
 
 /**
  * @author yawkat
  */
-@Component
+@Singleton
 public class ModalRegistry {
     private Modal currentModal = null;
 

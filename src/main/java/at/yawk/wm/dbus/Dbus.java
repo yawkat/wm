@@ -1,18 +1,22 @@
 package at.yawk.wm.dbus;
 
 import at.yawk.dbus.client.DbusClient;
-import at.yawk.yarn.Component;
-import at.yawk.yarn.Provides;
-import javax.annotation.PostConstruct;
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
-@Component
+@Singleton
 @Slf4j
-public class Dbus {
+public class Dbus extends AbstractModule {
     private final DbusClient client = new DbusClient();
+
+    @Override
+    protected void configure() {
+    }
 
     @Provides
     MediaPlayer mediaPlayer() {
@@ -29,8 +33,7 @@ public class Dbus {
         return implement(Power.class);
     }
 
-    @PostConstruct
-    void startListeners() {
+    public void connect() {
         try {
             client.connectSystem();
             client.connectSession();

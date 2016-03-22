@@ -4,19 +4,23 @@ import at.yawk.wm.dock.TextWidget;
 import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.dock.module.DockWidget;
 import at.yawk.wm.dock.module.FontSource;
-import at.yawk.wm.hl.Subscribe;
-import at.yawk.wm.hl.TitleEvent;
-import at.yawk.yarn.Component;
+import at.yawk.wm.hl.HerbstEventBus;
 import javax.inject.Inject;
 
 /**
  * @author yawkat
  */
-@Component
 @DockWidget(position = DockWidget.Position.LEFT, priority = 100)
 public class TitleWidget extends TextWidget {
+    @Inject HerbstEventBus eventBus;
+
     {
         setZ(-1000);
+    }
+
+    @Override
+    public void init() {
+        eventBus.addTitleEventHandlers(event -> setText(event.getTitle()));
     }
 
     @Inject
@@ -24,8 +28,4 @@ public class TitleWidget extends TextWidget {
         setFont(fontSource.getFont(config.getWindowTitleFont()));
     }
 
-    @Subscribe
-    public void onTagEvent(TitleEvent event) {
-        setText(event.getTitle());
-    }
 }

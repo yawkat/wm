@@ -8,7 +8,6 @@ import at.yawk.wm.dock.module.DockWidget;
 import at.yawk.wm.dock.module.FontSource;
 import at.yawk.wm.dock.module.Periodic;
 import at.yawk.wm.style.FontManager;
-import at.yawk.yarn.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,7 +18,6 @@ import javax.inject.Inject;
 /**
  * @author yawkat
  */
-@Component
 @DockWidget(position = DockWidget.Position.RIGHT, priority = 99)
 public class MemoryWidget extends FlowCompositeWidget {
     private static final Path MEMINFO_PATH = Paths.get("/proc/meminfo");

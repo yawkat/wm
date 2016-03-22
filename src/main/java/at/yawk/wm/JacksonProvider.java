@@ -1,10 +1,8 @@
-package at.yawk.wm.json;
+package at.yawk.wm;
 
 import at.yawk.wm.style.FontDescriptor;
 import at.yawk.wm.style.NamedFontDescriptor;
 import at.yawk.wm.x.icon.IconDescriptor;
-import at.yawk.yarn.Component;
-import at.yawk.yarn.Provides;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.*;
@@ -16,17 +14,17 @@ import com.fasterxml.jackson.datatype.jdk7.Jdk7Module;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import java.awt.*;
 import java.io.IOException;
+import lombok.experimental.UtilityClass;
 
 /**
  * @author yawkat
  */
-@Component
-public class JacksonProvider {
+@UtilityClass
+class JacksonProvider {
     private static final char[] ZEROES = { '0', '0', '0', '0', '0', '0' };
 
-    private final ObjectMapper yaml = new ObjectMapper(new YAMLFactory());
-
-    {
+    public static ObjectMapper createYamlObjectMapper() {
+        ObjectMapper yaml = new ObjectMapper(new YAMLFactory());
         SimpleModule module = new SimpleModule();
         module.addSerializer(Color.class, new StdSerializer<Color>(Color.class) {
             @Override
@@ -83,11 +81,6 @@ public class JacksonProvider {
         yaml.registerModule(new Jdk7Module());
         yaml.registerModule(new JSR310Module());
         yaml.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
-
-    @Provides
-    public ObjectMapper yaml() {
         return yaml;
     }
-
 }

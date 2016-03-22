@@ -2,8 +2,6 @@ package at.yawk.wm.x;
 
 import at.yawk.wm.x.font.FontRenderer;
 import at.yawk.wm.x.font.GlyphFont;
-import at.yawk.yarn.Component;
-import at.yawk.yarn.Provides;
 import java.lang.reflect.Proxy;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -11,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
+import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import org.freedesktop.xcb.*;
 import xcb4j.LibXcbLoader;
@@ -18,7 +17,7 @@ import xcb4j.LibXcbLoader;
 /**
  * @author yawkat
  */
-@Component
+@Singleton
 @Slf4j
 public class XcbConnector implements Resource {
     private static final boolean DEBUG_ERRORS = false;
@@ -40,11 +39,7 @@ public class XcbConnector implements Resource {
     final Map<GlyphFont, FontRenderer> fontRenderers =
             Collections.synchronizedMap(new WeakHashMap<>());
 
-    public XcbConnector() {
-        open();
-    }
-
-    private void open() {
+    public void open() {
         log.info("Connecting to X server...");
         ByteBuffer ptr = ByteBuffer.allocateDirect(4).order(ByteOrder.nativeOrder());
         connection = LibXcb.xcb_connect(null, ptr);
@@ -108,17 +103,14 @@ public class XcbConnector implements Resource {
         close();
     }
 
-    @Provides
     public SWIGTYPE_p_xcb_connection_t getConnection() {
         return connection;
     }
 
-    @Provides
     public Screen getScreen() {
         return screen;
     }
 
-    @Provides
     public GlobalResourceRegistry globalResourceRegistry() {
         return globalResourceRegistry;
     }

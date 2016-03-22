@@ -9,12 +9,9 @@ import at.yawk.wm.style.FontManager;
 import at.yawk.wm.tac.*;
 import at.yawk.wm.x.XcbConnector;
 import at.yawk.wm.x.font.FontCache;
-import at.yawk.yarn.Component;
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author yawkat
  */
-@Component
 @Slf4j
 public class PasswordManager {
     @Inject TacConfig tacConfig;
@@ -37,6 +33,7 @@ public class PasswordManager {
     @Inject XcbConnector connector;
     @Inject FontCache fontCache;
     @Inject FontManager fontManager;
+    @Inject HerbstClient herbstClient;
 
     PasswordHolder holder;
 
@@ -57,8 +54,7 @@ public class PasswordManager {
         );
     }
 
-    @Inject
-    void bind(HerbstClient herbstClient) {
+    public void bind() {
         herbstClient.addKeyHandler("Mod4-minus", () -> {
             if (!modalRegistry.closeCurrent()) {
                 open();

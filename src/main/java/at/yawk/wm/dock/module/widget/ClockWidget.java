@@ -5,7 +5,6 @@ import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.dock.module.DockWidget;
 import at.yawk.wm.dock.module.FontSource;
 import at.yawk.wm.dock.module.Periodic;
-import at.yawk.yarn.Component;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +13,6 @@ import javax.inject.Inject;
 /**
  * @author yawkat
  */
-@Component
 @DockWidget(position = DockWidget.Position.RIGHT, priority = 200)
 public class ClockWidget extends TextWidget {
     private DateTimeFormatter formatter;

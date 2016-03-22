@@ -12,25 +12,26 @@ import at.yawk.wm.hl.HerbstClient;
 import at.yawk.wm.style.FontManager;
 import at.yawk.wm.x.icon.IconDescriptor;
 import at.yawk.wm.x.icon.IconManager;
-import at.yawk.yarn.Component;
 import java.util.concurrent.Executor;
 import javax.inject.Inject;
 
 /**
  * @author yawkat
  */
-@Component
 @DockWidget(position = DockWidget.Position.RIGHT, priority = 210)
 public class MediaWidget extends FlowCompositeWidget {
     @Inject MediaPlayer mediaPlayer;
     @Inject IconManager iconManager;
     @Inject DockConfig config;
     @Inject RenderElf renderElf;
+    @Inject Executor executor;
+    @Inject FontManager fontManager;
+    @Inject HerbstClient herbstClient;
 
     private IconWidget playing;
 
-    @Inject
-    void init(Executor executor, FontManager fontManager) {
+    @Override
+    public void init() {
         playing = new IconWidget();
         playing.setColor(fontManager.resolve(config.getMediaFont()));
         playing.after(getAnchor(), Direction.HORIZONTAL);
@@ -40,10 +41,7 @@ public class MediaWidget extends FlowCompositeWidget {
             update();
             renderElf.render();
         }));
-    }
 
-    @Inject
-    void bindKeys(HerbstClient herbstClient) {
         herbstClient.addKeyHandler("Mod4-Pause", mediaPlayer::playPause);
         herbstClient.addKeyHandler("Mod4-Insert", mediaPlayer::previous);
         herbstClient.addKeyHandler("Mod4-Delete", mediaPlayer::next);

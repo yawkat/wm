@@ -1,6 +1,5 @@
 package at.yawk.wm.tac.launcher;
 
-import at.yawk.yarn.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,13 +9,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
 @Slf4j
-@Component
+@Singleton
 public class ApplicationRunner {
     private final AtomicInteger processCounter = new AtomicInteger(0);
 

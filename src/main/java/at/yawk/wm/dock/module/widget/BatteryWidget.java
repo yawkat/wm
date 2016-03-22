@@ -8,7 +8,6 @@ import at.yawk.wm.style.FontManager;
 import at.yawk.wm.x.icon.Icon;
 import at.yawk.wm.x.icon.IconDescriptor;
 import at.yawk.wm.x.icon.IconManager;
-import at.yawk.yarn.Component;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Executor;
@@ -18,7 +17,6 @@ import lombok.Data;
 /**
  * @author yawkat
  */
-@Component
 @DockWidget(position = DockWidget.Position.RIGHT, priority = -100)
 public class BatteryWidget extends FlowCompositeWidget {
     @Inject DockConfig config;

@@ -34,6 +34,9 @@ public abstract class Widget implements Positioned {
     final Set<Runnable> geometryListeners = Collections.synchronizedSet(new HashSet<>());
     final Set<Widget> layoutDependencies = new HashSet<>();
 
+    public void init() {
+    }
+
     public void markDirty() {
         dirty = true;
         if (owner != null) {

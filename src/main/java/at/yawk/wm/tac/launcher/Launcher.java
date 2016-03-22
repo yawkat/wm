@@ -7,7 +7,6 @@ import at.yawk.wm.tac.*;
 import at.yawk.wm.wallpaper.animate.AnimatedWallpaperManager;
 import at.yawk.wm.x.XcbConnector;
 import at.yawk.wm.x.font.FontCache;
-import at.yawk.yarn.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -17,12 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
-@Component
+@Singleton
 @Slf4j
 public class Launcher {
 
@@ -35,12 +35,12 @@ public class Launcher {
     @Inject ApplicationRunner applicationRunner;
     @Inject ObjectMapper objectMapper;
     @Inject FontCache fontCache;
+    @Inject HerbstClient herbstClient;
 
     private final PathScanner pathScanner = new PathScanner();
     private final REPL repl = new REPL();
 
-    @Inject
-    public void bind(HerbstClient herbstClient) {
+    public void bind() {
         herbstClient.addKeyHandler("Mod4-plus", () -> {
             if (!modalRegistry.closeCurrent()) {
                 open();
@@ -48,7 +48,7 @@ public class Launcher {
         });
     }
 
-    public void open() {
+    private void open() {
         if (!pathScanner.isScanned()) {
             rescan();
         }

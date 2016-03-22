@@ -1,33 +1,32 @@
 package at.yawk.wm.hl;
 
-import at.yawk.yarn.AcceptMethods;
-import at.yawk.yarn.AnnotatedWith;
-import at.yawk.yarn.Component;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
-import javax.inject.Inject;
+import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
 @Slf4j
-@Component
+@Singleton
 public class HerbstEventBus {
-    @AnnotatedWith(Subscribe.class)
-    @AcceptMethods
-    @Inject
-    List<ShutdownEvent.Handler> shutdownEventHandlers;
+    private final List<ShutdownEvent.Handler> shutdownEventHandlers = new ArrayList<>();
+    private final List<TagEvent.Handler> tagEventHandlers = new ArrayList<>();
+    private final List<TitleEvent.Handler> titleEventHandlers = new ArrayList<>();
 
-    @AnnotatedWith(Subscribe.class)
-    @AcceptMethods
-    @Inject
-    List<TagEvent.Handler> tagEventHandlers;
+    public void addShutdownEventHandler(ShutdownEvent.Handler handler) {
+        shutdownEventHandlers.add(handler);
+    }
 
-    @AnnotatedWith(Subscribe.class)
-    @AcceptMethods
-    @Inject
-    List<TitleEvent.Handler> titleEventHandlers;
+    public void addTagEventHandler(TagEvent.Handler handler) {
+        tagEventHandlers.add(handler);
+    }
+
+    public void addTitleEventHandlers(TitleEvent.Handler handler) {
+        titleEventHandlers.add(handler);
+    }
 
     void post(ShutdownEvent shutdownEvent) {
         forEach(shutdownEventHandlers, shutdownEvent, ShutdownEvent.Handler::handle);

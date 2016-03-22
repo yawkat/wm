@@ -20,13 +20,6 @@
     </repositories>
 
     <dependencies>
-        <!-- Yarn -->
-        <dependency>
-            <groupId>at.yawk.yarn</groupId>
-            <artifactId>yarn</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
         <!-- Libraries -->
         <dependency>
             <groupId>io.netty</groupId>
@@ -80,9 +73,9 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>at.yawk.hawo.traffic</groupId>
-            <artifactId>hawo-traffic</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>4.0</version>
         </dependency>
 
         <!-- Annotation utilities -->
@@ -153,20 +146,6 @@
                         </filter>
                     </filters>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>at.yawk.yarn</groupId>
-                <artifactId>yarn-maven-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
-
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

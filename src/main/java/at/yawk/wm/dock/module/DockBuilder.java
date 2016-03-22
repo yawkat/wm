@@ -6,19 +6,19 @@ import at.yawk.wm.style.FontManager;
 import at.yawk.wm.x.GlobalResourceRegistry;
 import at.yawk.wm.x.Screen;
 import at.yawk.wm.x.Window;
-import at.yawk.yarn.Component;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
-@Component
+@Singleton
 @Slf4j
 public class DockBuilder implements RenderElf {
     @Inject DockConfig config;
@@ -38,7 +38,7 @@ public class DockBuilder implements RenderElf {
 
         setupWidgets(bootstrap);
 
-        bootstrap.dockStartHandlers.forEach(java.lang.Runnable::run);
+        bootstrap.getDockStartListeners().forEach(Runnable::run);
 
         dock.show();
         log.info("Dock initialized");
@@ -80,7 +80,7 @@ public class DockBuilder implements RenderElf {
     private void setupWidgets(DockBootstrap bootstrap) {
         PeriodBuilder periodBuilder = new PeriodBuilder(this);
 
-        List<Widget> widgets = bootstrap.widgets;
+        List<Widget> widgets = bootstrap.getWidgets();
         log.info("Visiting {} widgets...", widgets.size());
         Collections.sort(widgets, Comparator.comparingInt(
                 w -> w.getClass().getAnnotation(DockWidget.class).priority()));
@@ -94,6 +94,8 @@ public class DockBuilder implements RenderElf {
             } else {
                 addRight(widget);
             }
+
+            widget.init();
 
             // hook methods
             for (Method method : widgetClass.getDeclaredMethods()) {

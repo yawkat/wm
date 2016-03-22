@@ -7,7 +7,6 @@ import at.yawk.wm.x.image.BufferedLocalImage;
 import at.yawk.wm.x.image.ByteArrayImage;
 import at.yawk.wm.x.image.LocalImage;
 import at.yawk.wm.x.image.SubImageView;
-import at.yawk.yarn.Component;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
@@ -18,8 +17,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import lombok.Value;
@@ -29,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author yawkat
  */
 @Slf4j
-@Component
+@Singleton
 public class IconManager {
     @Inject IconConfig config;
     @Inject Screen screen;
@@ -46,9 +45,8 @@ public class IconManager {
     private LocalImage image;
     private Map<ColorPair, PixMap> colorMaps = new ConcurrentHashMap<>();
 
-    @PostConstruct
     @SneakyThrows
-    void load() {
+    public void load() {
         descriptorIndices = new HashMap<>();
         Iterator<Map.Entry<IconDescriptor, Path>> iterator = config.getIcons().entrySet().stream()
                 .sorted(Comparator.comparing(e -> e.getKey().getId()))

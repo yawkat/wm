@@ -9,18 +9,18 @@ import at.yawk.wm.progress.ProgressManager;
 import at.yawk.wm.progress.SettableProgressTask;
 import at.yawk.wm.tac.ModalRegistry;
 import at.yawk.wm.x.XcbConnector;
-import at.yawk.yarn.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
-@Component
+@Singleton
 @Slf4j
 public class PasteManager {
     private PasteClient client;
@@ -29,6 +29,7 @@ public class PasteManager {
     @Inject XcbConnector connector;
     @Inject ModalRegistry modalRegistry;
     @Inject ProgressManager progressManager;
+    @Inject HerbstClient herbstClient;
 
     @Inject
     void load(Config pasteConfig) {
@@ -36,8 +37,7 @@ public class PasteManager {
         clipboardHelper = new ClipboardHelper(pasteConfig);
     }
 
-    @Inject
-    void setupKeys(HerbstClient herbstClient) {
+    public void setupKeys() {
         herbstClient.addKeyHandler("Mod4-numbersign", this::makeScreenshot);
         herbstClient.addKeyHandler("Mod4-Shift-numbersign", this::pasteFromClipboard);
     }

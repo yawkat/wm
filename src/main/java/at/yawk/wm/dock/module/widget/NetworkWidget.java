@@ -9,7 +9,6 @@ import at.yawk.wm.dock.TextWidget;
 import at.yawk.wm.dock.module.*;
 import at.yawk.wm.style.FontManager;
 import at.yawk.wm.x.icon.IconManager;
-import at.yawk.yarn.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,7 +19,6 @@ import javax.inject.Inject;
 /**
  * @author yawkat
  */
-@Component
 @DockWidget(position = DockWidget.Position.RIGHT, priority = 50)
 public class NetworkWidget extends FlowCompositeWidget {
     @Inject IconManager iconManager;

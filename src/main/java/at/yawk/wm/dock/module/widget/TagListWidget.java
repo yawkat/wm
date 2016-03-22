@@ -8,21 +8,16 @@ import at.yawk.wm.dock.module.DockWidget;
 import at.yawk.wm.dock.module.FontSource;
 import at.yawk.wm.dock.module.RenderElf;
 import at.yawk.wm.hl.HerbstClient;
-import at.yawk.wm.hl.Subscribe;
+import at.yawk.wm.hl.HerbstEventBus;
 import at.yawk.wm.hl.Tag;
-import at.yawk.wm.hl.TagEvent;
 import at.yawk.wm.style.FontDescriptor;
-import at.yawk.wm.style.FontStyle;
-import at.yawk.yarn.Component;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
  * @author yawkat
  */
-@Component
 @DockWidget(position = DockWidget.Position.LEFT)
 public class TagListWidget extends FlowCompositeWidget {
     private final List<TextWidget> tagWidgets = new ArrayList<>();
@@ -31,15 +26,12 @@ public class TagListWidget extends FlowCompositeWidget {
     @Inject FontSource fontSource;
     @Inject HerbstClient herbstClient;
     @Inject RenderElf renderElf;
+    @Inject HerbstEventBus herbstEventBus;
 
-    @PostConstruct
-    void init() {
+    @Override
+    public void init() {
         update();
-    }
-
-    @Subscribe
-    public void onTagEvent(TagEvent event) {
-        update();
+        herbstEventBus.addTagEventHandler(event -> update());
     }
 
     private void update() {

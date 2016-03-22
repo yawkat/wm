@@ -9,7 +9,7 @@ import lombok.Value;
 public class TitleEvent {
     String title;
 
-    interface Handler {
+    public interface Handler {
         void handle(TitleEvent event);
     }
 }

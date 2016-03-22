@@ -4,21 +4,20 @@ import at.yawk.wm.Scheduler;
 import at.yawk.wm.x.Window;
 import at.yawk.wm.x.XcbConnector;
 import at.yawk.wm.x.image.LocalImage;
-import at.yawk.yarn.Component;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
 import java.util.concurrent.Future;
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
-@Component
+@Singleton
 @Slf4j
 public class AnimatedWallpaperManager {
     @Inject XcbConnector connector;
@@ -27,9 +26,8 @@ public class AnimatedWallpaperManager {
 
     private Animator animator;
 
-    @PostConstruct
     @SneakyThrows
-    void start() {
+    public void start() {
         log.info("Initializing wallpaper...");
 
         AnimatedWallpaper wallpaper = null;

@@ -1,6 +1,5 @@
 package at.yawk.wm.dock.module;
 
-import at.yawk.wm.plot.WeatherPlot;
 import at.yawk.wm.style.FontDescriptor;
 import at.yawk.wm.style.FontTransition;
 import at.yawk.wm.x.icon.IconDescriptor;

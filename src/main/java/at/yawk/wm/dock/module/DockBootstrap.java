@@ -1,26 +1,54 @@
 package at.yawk.wm.dock.module;
 
 import at.yawk.wm.dock.Widget;
-import at.yawk.yarn.AcceptMethods;
-import at.yawk.yarn.AnnotatedWith;
-import at.yawk.yarn.Component;
+import at.yawk.wm.dock.module.feature.DockPadFeature;
+import at.yawk.wm.dock.module.feature.ScrollTagChange;
+import at.yawk.wm.dock.module.widget.*;
+import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 
 /**
  * @author yawkat
  */
-@Component
 public class DockBootstrap {
-    @AnnotatedWith(DockWidget.class)
-    @Inject List<Widget> widgets;
+    @Inject DockBuilder dock;
 
-    @AnnotatedWith(DockStart.class)
-    @AcceptMethods
-    @Inject List<Runnable> dockStartHandlers;
+    @Inject BatteryWidget batteryWidget;
+    @Inject ClockWidget clockWidget;
+    @Inject CpuWidget cpuWidget;
+    @Inject MediaWidget mediaWidget;
+    @Inject MemoryWidget memoryWidget;
+    @Inject NetworkWidget networkWidget;
+    @Inject ProgressWidget progressWidget;
+    @Inject TagListWidget tagListWidget;
+    @Inject TitleWidget titleWidget;
 
-    @Inject
-    void startDock(DockBuilder dock) {
+    @Inject DockPadFeature dockPadFeature;
+    @Inject ScrollTagChange scrollTagChange;
+
+    public List<Widget> getWidgets() {
+        return Arrays.asList(
+                batteryWidget,
+                clockWidget,
+                cpuWidget,
+                mediaWidget,
+                memoryWidget,
+                networkWidget,
+                progressWidget,
+                tagListWidget,
+                titleWidget
+        );
+    }
+
+    public List<Runnable> getDockStartListeners() {
+        return Arrays.asList(
+                dockPadFeature::init,
+                scrollTagChange::listen
+        );
+    }
+
+    public void startDock() {
         dock.start(this);
     }
 }

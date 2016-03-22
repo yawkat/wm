@@ -1,15 +1,14 @@
 package at.yawk.wm.hl;
 
 import at.yawk.wm.Util;
-import at.yawk.yarn.Component;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.inject.Singleton;
 import javax.xml.bind.DatatypeConverter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author yawkat
  */
 @Slf4j
-@Component
+@Singleton
 public class HerbstClient {
     @Inject Provider<HerbstEventBus> eventBus;
 
@@ -48,8 +47,7 @@ public class HerbstClient {
         }
     }
 
-    @PostConstruct
-    void listen() {
+    public void listen() {
         Thread thread = new Thread(() -> {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(
                     stream("--idle"), StandardCharsets.UTF_8))) {
