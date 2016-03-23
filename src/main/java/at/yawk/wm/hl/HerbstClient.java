@@ -5,7 +5,10 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
@@ -20,6 +23,17 @@ public class HerbstClient {
     @Inject Provider<HerbstEventBus> eventBus;
 
     private Map<String, Runnable> keyHandlers = new HashMap<>();
+
+    private Map<Integer, Monitor> monitors = null;
+    private Monitor currentMonitor;
+
+    public Monitor getCurrentMonitor() {
+        if (currentMonitor == null) {
+            if (monitors == null) { listMonitors(); }
+            return monitors.values().iterator().next();
+        }
+        return currentMonitor;
+    }
 
     private Process openProcess(String... action) throws IOException {
         List<String> command = new ArrayList<>(action.length + 1);
@@ -41,7 +55,7 @@ public class HerbstClient {
     @SneakyThrows
     private String dispatch(String... action) {
         try (InputStream in = stream(action)) {
-            return Util.INSTANCE .streamToString(in, 256);
+            return Util.INSTANCE.streamToString(in, 256);
         }
     }
 
@@ -55,6 +69,7 @@ public class HerbstClient {
                     String verb = components.get(0);
                     switch (verb) {
                     case "tag_changed":
+                        currentMonitor = monitors.get(Integer.parseInt(components.get(2)));
                     case "tag_flags":
                         eventBus.get().post(new TagEvent());
                         break;
@@ -84,9 +99,9 @@ public class HerbstClient {
         thread.start();
     }
 
-    public List<Tag> getTags() {
+    public List<Tag> getTags(Monitor monitor) {
         return Util.INSTANCE.split(
-                dispatch("tag_status"),
+                dispatch("tag_status", String.valueOf(monitor.getId())),
                 '\t',
                 Integer.MAX_VALUE
         ).stream().map(t -> {
@@ -94,7 +109,13 @@ public class HerbstClient {
             tag.setId(t.substring(1));
             switch (t.charAt(0)) {
             case '#':
+                currentMonitor = monitor;
+            case '+':
                 tag.setState(Tag.State.SELECTED);
+                break;
+            case '%':
+            case '-':
+                tag.setState(Tag.State.SELECTED_ELSEWHERE);
                 break;
             case ':':
             default:
@@ -108,13 +129,17 @@ public class HerbstClient {
         }).collect(Collectors.toList());
     }
 
+    public void focusMonitor(Monitor monitor) {
+        send("focus_monitor", String.valueOf(monitor.getId()));
+    }
+
     public void advanceTag(int tagsToAdvance) {
         send("use_index", (tagsToAdvance < 0 ? "-" : "+") + Math.abs(tagsToAdvance));
     }
 
-    public void pad(int pixels) {
+    public void pad(Monitor monitor, int pixels) {
         // todo: other monitors
-        send("pad", "0", String.valueOf(pixels));
+        send("pad", String.valueOf(monitor.getId()), String.valueOf(pixels));
     }
 
     public void addKeyHandler(String key, Runnable task) {
@@ -123,5 +148,28 @@ public class HerbstClient {
         String token = DatatypeConverter.printHexBinary(rb).toLowerCase();
         keyHandlers.put(token, task);
         send("keybind", key, "emit_hook", "_key_handler", token);
+    }
+
+    private static final Pattern MONITOR_PATTERN = Pattern.compile(
+            "(\\d+): (\\d+)x(\\d+)\\+(\\d+)\\+(\\d+) with tag \".*\"(.*)");
+
+    public List<Monitor> listMonitors() {
+        String[] monitorLines = dispatch("list_monitors").split("\n");
+        List<Monitor> monitors = Stream.of(monitorLines)
+                .map(line -> {
+                    Matcher matcher = MONITOR_PATTERN.matcher(line);
+                    if (!matcher.matches()) { throw new IllegalStateException(); }
+                    return new Monitor(
+                            Integer.parseInt(matcher.group(1)),
+                            Integer.parseInt(matcher.group(4)),
+                            Integer.parseInt(matcher.group(5)),
+                            Integer.parseInt(matcher.group(2)),
+                            Integer.parseInt(matcher.group(3)),
+                            !matcher.group(6).isEmpty()
+                    );
+                })
+                .collect(Collectors.toList());
+        this.monitors = monitors.stream().collect(Collectors.toMap(Monitor::getId, m -> m));
+        return monitors;
     }
 }

@@ -38,6 +38,8 @@ style:
     highlight:
       parent: base2
       background: '#073642' # base02
+    highlight_low:
+      parent: base2
     red:
       parent: base
       foreground: '#dc322f'
@@ -126,10 +128,12 @@ dock:
   netIconOnline: net_online
   netIconOffline: net_offline
   activeFont: highlight
+  activeElsewhereFont: highlight_low
   runningFont: base0
   emptyFont: base01
   windowTitleFont: base01
   progressColor: '#93a1a1'
+  activeMonitorColor: '#59621b'
   mediaFont: base0
   mediaPlaying: playing
   mediaPaused: paused

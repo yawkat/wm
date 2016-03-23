@@ -60,6 +60,7 @@ public class Tag {
 
     public enum State {
         SELECTED,
+        SELECTED_ELSEWHERE,
         RUNNING,
         EMPTY
     }

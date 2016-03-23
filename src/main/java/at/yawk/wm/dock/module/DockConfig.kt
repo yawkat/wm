@@ -33,12 +33,15 @@ data class DockConfig(
         val netIconOffline: IconDescriptor,
 
         val activeFont: FontDescriptor,
+        val activeElsewhereFont: FontDescriptor,
         val runningFont: FontDescriptor,
         val emptyFont: FontDescriptor,
 
         val windowTitleFont: FontDescriptor,
 
         val progressColor: Color,
+
+        val activeMonitorColor: Color,
 
         val mediaFont: FontDescriptor,
         val mediaPlaying: IconDescriptor,

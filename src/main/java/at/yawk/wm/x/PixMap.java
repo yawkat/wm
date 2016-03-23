@@ -1,10 +1,12 @@
 package at.yawk.wm.x;
 
+import lombok.ToString;
 import org.freedesktop.xcb.LibXcb;
 
 /**
  * @author yawkat
  */
+@ToString(of = "id")
 public class PixMap extends AbstractResource implements PixMapArea {
     final XcbConnector connector;
     final ColorMap colorMap;

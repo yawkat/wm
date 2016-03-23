@@ -9,6 +9,7 @@ import at.yawk.wm.dock.module.FontSource;
 import at.yawk.wm.dock.module.RenderElf;
 import at.yawk.wm.hl.HerbstClient;
 import at.yawk.wm.hl.HerbstEventBus;
+import at.yawk.wm.hl.Monitor;
 import at.yawk.wm.hl.Tag;
 import at.yawk.wm.style.FontDescriptor;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class TagListWidget extends FlowCompositeWidget {
     @Inject HerbstClient herbstClient;
     @Inject RenderElf renderElf;
     @Inject HerbstEventBus herbstEventBus;
+    @Inject Monitor monitor;
 
     @Override
     public void init() {
@@ -36,7 +38,7 @@ public class TagListWidget extends FlowCompositeWidget {
 
     private void update() {
         int i = 0;
-        List<Tag> tags = herbstClient.getTags();
+        List<Tag> tags = herbstClient.getTags(monitor);
         for (; i < tags.size(); i++) {
             Tag tag = tags.get(i);
             TextWidget widget;
@@ -57,6 +59,9 @@ public class TagListWidget extends FlowCompositeWidget {
             switch (tag.getState()) {
             case SELECTED:
                 style = config.getActiveFont();
+                break;
+            case SELECTED_ELSEWHERE:
+                style = config.getActiveElsewhereFont();
                 break;
             case RUNNING:
             default:

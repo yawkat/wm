@@ -4,6 +4,7 @@ import at.yawk.wm.dbus.Dbus
 import at.yawk.wm.dock.module.DockBootstrap
 import at.yawk.wm.dock.module.DockConfig
 import at.yawk.wm.hl.HerbstClient
+import at.yawk.wm.hl.Monitor
 import at.yawk.wm.paste.PasteManager
 import at.yawk.wm.style.StyleConfig
 import at.yawk.wm.tac.TacConfig
@@ -16,6 +17,7 @@ import at.yawk.wm.wallpaper.animate.AnimatedWallpaperManager
 import at.yawk.wm.x.GlobalResourceRegistry
 import at.yawk.wm.x.Screen
 import at.yawk.wm.x.XcbConnector
+import at.yawk.wm.x.font.FontCache
 import at.yawk.wm.x.icon.IconConfig
 import at.yawk.wm.x.icon.IconManager
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -75,7 +77,13 @@ private fun start() {
     herbstClient.listen()
 
     injector.getInstance(IconManager::class.java).load()
-    injector.getInstance(DockBootstrap::class.java).startDock()
+    injector.getInstance(FontCache::class.java)
+
+    for (monitor in herbstClient.listMonitors()) {
+        val monitorInjector = injector.createChildInjector(Module { it.bind(Monitor::class.java).toInstance(monitor) })
+        monitorInjector.getInstance(DockBootstrap::class.java).startDock()
+    }
+
     injector.getInstance(AnimatedWallpaperManager::class.java).start()
 
     injector.getInstance(Launcher::class.java).bind()

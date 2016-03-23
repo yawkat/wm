@@ -2,6 +2,7 @@ package at.yawk.wm.dock.module.feature;
 
 import at.yawk.wm.dock.module.DockBuilder;
 import at.yawk.wm.hl.HerbstClient;
+import at.yawk.wm.hl.Monitor;
 import at.yawk.wm.x.event.Button;
 import at.yawk.wm.x.event.ButtonPressEvent;
 import javax.inject.Inject;
@@ -12,9 +13,11 @@ import javax.inject.Inject;
 public class ScrollTagChange {
     @Inject DockBuilder dockBuilder;
     @Inject HerbstClient herbstClient;
+    @Inject Monitor monitor;
 
     public void listen() {
         dockBuilder.getWindow().addListener(ButtonPressEvent.class, evt -> {
+            herbstClient.focusMonitor(monitor);
             if (evt.contains(Button.SCROLL_UP)) {
                 herbstClient.advanceTag(-1);
             }

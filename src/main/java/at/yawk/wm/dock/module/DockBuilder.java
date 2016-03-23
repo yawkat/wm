@@ -2,6 +2,7 @@ package at.yawk.wm.dock.module;
 
 import at.yawk.wm.Scheduler;
 import at.yawk.wm.dock.*;
+import at.yawk.wm.hl.Monitor;
 import at.yawk.wm.style.FontManager;
 import at.yawk.wm.x.GlobalResourceRegistry;
 import at.yawk.wm.x.Screen;
@@ -21,6 +22,7 @@ import org.slf4j.Logger;
 @Singleton
 public class DockBuilder implements RenderElf {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(DockBuilder.class);
+    @Inject Monitor monitor;
     @Inject DockConfig config;
     @Inject Screen screen;
     @Inject GlobalResourceRegistry globalResourceRegistry;
@@ -34,7 +36,7 @@ public class DockBuilder implements RenderElf {
 
         dock = new Dock(screen, config.getBackground());
         globalResourceRegistry.register(dock);
-        dock.setBounds(0, 0, screen.getWidth(), config.getHeight());
+        dock.setBounds(monitor.getX(), monitor.getY(), monitor.getWidth(), config.getHeight());
 
         setupWidgets(bootstrap);
 
