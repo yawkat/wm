@@ -134,7 +134,7 @@ public class HerbstClient {
     }
 
     public void advanceTag(int tagsToAdvance) {
-        send("use_index", (tagsToAdvance < 0 ? "-" : "+") + Math.abs(tagsToAdvance));
+        send("use_index", (tagsToAdvance < 0 ? "-" : "+") + Math.abs(tagsToAdvance), "--skip-visible");
     }
 
     public void pad(Monitor monitor, int pixels) {
