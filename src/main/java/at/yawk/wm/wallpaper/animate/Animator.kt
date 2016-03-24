@@ -1,6 +1,7 @@
 package at.yawk.wm.wallpaper.animate
 
 import at.yawk.wm.Scheduler
+import at.yawk.wm.hl.Monitor
 import at.yawk.wm.x.*
 import at.yawk.wm.x.image.ByteArrayImage
 import at.yawk.wm.x.image.LocalImage
@@ -15,7 +16,8 @@ class Animator(
         var wallpaper: AnimatedWallpaper,
         val backgroundColor: Color,
         val scheduler: Scheduler,
-        val window: Window
+        val window: Window,
+        val monitors: List<Monitor>
 ) : AbstractResource() {
 
     private val graphics: Graphics
@@ -42,15 +44,21 @@ class Animator(
             pixMapGraphics.setForegroundColor(backgroundColor)
             pixMapGraphics.setBackgroundColor(backgroundColor)
             pixMapGraphics.fillRect(0, 0, window.width, window.height)
-            pixMapGraphics.putImage(
-                    (window.width - frame.width) / 2,
-                    (window.height - frame.height) / 2,
-                    ByteArrayImage(frame.width, frame.height,
-                            frame.data, 0, 3))
+            putFrame(pixMapGraphics, frame)
         }
 
         window.setBackgroundPixMap(pixMap)
         window.clear()
+    }
+
+    private fun putFrame(graphics: Graphics, frame: Frame) {
+        for (monitor in monitors) {
+            graphics.putImage(
+                    monitor.x + (monitor.width - canvasWidth) / 2 + frame.x,
+                    monitor.y + (monitor.height - canvasHeight) / 2 + frame.y,
+                    ByteArrayImage(frame.width, frame.height, frame.data, 0, 3)
+            )
+        }
     }
 
     internal fun drawImage(image: LocalImage, x: Int, y: Int) {
@@ -85,11 +93,7 @@ class Animator(
             if (remainingFrames.isNotEmpty()) {
                 val nextFrame = remainingFrames[0]
                 if (!nextFrame.isEmpty()) {
-                    graphics.putImage(
-                            (window.width - canvasWidth) / 2 + nextFrame.x,
-                            (window.height - canvasHeight) / 2 + nextFrame.y,
-                            ByteArrayImage(nextFrame.width, nextFrame.height,
-                                    nextFrame.data, 0, 3))
+                    putFrame(graphics, nextFrame)
                     graphics.flush()
                 }
                 remainingFrames = remainingFrames.drop(1) // remove iterator to allow GC
