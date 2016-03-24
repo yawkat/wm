@@ -5,6 +5,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -43,8 +44,8 @@ public class HerbstClient {
     }
 
     @SneakyThrows
-    private void send(String... action) {
-        openProcess(action);
+    private Process send(String... action) {
+        return openProcess(action);
     }
 
     private InputStream stream(String... action) throws IOException {
@@ -129,8 +130,10 @@ public class HerbstClient {
         }).collect(Collectors.toList());
     }
 
+    @SneakyThrows
     public void focusMonitor(Monitor monitor) {
-        send("focus_monitor", String.valueOf(monitor.getId()));
+        send("focus_monitor", String.valueOf(monitor.getId())).waitFor(1, TimeUnit.SECONDS);
+        currentMonitor = monitor;
     }
 
     public void advanceTag(int tagsToAdvance) {
