@@ -55,10 +55,10 @@ public class Launcher {
 
         TacUI ui = new TacUI(
                 tacConfig,
+                dockConfig,
                 fontCache,
                 connector,
-                connector.getScreen().getWidth() - tacConfig.getWidth(),
-                dockConfig.getHeight()
+                herbstClient.getCurrentMonitor()
         );
         ui.addFeature(new UseFeature());
         ui.addFeature(new CycleFeature());

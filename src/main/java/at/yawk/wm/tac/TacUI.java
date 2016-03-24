@@ -1,5 +1,7 @@
 package at.yawk.wm.tac;
 
+import at.yawk.wm.dock.module.DockConfig;
+import at.yawk.wm.hl.Monitor;
 import at.yawk.wm.x.*;
 import at.yawk.wm.x.Graphics;
 import at.yawk.wm.x.Window;
@@ -40,12 +42,13 @@ public class TacUI extends AbstractResource implements Modal {
 
     private final List<Feature> features = new ArrayList<>();
 
-    public TacUI(TacConfig config, FontCache fontCache, XcbConnector connector, int x, int y) {
+    public TacUI(TacConfig config, DockConfig dockConfig, FontCache fontCache, XcbConnector connector,
+                 Monitor monitor) {
         this.config = config;
         this.connector = connector;
         this.width = config.getWidth();
-        this.x = x;
-        this.y = y;
+        this.x = monitor.getX() + monitor.getWidth() - config.getWidth();
+        this.y = dockConfig.getHeight();
 
         primaryNormal = fontCache.getFont(this.config.getFontPrimary());
         secondaryNormal = fontCache.getFont(this.config.getFontSecondary());

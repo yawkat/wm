@@ -65,10 +65,10 @@ public class PasswordManager {
     private void open() {
         TacUI ui = new TacUI(
                 tacConfig,
+                dockConfig,
                 fontCache,
                 connector,
-                connector.getScreen().getWidth() - tacConfig.getWidth(),
-                dockConfig.getHeight()
+                herbstClient.getCurrentMonitor()
         );
         ui.addFeature(new CycleFeature());
         Instance instance = new Instance(ui);
