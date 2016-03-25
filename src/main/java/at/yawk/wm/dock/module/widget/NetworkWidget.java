@@ -2,10 +2,7 @@ package at.yawk.wm.dock.module.widget;
 
 import at.yawk.wm.Util;
 import at.yawk.wm.dbus.NetworkManager;
-import at.yawk.wm.dock.Direction;
-import at.yawk.wm.dock.FlowCompositeWidget;
-import at.yawk.wm.dock.IconWidget;
-import at.yawk.wm.dock.TextWidget;
+import at.yawk.wm.ui.*;
 import at.yawk.wm.dock.module.*;
 import at.yawk.wm.style.FontManager;
 import at.yawk.wm.x.icon.IconManager;

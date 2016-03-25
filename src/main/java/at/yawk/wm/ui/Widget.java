@@ -1,4 +1,4 @@
-package at.yawk.wm.dock;
+package at.yawk.wm.ui;
 
 import at.yawk.wm.x.Graphics;
 import java.util.Collections;

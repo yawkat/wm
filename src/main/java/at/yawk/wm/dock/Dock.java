@@ -1,5 +1,7 @@
 package at.yawk.wm.dock;
 
+import at.yawk.wm.ui.*;
+import at.yawk.wm.ui.LayoutManager;
 import at.yawk.wm.x.*;
 import at.yawk.wm.x.Graphics;
 import at.yawk.wm.x.Window;

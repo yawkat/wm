@@ -1,10 +1,10 @@
 package at.yawk.wm.dock.module.widget;
 
 import at.yawk.wm.dbus.Power;
-import at.yawk.wm.dock.*;
 import at.yawk.wm.dock.module.*;
 import at.yawk.wm.style.FontDescriptor;
 import at.yawk.wm.style.FontManager;
+import at.yawk.wm.ui.*;
 import at.yawk.wm.x.icon.Icon;
 import at.yawk.wm.x.icon.IconDescriptor;
 import at.yawk.wm.x.icon.IconManager;

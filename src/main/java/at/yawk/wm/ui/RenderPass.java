@@ -1,11 +1,11 @@
-package at.yawk.wm.dock;
+package at.yawk.wm.ui;
 
 import at.yawk.wm.x.Graphics;
 
 /**
  * @author yawkat
  */
-class RenderPass {
+public class RenderPass {
     final Graphics graphics;
     final boolean exposePass;
 

@@ -1,6 +1,6 @@
 package at.yawk.wm.dock.module;
 
-import at.yawk.wm.dock.Widget;
+import at.yawk.wm.ui.Widget;
 import at.yawk.wm.dock.module.feature.DockPadFeature;
 import at.yawk.wm.dock.module.feature.ScrollTagChange;
 import at.yawk.wm.dock.module.widget.*;

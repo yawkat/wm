@@ -1,12 +1,12 @@
 package at.yawk.wm.dock.module.widget;
 
-import at.yawk.wm.dock.Direction;
-import at.yawk.wm.dock.FlowCompositeWidget;
-import at.yawk.wm.dock.TextWidget;
+import at.yawk.wm.ui.Direction;
+import at.yawk.wm.ui.FlowCompositeWidget;
+import at.yawk.wm.ui.TextWidget;
 import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.dock.module.DockWidget;
 import at.yawk.wm.dock.module.FontSource;
-import at.yawk.wm.dock.module.RenderElf;
+import at.yawk.wm.ui.RenderElf;
 import at.yawk.wm.hl.HerbstClient;
 import at.yawk.wm.hl.HerbstEventBus;
 import at.yawk.wm.hl.Monitor;

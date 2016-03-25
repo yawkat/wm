@@ -4,6 +4,7 @@ import at.yawk.wm.Scheduler;
 import at.yawk.wm.dock.*;
 import at.yawk.wm.hl.Monitor;
 import at.yawk.wm.style.FontManager;
+import at.yawk.wm.ui.*;
 import at.yawk.wm.x.GlobalResourceRegistry;
 import at.yawk.wm.x.Screen;
 import at.yawk.wm.x.Window;

@@ -1,6 +1,7 @@
 package at.yawk.wm.dock.module;
 
 import at.yawk.wm.Scheduler;
+import at.yawk.wm.ui.RenderElf;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;

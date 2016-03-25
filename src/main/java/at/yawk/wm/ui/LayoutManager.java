@@ -1,4 +1,4 @@
-package at.yawk.wm.dock;
+package at.yawk.wm.ui;
 
 import java.util.*;
 import javax.annotation.concurrent.NotThreadSafe;
@@ -7,7 +7,7 @@ import javax.annotation.concurrent.NotThreadSafe;
  * @author yawkat
  */
 @NotThreadSafe
-final class LayoutManager implements WidgetSet {
+public final class LayoutManager implements WidgetSet {
     private final Set<Widget> widgets = new HashSet<>();
     private Widget[] bakedWidgets;
     private boolean dirty = true;

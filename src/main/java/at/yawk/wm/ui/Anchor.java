@@ -1,4 +1,4 @@
-package at.yawk.wm.dock;
+package at.yawk.wm.ui;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -9,7 +9,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * @author yawkat
  */
 @ThreadSafe
-final class Anchor implements Positioned {
+public final class Anchor implements Positioned {
     private int x;
     private int y;
 

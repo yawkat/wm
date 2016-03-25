@@ -1,6 +1,6 @@
 package at.yawk.wm.dock.module.widget;
 
-import at.yawk.wm.dock.Widget;
+import at.yawk.wm.ui.Widget;
 import at.yawk.wm.dock.module.DockBuilder;
 import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.dock.module.DockWidget;

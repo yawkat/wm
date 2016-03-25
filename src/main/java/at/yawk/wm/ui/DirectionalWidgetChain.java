@@ -1,9 +1,9 @@
-package at.yawk.wm.dock;
+package at.yawk.wm.ui;
 
 /**
  * @author yawkat
  */
-class DirectionalWidgetChain extends WidgetChain {
+public class DirectionalWidgetChain extends WidgetChain {
     private final Direction direction;
 
     public DirectionalWidgetChain(LayoutManager layoutManager, Positioned front, Direction direction) {

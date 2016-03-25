@@ -1,4 +1,4 @@
-package at.yawk.wm.dock;
+package at.yawk.wm.ui;
 
 import java.lang.ref.WeakReference;
 

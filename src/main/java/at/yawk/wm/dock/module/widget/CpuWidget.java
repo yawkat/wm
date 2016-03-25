@@ -1,7 +1,7 @@
 package at.yawk.wm.dock.module.widget;
 
 import at.yawk.wm.Util;
-import at.yawk.wm.dock.TextWidget;
+import at.yawk.wm.ui.TextWidget;
 import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.dock.module.DockWidget;
 import at.yawk.wm.dock.module.FontSource;
