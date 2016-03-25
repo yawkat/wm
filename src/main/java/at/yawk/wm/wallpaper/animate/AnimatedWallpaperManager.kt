@@ -1,9 +1,9 @@
 package at.yawk.wm.wallpaper.animate
 
 import at.yawk.wm.Scheduler
+import at.yawk.wm.dashboard.DesktopManager
 import at.yawk.wm.hl.HerbstClient
 import at.yawk.wm.x.XcbConnector
-import at.yawk.wm.x.image.LocalImage
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.nio.file.Files
@@ -19,7 +19,8 @@ class AnimatedWallpaperManager @Inject constructor(
         val connector: XcbConnector,
         val scheduler: Scheduler,
         val wallpaperConfig: AnimatedWallpaperConfig,
-        val herbstClient: HerbstClient
+        val herbstClient: HerbstClient,
+        val desktopManager: DesktopManager
 ) {
     private var animator: Animator? = null
 
@@ -49,13 +50,8 @@ class AnimatedWallpaperManager @Inject constructor(
     }
 
     private fun show(wallpaper: AnimatedWallpaper) {
-        val rootWindow = connector.screen.rootWindow
-        animator = Animator(wallpaper, wallpaperConfig.backgroundColor, scheduler, rootWindow, herbstClient.listMonitors())
+        animator = Animator(wallpaper, wallpaperConfig.backgroundColor, scheduler, desktopManager.getDesktops())
         animator!!.start()
-    }
-
-    fun drawImage(image: LocalImage, x: Int, y: Int) {
-        animator!!.drawImage(image, x, y)
     }
 
     fun stop(): Future<*> {

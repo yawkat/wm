@@ -35,7 +35,7 @@ public class Dock extends AbstractResource {
 
     public Dock(Screen screen, Color backgroundColor) {
         window = screen.createWindow(EventGroup.PAINT, EventGroup.MOUSE_PRESS)
-                .setDock()
+                .setType(WindowType.DOCK)
                 .setBackgroundColor(backgroundColor);
         windowGraphics = window.createGraphics();
         window.addListener(ExposeEvent.class, evt -> doRender(new RenderPass(graphics, true)));

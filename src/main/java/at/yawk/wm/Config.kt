@@ -1,5 +1,6 @@
 package at.yawk.wm
 
+import at.yawk.wm.dashboard.DashboardConfig
 import at.yawk.wm.dock.module.DockConfig
 import at.yawk.wm.style.StyleConfig
 import at.yawk.wm.tac.TacConfig
@@ -19,5 +20,6 @@ internal data class Config(
         val password: PasswordConfig,
         val wallpaper: AnimatedWallpaperConfig,
         val paste: at.yawk.paste.client.Config,
-        val icon: IconConfig
+        val icon: IconConfig,
+        val dashboard: DashboardConfig
 )

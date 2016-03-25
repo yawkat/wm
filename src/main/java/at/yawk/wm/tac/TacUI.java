@@ -98,7 +98,7 @@ public class TacUI extends AbstractResource implements Modal {
             graphics = window.createGraphics();
             window.setBackgroundColor(config.getColorBackground())
                     .setBounds(x, y, width, newHeight)
-                    .setDock()
+                    .setType(WindowType.DOCK)
                     .show();
             return; // wait for expose
         }

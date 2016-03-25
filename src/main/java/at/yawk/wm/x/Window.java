@@ -139,8 +139,8 @@ public class Window extends AbstractResource {
         );
     }
 
-    public Window setDock() {
-        setPropertyAtom("_NET_WM_WINDOW_TYPE", "_NET_WM_WINDOW_TYPE_DOCK");
+    public Window setType(WindowType type) {
+        setPropertyAtom("_NET_WM_WINDOW_TYPE", type.value);
         return this;
     }
 

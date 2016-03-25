@@ -64,7 +64,7 @@ public abstract class Widget implements Positioned {
      */
 
     final void preRender(RenderPass pass) {
-        if (!first && (dirty || pass.exposePass)) {
+        if (!first && (dirty || pass.getExposePass())) {
             int cx = lastX;
             int cy = lastY;
             if (!getOrigin().isLeft()) {
@@ -80,14 +80,14 @@ public abstract class Widget implements Positioned {
     }
 
     final void internalRender(RenderPass pass) {
-        if (!OPTIMIZE_REPAINT || dirty || pass.exposePass) {
+        if (!OPTIMIZE_REPAINT || dirty || pass.getExposePass()) {
             lastX = getX();
             lastY = getY();
             lastWidth = getWidth();
             lastHeight = getHeight();
 
-            doLayout(pass.graphics);
-            doRender(pass.graphics);
+            doLayout(pass.getGraphics());
+            doRender(pass.getGraphics());
 
             dirty = false;
         }

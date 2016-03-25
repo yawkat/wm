@@ -37,7 +37,7 @@ public class PasteManager {
         clipboardHelper = new ClipboardHelper(pasteConfig);
     }
 
-    public void setupKeys() {
+    public void bind() {
         herbstClient.addKeyHandler("Mod4-numbersign", this::makeScreenshot);
         herbstClient.addKeyHandler("Mod4-Shift-numbersign", this::pasteFromClipboard);
     }

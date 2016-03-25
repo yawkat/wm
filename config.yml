@@ -60,6 +60,10 @@ style:
     tac_secondary_selected:
       parent: tac_secondary
       background: '#073642' # base02
+
+    dashboard_main:
+      parent: base00
+      size: 50
 icon:
   cacheDir: .cache/icon/
   icons:
@@ -147,6 +151,8 @@ tac:
   width: 400
   rowHeight: 22
   padding: 3
+dashboard:
+  temperatureFont: dashboard_main
 launcher:
   shortcuts:
     firefox:

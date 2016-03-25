@@ -1,7 +1,11 @@
 package at.yawk.wm
 
+import at.yawk.wm.dashboard.Dashboard
+import at.yawk.wm.dashboard.DashboardConfig
+import at.yawk.wm.dashboard.DesktopManager
 import at.yawk.wm.dbus.Dbus
 import at.yawk.wm.dock.module.DockBootstrap
+import at.yawk.wm.dock.module.DockBuilder
 import at.yawk.wm.dock.module.DockConfig
 import at.yawk.wm.hl.HerbstClient
 import at.yawk.wm.hl.Monitor
@@ -12,6 +16,7 @@ import at.yawk.wm.tac.launcher.Launcher
 import at.yawk.wm.tac.launcher.LauncherConfig
 import at.yawk.wm.tac.password.PasswordConfig
 import at.yawk.wm.tac.password.PasswordManager
+import at.yawk.wm.ui.RenderElf
 import at.yawk.wm.wallpaper.animate.AnimatedWallpaperConfig
 import at.yawk.wm.wallpaper.animate.AnimatedWallpaperManager
 import at.yawk.wm.x.GlobalResourceRegistry
@@ -60,10 +65,11 @@ fun main(args: Array<String>) {
 private fun start() {
     var injector = Guice.createInjector(Main())
 
+    // connect to dbus
     val dbus = Dbus()
     dbus.connect()
 
-    //noinspection resource
+    // connect to X11
     val connector = injector.getInstance(XcbConnector::class.java)
     connector.open()
 
@@ -73,22 +79,42 @@ private fun start() {
         binder.bind(SWIGTYPE_p_xcb_connection_t::class.java).toInstance(connector.connection)
     }, dbus)
 
+    // connect to herbstluftwm
     val herbstClient = injector.getInstance(HerbstClient::class.java)
     herbstClient.listen()
 
+    // initialize icon manager and font cache
     injector.getInstance(IconManager::class.java).load()
     injector.getInstance(FontCache::class.java)
 
-    for (monitor in herbstClient.listMonitors()) {
-        val monitorInjector = injector.createChildInjector(Module { it.bind(Monitor::class.java).toInstance(monitor) })
-        monitorInjector.getInstance(DockBootstrap::class.java).startDock()
+    val monitors = herbstClient.listMonitors()
+
+    // start dock
+    for (monitor in monitors) {
+        injector.createChildInjector(Module {
+            it.bind(Monitor::class.java).toInstance(monitor)
+            it.bind(RenderElf::class.java).to(DockBuilder::class.java)
+        }).getInstance(DockBootstrap::class.java).startDock()
     }
 
+    // initialize desktop for wallpaper and dashboard
+    injector.getInstance(DesktopManager::class.java).init()
+
+    // start wallpaper
     injector.getInstance(AnimatedWallpaperManager::class.java).start()
 
+    // initialize tac uis
     injector.getInstance(Launcher::class.java).bind()
-    injector.getInstance(PasteManager::class.java).setupKeys()
+    injector.getInstance(PasteManager::class.java).bind()
     injector.getInstance(PasswordManager::class.java).bind()
+
+    // start dashboard
+    for (monitor in monitors) {
+        injector.createChildInjector(Module {
+            it.bind(Monitor::class.java).toInstance(monitor)
+            it.bind(RenderElf::class.java).to(Dashboard::class.java)
+        }).getInstance(Dashboard::class.java).start()
+    }
 }
 
 /**
@@ -132,6 +158,7 @@ class Main : AbstractModule() {
         bind(AnimatedWallpaperConfig::class.java).toInstance(config.wallpaper)
         bind(at.yawk.paste.client.Config::class.java).toInstance(config.paste)
         bind(IconConfig::class.java).toInstance(config.icon)
+        bind(DashboardConfig::class.java).toInstance(config.dashboard)
 
         bind(ObjectMapper::class.java).toInstance(objectMapper)
 

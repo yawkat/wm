@@ -1,14 +1,14 @@
 package at.yawk.wm.dock.module;
 
+import at.yawk.wm.PeriodBuilder;
 import at.yawk.wm.Scheduler;
-import at.yawk.wm.dock.*;
+import at.yawk.wm.dock.Dock;
 import at.yawk.wm.hl.Monitor;
 import at.yawk.wm.style.FontManager;
 import at.yawk.wm.ui.*;
 import at.yawk.wm.x.GlobalResourceRegistry;
 import at.yawk.wm.x.Screen;
 import at.yawk.wm.x.Window;
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -29,6 +29,7 @@ public class DockBuilder implements RenderElf {
     @Inject GlobalResourceRegistry globalResourceRegistry;
     @Inject Scheduler scheduler;
     @Inject FontManager fontManager;
+    @Inject PeriodBuilder periodBuilder;
 
     private Dock dock;
 
@@ -81,8 +82,6 @@ public class DockBuilder implements RenderElf {
     @SuppressWarnings("unchecked")
     @SneakyThrows // lazy
     private void setupWidgets(DockBootstrap bootstrap) {
-        PeriodBuilder periodBuilder = new PeriodBuilder(this);
-
         List<Widget> widgets = bootstrap.getWidgets();
         log.info("Visiting {} widgets...", widgets.size());
         Collections.sort(widgets, Comparator.comparingInt(
@@ -100,16 +99,10 @@ public class DockBuilder implements RenderElf {
 
             widget.init();
 
-            // hook methods
-            for (Method method : widgetClass.getDeclaredMethods()) {
-                method.setAccessible(true);
-
-                // periodic tasks
-                periodBuilder.scan(widget, method);
-            }
+            periodBuilder.scan(widget);
         }
 
-        periodBuilder.flush(scheduler);
+        periodBuilder.flush();
     }
 
     public Window getWindow() {

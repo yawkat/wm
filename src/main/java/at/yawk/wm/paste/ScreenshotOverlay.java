@@ -59,17 +59,17 @@ class ScreenshotOverlay implements Modal {
         displayGraphics = displayWindow.createGraphics();
 
         darkenedPixMap = displayWindow.createPixMap(capture.getWidth(), capture.getHeight());
-        at.yawk.wm.x.Graphics dg = darkenedPixMap.createGraphics();
+        Graphics dg = darkenedPixMap.createGraphics();
         dg.putImage(0, 0, darkened);
         dg.close();
 
         normalPixMap = displayWindow.createPixMap(capture.getWidth(), capture.getHeight());
-        at.yawk.wm.x.Graphics ng = normalPixMap.createGraphics();
+        Graphics ng = normalPixMap.createGraphics();
         ng.putImage(0, 0, capture);
         ng.close();
 
         displayWindow.setBackgroundPixMap(darkenedPixMap);
-        displayWindow.setDock();
+        displayWindow.setType(WindowType.DOCK);
         displayWindow.setBounds(0, 0, capture.getWidth(), capture.getHeight());
         displayWindow.show();
         displayWindow.acquireFocus();
