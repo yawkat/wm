@@ -108,6 +108,7 @@ class Animator(
                 putFrame(it, frame)
             }
             window.setBackgroundPixMap(pixMap)
+            window.clear()
         }
 
         fun putAnimationFrame(frame: Frame) {
@@ -126,4 +127,6 @@ class Animator(
             graphics.close()
         }
     }
+
+    fun isAnimationRunning() = currentRunningTask != null
 }

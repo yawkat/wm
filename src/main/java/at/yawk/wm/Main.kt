@@ -1,8 +1,6 @@
 package at.yawk.wm
 
-import at.yawk.wm.dashboard.Dashboard
-import at.yawk.wm.dashboard.DashboardConfig
-import at.yawk.wm.dashboard.DesktopManager
+import at.yawk.wm.dashboard.*
 import at.yawk.wm.dbus.Dbus
 import at.yawk.wm.dock.module.DockBootstrap
 import at.yawk.wm.dock.module.DockBuilder
@@ -108,6 +106,10 @@ private fun start() {
     injector.getInstance(PasteManager::class.java).bind()
     injector.getInstance(PasswordManager::class.java).bind()
 
+    injector.getInstance(PingManager::class.java).start()
+
+    val xkcdLoader = injector.getInstance(XkcdLoader::class.java)
+
     // start dashboard
     for (monitor in monitors) {
         injector.createChildInjector(Module {
@@ -115,6 +117,9 @@ private fun start() {
             it.bind(RenderElf::class.java).to(Dashboard::class.java)
         }).getInstance(Dashboard::class.java).start()
     }
+
+    // load xkcd
+    xkcdLoader.start()
 }
 
 /**

@@ -3,11 +3,10 @@ package at.yawk.wm.dashboard
 import at.yawk.wm.PeriodBuilder
 import at.yawk.wm.dock.module.DockConfig
 import at.yawk.wm.hl.Monitor
-import at.yawk.wm.style.NamedFontDescriptor
 import at.yawk.wm.ui.*
+import at.yawk.wm.wallpaper.animate.AnimatedWallpaperManager
 import at.yawk.wm.x.Graphics
 import at.yawk.wm.x.event.ExposeEvent
-import at.yawk.wm.x.font.FontCache
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,32 +16,52 @@ import javax.inject.Singleton
 @Singleton
 class Dashboard @Inject constructor(
         val monitor: Monitor,
-        val fontCache: FontCache,
         val desktopManager: DesktopManager,
         val dockConfig: DockConfig,
-        val periodBuilder: PeriodBuilder
+        val periodBuilder: PeriodBuilder,
+        val animatedWallpaperManager: AnimatedWallpaperManager
 ) : RenderElf {
 
     private val layoutManager = LayoutManager()
+
+    private val topLeft = DashboardOrigin(Origin.TOP_LEFT)
+    private val topRight = DashboardOrigin(Origin.TOP_RIGHT)
     private val bottomLeft = DashboardOrigin(Origin.BOTTOM_LEFT)
+    private val bottomRight = DashboardOrigin(Origin.BOTTOM_RIGHT)
 
     private var graphics: Graphics? = null
     private val window = desktopManager.getDesktop(monitor).window
 
+    init {
+        topLeft.init()
+        topRight.init()
+        bottomLeft.init()
+        bottomRight.init()
+    }
+
     @Inject
     fun initWidgets(
-            temperatureWidget: TemperatureWidget
+            temperatureWidget: TemperatureWidget,
+            mediaWidget: MediaWidget,
+            pingWidget: PingWidget,
+            xkcdWidget: XkcdWidget
     ) {
         bottomLeft.add(temperatureWidget)
+        bottomLeft.add(pingWidget)
 
-        periodBuilder.scan(temperatureWidget)
+        bottomRight.add(mediaWidget)
 
+        topRight.add(xkcdWidget)
+
+        val widgets = listOf(temperatureWidget, mediaWidget, pingWidget, xkcdWidget)
+
+        widgets.forEach { it.init() }
+
+        widgets.forEach { periodBuilder.scan(it) }
         periodBuilder.flush()
     }
 
     fun start() {
-        bottomLeft.init()
-
         graphics = window.createGraphics()
         window.addListener(ExposeEvent::class.java) { render(expose = true) }
         render()
@@ -54,6 +73,9 @@ class Dashboard @Inject constructor(
 
     @Synchronized
     private fun render(expose: Boolean) {
+        if (!animatedWallpaperManager.isAnimationRunning()) {
+            window.clear()
+        }
         val graphics = graphics
         if (graphics != null) {
             layoutManager.render(RenderPass(graphics, expose))
@@ -71,6 +93,7 @@ class Dashboard @Inject constructor(
 
         fun add(widget: Widget) {
             widget.origin = origin
+            widget.x = if (origin.isLeft) 0 else window.width
             widgets.addWidget(widget)
         }
     }

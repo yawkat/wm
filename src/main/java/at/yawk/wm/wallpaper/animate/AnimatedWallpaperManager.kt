@@ -58,6 +58,8 @@ class AnimatedWallpaperManager @Inject constructor(
         return animator!!.stop()
     }
 
+    fun isAnimationRunning() = animator?.isAnimationRunning() ?: false
+
     companion object {
         private val log = org.slf4j.LoggerFactory.getLogger(AnimatedWallpaperManager::class.java)
     }

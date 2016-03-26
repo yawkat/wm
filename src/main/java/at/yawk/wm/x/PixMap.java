@@ -6,7 +6,7 @@ import org.freedesktop.xcb.LibXcb;
 /**
  * @author yawkat
  */
-@ToString(of = "id")
+@ToString(of = { "id", "width", "height" })
 public class PixMap extends AbstractResource implements PixMapArea {
     final XcbConnector connector;
     final ColorMap colorMap;

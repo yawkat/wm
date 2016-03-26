@@ -62,8 +62,18 @@ style:
       background: '#073642' # base02
 
     dashboard_main:
-      parent: base00
+      parent: base01
       size: 50
+      family:
+        name: "DejaVu Sans Light"
+    dashboard_media:
+      parent: dashboard_main
+      size: 30
+    dashboard_xkcd:
+      parent: dashboard_main
+      size: 16
+      family:
+        name: "DejaVu Sans"
 icon:
   cacheDir: .cache/icon/
   icons:
@@ -153,6 +163,16 @@ tac:
   padding: 3
 dashboard:
   temperatureFont: dashboard_main
+  mediaFont: dashboard_media
+  pingFont: dashboard_media
+  xkcdFont: dashboard_xkcd
+  xkcdWhite: '#002b36'
+  xkcdBlack: '#586e75'
+
+  pingDestinations:
+    ente: ente.hawo.stw.uni-erlangen.de
+    yawk: yawk.at
+    ps: ps.yawk.at
 launcher:
   shortcuts:
     firefox:

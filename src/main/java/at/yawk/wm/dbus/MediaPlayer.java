@@ -1,6 +1,8 @@
 package at.yawk.wm.dbus;
 
 import at.yawk.dbus.client.annotation.*;
+import at.yawk.dbus.protocol.object.DbusObject;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -29,8 +31,8 @@ public interface MediaPlayer {
     void next();
 
     @GetProperty
-    @Member("PlaybackStatus")
-    String getPlaybackStatus();
+    @Member("Metadata")
+    Map<String, DbusObject> getMetadata();
 
     @Interface("org.freedesktop.DBus.Properties")
     @Member("PropertiesChanged")
