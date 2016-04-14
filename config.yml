@@ -190,6 +190,8 @@ launcher:
       command: ["idea-ue-eap"]
     android-studio:
       command: ["android-studio"]
+    ida:
+      command: ["/opt/ida-demo/idaq"]
     genpw16:
       command: ["bash", "-c", "< /dev/urandom tr -dc A-Za-z0-9 | head -c${1:-16} | xclip -selection c"]
     genpw32:
