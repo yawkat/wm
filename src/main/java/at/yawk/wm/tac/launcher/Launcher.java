@@ -3,14 +3,19 @@ package at.yawk.wm.tac.launcher;
 import at.yawk.wm.Util;
 import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.hl.HerbstClient;
-import at.yawk.wm.tac.*;
+import at.yawk.wm.tac.CycleFeature;
+import at.yawk.wm.tac.ModalRegistry;
+import at.yawk.wm.tac.TacConfig;
+import at.yawk.wm.tac.TacUI;
+import at.yawk.wm.tac.TextFieldFeature;
+import at.yawk.wm.tac.UseFeature;
 import at.yawk.wm.wallpaper.animate.AnimatedWallpaperManager;
 import at.yawk.wm.x.XcbConnector;
 import at.yawk.wm.x.font.FontCache;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -146,16 +151,9 @@ public class Launcher {
             }
 
             Stream<EntryDescriptor> shortcuts = launcherConfig.getShortcuts().entrySet().stream()
-                    .map(e -> {
-                        try {
-                            return new EntryDescriptor(
-                                    e.getKey(), objectMapper.treeToValue(e.getValue(), Command.class), true);
-                        } catch (JsonProcessingException f) {
-                            throw new RuntimeException(f);
-                        }
-                    });
+                    .map(e -> new EntryDescriptor(e.getKey(), e.getValue(), true));
             Stream<EntryDescriptor> normal = pathScanner.getApplications().stream()
-                    .map(s -> new EntryDescriptor(s, new Command(s), false));
+                    .map(s -> new EntryDescriptor(s, new Command(Collections.singletonList(s)), false));
 
             Stream<LauncherEntry> entryStream = Stream.concat(
                     Stream.concat(shortcuts.map(this::getLauncherEntry),

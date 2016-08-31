@@ -177,21 +177,24 @@ launcher:
   shortcuts:
     firefox:
       command: ["firefox"]
-      jail: true
+      jail: []
     thunderbird:
       command: ["thunderbird"]
-      jail: true
+      jail: []
     quasselclient:
       command: ["quasselclient"]
-      jail: true
+      jail:
+      - "--profile=/etc/firejail/quassel.profile"
     subl:
       command: ["subl"]
     intellij:
       command: ["idea-ue-eap"]
-    android-studio:
-      command: ["android-studio"]
+      # can't do whitelist because we don't know the config dir because that changes every version :(
+      jail: []
     ida:
       command: ["/opt/ida-demo/idaq"]
+      jail:
+      - "--whitelist=~/Development"
     genpw16:
       command: ["bash", "-c", "< /dev/urandom tr -dc A-Za-z0-9 | head -c${1:-16} | xclip -selection c"]
     genpw32:
@@ -202,12 +205,18 @@ launcher:
       command: ["nautilus", "--no-desktop"]
     minecraft yawkat:
       command: ["/home/yawkat/Development/Other/mcl/launcher.py", "yawkat"]
+      jail:
+      - "--whitelist=~/.minecraft"
+      - "--whitelist=~/.config/mcl.json"
+      - "--whitelist=~/Development/Other/mcl"
+      - "--read-only=~/Development/Other/mcl"
     minecraft jonalu:
       command: ["/home/yawkat/Development/Other/mcl/launcher.py", "jonas.konrad@googlemail.com"]
-    steven yawkat:
-      command: ["steven", "yawkat"]
-    steven jonalu:
-      command: ["steven", "jonas.konrad@googlemail.com"]
+      jail:
+      - "--whitelist=~/.minecraft"
+      - "--whitelist=~/.config/mcl.json"
+      - "--whitelist=~/Development/Other/mcl"
+      - "--read-only=~/Development/Other/mcl"
     windows:
       command: ["/home/yawkat/windows.sh"]
   shutdownCommand: ["systemctl", "poweroff"]
