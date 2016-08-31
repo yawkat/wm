@@ -189,8 +189,6 @@ launcher:
       command: ["subl"]
     intellij:
       command: ["idea-ue-eap"]
-      # can't do whitelist because we don't know the config dir because that changes every version :(
-      jail: []
     ida:
       command: ["/opt/ida-demo/idaq"]
       jail:
@@ -217,6 +215,9 @@ launcher:
       - "--whitelist=~/.config/mcl.json"
       - "--whitelist=~/Development/Other/mcl"
       - "--read-only=~/Development/Other/mcl"
+    spotify:
+      command: ["spotify"]
+      jail: []
     windows:
       command: ["/home/yawkat/windows.sh"]
   shutdownCommand: ["systemctl", "poweroff"]
