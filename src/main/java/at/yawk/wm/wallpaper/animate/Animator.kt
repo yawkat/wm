@@ -90,7 +90,7 @@ class Animator(
     }
 
     private inner class Target(val desktop: DesktopManager.Desktop) {
-        val window = desktop.window
+        val window = desktop.window!!
 
         lateinit var pixMap: PixMap
         lateinit var graphics: Graphics

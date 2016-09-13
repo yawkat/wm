@@ -1,13 +1,30 @@
 package at.yawk.wm.x;
 
-import at.yawk.wm.x.event.*;
+import at.yawk.wm.x.event.ButtonPressEvent;
+import at.yawk.wm.x.event.ButtonReleaseEvent;
+import at.yawk.wm.x.event.Cancellable;
+import at.yawk.wm.x.event.ExposeEvent;
+import at.yawk.wm.x.event.FocusLostEvent;
+import at.yawk.wm.x.event.KeyPressEvent;
+import at.yawk.wm.x.event.MouseMoveEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import org.freedesktop.xcb.*;
+import org.freedesktop.xcb.LibXcb;
+import org.freedesktop.xcb.LibXcbConstants;
+import org.freedesktop.xcb.UCharArray;
+import org.freedesktop.xcb.xcb_button_press_event_t;
+import org.freedesktop.xcb.xcb_client_message_event_t;
+import org.freedesktop.xcb.xcb_expose_event_t;
+import org.freedesktop.xcb.xcb_focus_in_event_t;
+import org.freedesktop.xcb.xcb_generic_error_t;
+import org.freedesktop.xcb.xcb_generic_event_t;
+import org.freedesktop.xcb.xcb_key_press_event_t;
+import org.freedesktop.xcb.xcb_motion_notify_event_t;
+import org.freedesktop.xcb.xcb_query_extension_reply_t;
 import org.slf4j.Logger;
 
 /**
@@ -51,7 +68,17 @@ class EventManager implements Runnable {
 
         while (!Thread.interrupted()) {
             xcb_generic_event_t evt = LibXcb.xcb_wait_for_event(connector.connection);
-            if (evt == null) { break; }
+            if (evt == null) {
+                int error = LibXcb.xcb_connection_has_error(connector.connection);
+                if (error == 0) {
+                    log.info("XCB connection terminated. Exiting.");
+                } else {
+                    log.error("XCB error {} {} detected in event loop",
+                              error,
+                              ERROR_MESSAGES.getOrDefault(error, "Unknown"));
+                }
+                break;
+            }
             handleGenericEvent(evt);
         }
     }
