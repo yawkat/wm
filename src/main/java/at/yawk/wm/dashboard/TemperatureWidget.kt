@@ -9,7 +9,7 @@ import java.net.Socket
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-private val TEMPERATURE_PATTERN = "\\d+(\\.\\d+)?°C".toPattern()
+private val TEMPERATURE_PATTERN = "-?\\d+(\\.\\d+)?°C".toPattern()
 
 /**
  * @author yawkat
