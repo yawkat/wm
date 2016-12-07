@@ -21,7 +21,7 @@ class GlyphRenderer extends AbstractResource {
     private final short depth;
     private final GlyphFile file;
 
-    private boolean pixmapLoaded;
+    private volatile boolean pixmapLoaded;
     private int pixmapId;
 
     @java.beans.ConstructorProperties({ "connection", "format", "rootDrawable", "depth", "file" })

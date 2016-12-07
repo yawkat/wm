@@ -5,19 +5,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author yawkat
  */
 @Singleton
 public class ApplicationRunner {
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(ApplicationRunner.class);
+    private static final Logger log = LoggerFactory.getLogger(ApplicationRunner.class);
     private final AtomicInteger processCounter = new AtomicInteger(0);
 
     public void run(Command command) {
@@ -26,13 +25,14 @@ public class ApplicationRunner {
             log.info("[{}] Executing {}", id, command);
 
             List<String> line;
-            if (command.isJail()) {
+            if (command.getJailOptions() != null) {
                 line = new ArrayList<>();
                 line.add("firejail");
+                line.addAll(command.getJailOptions());
                 line.add("--");
-                Collections.addAll(line, command.getCommand());
+                line.addAll(command.getCommand());
             } else {
-                line = Arrays.asList(command.getCommand());
+                line = command.getCommand();
             }
 
             log.debug("[{}] Final command line: {}", id, line);

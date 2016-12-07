@@ -10,11 +10,12 @@ import at.yawk.wm.x.PixMap
 import at.yawk.wm.x.XcbConnector
 import at.yawk.wm.x.font.GlyphFont
 import at.yawk.wm.x.image.BufferedLocalImage
+import at.yawk.wm.x.image.SubImageView
 import at.yawk.wm.x.use
 import org.jsoup.Jsoup
 import java.awt.Color
 import java.net.URL
-import java.util.*
+import java.util.ArrayList
 import java.util.concurrent.Executor
 import javax.imageio.ImageIO
 import javax.inject.Inject
@@ -76,10 +77,15 @@ class XkcdLoader @Inject constructor(
 
         val title = imageTag.attr("title")
         val url = imageTag.absUrl("src")
-        val bufferedImage = ImageIO.read(URL(url))
 
         // copy to get ARGB
-        val localImage = BufferedLocalImage(bufferedImage).copy()
+        var localImage = BufferedLocalImage(ImageIO.read(URL(url))).copy()
+        if (localImage.width > 1024 || localImage.height > 800) {
+            localImage = SubImageView(
+                    localImage,
+                    0, 0, Math.min(localImage.width, 1024), Math.min(localImage.height, 800)
+            ).copy(BufferedLocalImage.TYPE)
+        }
         localImage.apply { rgb ->
             val hsb = Color.RGBtoHSB((rgb ushr 16) and 0xff, (rgb ushr 8) and 0xff, rgb and 0xff, null)
             val whitePart = hsb[2]
@@ -106,7 +112,7 @@ class XkcdLoader @Inject constructor(
         var currentLine = Line()
         for (word in titleWords) {
             val bounds = font.getStringBounds(word)
-            if (currentLine.width + spaceBounds.width + bounds.width > bufferedImage.width) {
+            if (currentLine.width + spaceBounds.width + bounds.width > localImage.width) {
                 lines.add(currentLine)
                 currentLine = Line(
                         bounds.width,
@@ -124,26 +130,26 @@ class XkcdLoader @Inject constructor(
             lines.add(currentLine)
         }
 
-        val textWidth = (lines.map { it.width } + bufferedImage.width).max()!!
+        val textWidth = (lines.map { it.width } + localImage.width).max()!!
         val textHeight = lines.map { it.height }.sum()
 
         val window = xcbConnector.screen.rootWindow
-        val pixMap = window.createPixMap(textWidth, bufferedImage.height + textHeight)
+        val pixMap = window.createPixMap(textWidth, localImage.height + textHeight)
         pixMap.createGraphics().use {
             it.setBackgroundColor(wallpaperConfig.backgroundColor)
             it.setForegroundColor(wallpaperConfig.backgroundColor)
             it.fillRect(0, 0, pixMap.width, pixMap.height)
 
-            val imagePaddingLeft = textWidth - bufferedImage.width
+            val imagePaddingLeft = textWidth - localImage.width
             it.putImage(imagePaddingLeft, 0, localImage)
             it.setFont(font)
 
-            var y = bufferedImage.height
+            var y = localImage.height
             for (line in lines) {
-                var x = if (line.width >= bufferedImage.width) {
+                var x = if (line.width >= localImage.width) {
                     textWidth - line.width
                 } else {
-                    imagePaddingLeft + (bufferedImage.width - line.width) / 2
+                    imagePaddingLeft + (localImage.width - line.width) / 2
                 }
                 it.drawText(x, y, line.content)
                 y += line.height

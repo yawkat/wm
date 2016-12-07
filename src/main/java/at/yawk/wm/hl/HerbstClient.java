@@ -15,10 +15,12 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.xml.bind.DatatypeConverter;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yawkat
  */
+@Slf4j
 @Singleton
 public class HerbstClient {
     @Inject Provider<HerbstEventBus> eventBus;
@@ -87,7 +89,11 @@ public class HerbstClient {
                     case "_key_handler":
                         Runnable handler = keyHandlers.get(components.get(1));
                         if (handler != null) {
-                            handler.run();
+                            try {
+                                handler.run();
+                            } catch (Throwable t) {
+                                log.error("Failed to pass key event", t);
+                            }
                         }
                         break;
                     }

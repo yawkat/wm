@@ -113,6 +113,7 @@ public class Window extends AbstractResource {
             LibXcb.xcb_configure_window(
                     screen.connector.connection, windowId, configDiff.getMask(), configDiff.getValues());
         }
+        screen.connector.checkError();
     }
 
     private void setProperty(String key, String type, int valueChunkLength, int valueChunkCount, ByteBuffer value) {

@@ -19,7 +19,8 @@ import xcb4j.LibXcbLoader;
  */
 @Singleton
 public class XcbConnector implements Resource {
-    private static final boolean DEBUG_ERRORS = false;
+    static final boolean DEBUG_ERRORS = false;
+
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(XcbConnector.class);
 
     static { LibXcbLoader.load(); }
@@ -128,7 +129,11 @@ public class XcbConnector implements Resource {
         if (DEBUG_ERRORS) {
             eventManager.lastFlushStackTrace = new Throwable("Flush");
         }
-        LibXcb.xcb_flush(connection);
+        int flush = LibXcb.xcb_flush(connection);
+        if (flush <= 0) {
+            int error = LibXcb.xcb_connection_has_error(connection);
+            log.error("Failed to flush X: {} ; connection status: {}", flush, error, new Throwable());
+        }
     }
 
     int internAtom(String atom) {
