@@ -18,7 +18,7 @@ internal data class Config(
         val tac: TacConfig,
         val launcher: LauncherConfig,
         val password: PasswordConfig,
-        val wallpaper: AnimatedWallpaperConfig,
+        val wallpaper: AnimatedWallpaperConfig?,
         val paste: at.yawk.paste.client.Config,
         val icon: IconConfig,
         val dashboard: DashboardConfig

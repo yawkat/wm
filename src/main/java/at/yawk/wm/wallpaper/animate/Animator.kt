@@ -8,6 +8,7 @@ import at.yawk.wm.x.PixMap
 import at.yawk.wm.x.image.ByteArrayImage
 import at.yawk.wm.x.use
 import java.awt.Color
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
@@ -54,10 +55,14 @@ class Animator(
     @Synchronized private fun show(animation: FrameAnimation): Future<*> {
         stopTask()
 
-        currentRunningTask = scheduler.scheduleAtFixedRate(
-                FrameRunner(animation.frames),
-                0, animation.interval, TimeUnit.MILLISECONDS)
-        return currentRunningTask!!
+        if (animation.interval <= 0) {
+            return CompletableFuture.completedFuture(null)
+        } else {
+            currentRunningTask = scheduler.scheduleAtFixedRate(
+                    FrameRunner(animation.frames),
+                    0, animation.interval, TimeUnit.MILLISECONDS)
+            return currentRunningTask!!
+        }
     }
 
     private inner class FrameRunner(var remainingFrames: List<Frame>) : Runnable {

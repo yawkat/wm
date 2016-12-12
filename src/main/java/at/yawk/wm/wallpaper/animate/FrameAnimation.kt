@@ -20,6 +20,8 @@ data class FrameAnimation(
     }
 
     companion object {
+        val EMPTY = FrameAnimation(0, emptyList())
+
         fun read(input: DataInput): FrameAnimation {
             val interval = input.readLong()
             val frameCount = input.readInt()

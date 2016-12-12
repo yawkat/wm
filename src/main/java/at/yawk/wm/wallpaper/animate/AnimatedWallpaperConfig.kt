@@ -9,5 +9,6 @@ import java.nio.file.Path
 data class AnimatedWallpaperConfig(
         val cache: Path,
         val input: Path,
-        val backgroundColor: Color
+        val backgroundColor: Color,
+        val show: Boolean
 )

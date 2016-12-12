@@ -29,21 +29,25 @@ class AnimatedWallpaperManager @Inject constructor(
 
         var wallpaper: AnimatedWallpaper? = null
 
-        if (Files.exists(wallpaperConfig.cache)) {
-            val cacheMod = Files.getLastModifiedTime(wallpaperConfig.cache)
-            val inMod = Files.getLastModifiedTime(wallpaperConfig.input)
-            if (cacheMod.compareTo(inMod) >= 0) {
-                log.info("Found valid cached wallpaper animation")
-                DataInputStream(Files.newInputStream(wallpaperConfig.cache)).use { `in` -> wallpaper = AnimatedWallpaper.read(`in`) }
-                log.info("Wallpaper loaded to memory")
+        if (wallpaperConfig.show) {
+            if (Files.exists(wallpaperConfig.cache)) {
+                val cacheMod = Files.getLastModifiedTime(wallpaperConfig.cache)
+                val inMod = Files.getLastModifiedTime(wallpaperConfig.input)
+                if (cacheMod.compareTo(inMod) >= 0) {
+                    log.info("Found valid cached wallpaper animation")
+                    DataInputStream(Files.newInputStream(wallpaperConfig.cache)).use { `in` -> wallpaper = AnimatedWallpaper.read(`in`) }
+                    log.info("Wallpaper loaded to memory")
+                }
             }
-        }
 
-        if (wallpaper == null) {
-            log.info("Need to compile the wallpaper animation, this may take a while!")
-            wallpaper = AnimationBuilder.loadDirectory(wallpaperConfig.input)
-            DataOutputStream(Files.newOutputStream(wallpaperConfig.cache)).use { out -> wallpaper!!.write(out) }
-            log.info("Compilation complete")
+            if (wallpaper == null) {
+                log.info("Need to compile the wallpaper animation, this may take a while!")
+                wallpaper = AnimationBuilder.loadDirectory(wallpaperConfig.input)
+                DataOutputStream(Files.newOutputStream(wallpaperConfig.cache)).use { out -> wallpaper!!.write(out) }
+                log.info("Compilation complete")
+            }
+        } else {
+            wallpaper = AnimatedWallpaper(Frame.EMPTY_FRAME, FrameAnimation.EMPTY, FrameAnimation.EMPTY)
         }
 
         show(wallpaper!!)
