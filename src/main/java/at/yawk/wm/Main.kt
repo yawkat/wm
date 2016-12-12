@@ -106,8 +106,6 @@ private fun start() {
     injector.getInstance(PasteManager::class.java).bind()
     injector.getInstance(PasswordManager::class.java).bind()
 
-    injector.getInstance(PingManager::class.java).start()
-
     val xkcdLoader = injector.getInstance(XkcdLoader::class.java)
 
     // start dashboard

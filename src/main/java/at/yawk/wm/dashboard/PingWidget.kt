@@ -1,8 +1,12 @@
 package at.yawk.wm.dashboard
 
-import at.yawk.wm.Scheduler
+import at.yawk.wm.TimedCache
 import at.yawk.wm.dock.module.FontSource
-import at.yawk.wm.ui.*
+import at.yawk.wm.dock.module.Periodic
+import at.yawk.wm.ui.Direction
+import at.yawk.wm.ui.FlowCompositeWidget
+import at.yawk.wm.ui.Positioned
+import at.yawk.wm.ui.TextWidget
 import java.io.IOException
 import java.net.InetAddress
 import java.util.*
@@ -13,11 +17,10 @@ import javax.inject.Singleton
 /**
  * @author yawkat
  */
-class PingWidget @Inject constructor(
+class PingWidget @Inject internal constructor(
         val fontSource: FontSource,
-        val dashboardConfig: DashboardConfig,
-        val pingManager: PingManager,
-        val renderElf: RenderElf
+        dashboardConfig: DashboardConfig,
+        val cacheHolder: CacheHolder
 ) : FlowCompositeWidget() {
     private val destinationWidgets = HashMap<PingDestination, TextWidget>()
 
@@ -32,51 +35,36 @@ class PingWidget @Inject constructor(
 
             last = widget
         }
-
-        pingManager.subscribers += { update() }
-        update()
     }
 
+    @Periodic(value = 10, unit = TimeUnit.SECONDS, render = true)
     fun update() {
-        synchronized(this) {
-            destinationWidgets.forEach { destination, widget ->
-                val ping = pingManager.pings[destination.host]
-                widget.text = destination.name + ": " + (if (ping != null) "$ping ms" else "Timeout")
-            }
+        val pings = cacheHolder.cache.get()
+        destinationWidgets.forEach { destination, widget ->
+            val ping = pings[destination.host]
+            widget.text = destination.name + ": " + (if (ping != null) "$ping ms" else "Timeout")
         }
-        renderElf.render()
-    }
-}
-
-@Singleton
-class PingManager @Inject constructor(val dashboardConfig: DashboardConfig, val scheduler: Scheduler) {
-    var pings = emptyMap<String, Long?>()
-
-    internal var subscribers = emptyList<() -> Unit>()
-
-    fun start() {
-        scheduler.scheduleAtFixedRate(
-                Runnable { ping() },
-                0, 10, TimeUnit.SECONDS
-        )
     }
 
-    private fun ping() {
-        val newPings = HashMap<String, Long?>()
-        for (destination in dashboardConfig.pingDestinations.values) {
-            if (!newPings.containsKey(destination)) {
-                try {
-                    val start = System.currentTimeMillis()
-                    val reachable = InetAddress.getByName(destination).isReachable(1000)
-                    val end = System.currentTimeMillis()
-                    newPings[destination] = if (reachable) end - start else null
-                } catch (io: IOException) {
-                    // ignore io errors
+    @Singleton
+    internal class CacheHolder @Inject constructor(val dashboardConfig: DashboardConfig) {
+        val cache = TimedCache<Map<String, Long?>>(9, TimeUnit.SECONDS) {
+            val newPings = HashMap<String, Long?>()
+            for (destination in dashboardConfig.pingDestinations.values) {
+                if (!newPings.containsKey(destination)) {
+                    try {
+                        val start = System.currentTimeMillis()
+                        val reachable = InetAddress.getByName(destination).isReachable(1000)
+                        val end = System.currentTimeMillis()
+                        newPings[destination] = if (reachable) end - start else null
+                    } catch (io: IOException) {
+                        // ignore io errors
+                    }
                 }
             }
+
+            newPings
         }
-        pings = newPings
-        subscribers.forEach { it() }
     }
 }
 
