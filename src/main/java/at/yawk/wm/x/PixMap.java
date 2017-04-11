@@ -21,7 +21,7 @@ public class PixMap extends AbstractResource implements PixMapArea {
     final ResourceSet resources = new ResourceSet();
 
     PixMap(XcbConnector connector, int drawable, ColorMap colorMap, int width, int height) {
-        if (width > 4096 || height > 4096 || width < 0 || height < 0 || width * height < 0) {
+        if (width > 8000 || height > 8000 || width < 0 || height < 0 || width * height < 0) {
             throw new IllegalArgumentException("Pixmap too large: " + width + "x" + height);
         }
 
