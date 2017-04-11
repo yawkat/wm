@@ -188,15 +188,15 @@ launcher:
     subl:
       command: ["subl"]
     intellij:
-      command: ["idea-ue-eap"]
+      command: ["intellij-idea-ultimate-edition"]
     ida:
       command: ["/opt/ida-demo/idaq"]
       jail:
       - "--whitelist=~/Development"
     genpw16:
-      command: ["bash", "-c", "< /dev/urandom tr -dc A-Za-z0-9 | head -c${1:-16} | xclip -selection c"]
+      command: ["bash", "-c", "< /dev/urandom tr -dc a-z0-9 | head -c${1:-16} | xclip -selection c"]
     genpw32:
-      command: ["bash", "-c", "< /dev/urandom tr -dc A-Za-z0-9 | head -c${1:-32} | xclip -selection c"]
+      command: ["bash", "-c", "< /dev/urandom tr -dc a-z0-9 | head -c${1:-32} | xclip -selection c"]
     lock:
       command: ["bash", "-c", "gnome-screensaver-command -l && xset dpms force off"]
     nautilus:
@@ -216,7 +216,7 @@ launcher:
       - "--whitelist=~/Development/Other/mcl"
       - "--read-only=~/Development/Other/mcl"
     spotify:
-      command: ["spotify"]
+      command: ["spotify", "--force-device-scale-factor=1.0000001"]
       jail: []
     windows:
       command: ["/home/yawkat/windows.sh"]
