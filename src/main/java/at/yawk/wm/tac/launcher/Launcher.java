@@ -13,7 +13,7 @@ import at.yawk.wm.wallpaper.animate.AnimatedWallpaperManager;
 import at.yawk.wm.x.XcbConnector;
 import at.yawk.wm.x.font.FontCache;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -184,7 +184,7 @@ public class Launcher {
     private void rescan() {
         try {
             pathScanner.scan();
-        } catch (IOException e) {
+        } catch (UncheckedIOException e) {
             log.error("Error in path scanner", e);
         }
     }

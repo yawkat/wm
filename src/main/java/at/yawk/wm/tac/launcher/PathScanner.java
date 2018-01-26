@@ -1,10 +1,10 @@
 package at.yawk.wm.tac.launcher;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -35,16 +35,20 @@ class PathScanner {
         return applications != null;
     }
 
-    public void scan() throws IOException {
+    public void scan() throws UncheckedIOException {
         log.info("Scanning PATH for applications...");
-        List<String> apps = new ArrayList<>();
-        for (Path p : path) {
-            apps.addAll(
-                    Files.list(p).map(s -> s.getFileName().toString())
-                            .collect(Collectors.toList())
-            );
-        }
-        Collections.sort(apps);
+        List<String> apps = path.stream()
+                .flatMap(dir -> {
+                    try {
+                        return Files.list(dir);
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                })
+                .map(s -> s.getFileName().toString())
+                .unordered().distinct()
+                .sorted()
+                .collect(Collectors.toList());
         log.info("Found {} applications.", apps.size());
         applications = apps;
     }
