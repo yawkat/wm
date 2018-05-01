@@ -138,7 +138,9 @@ public class HerbstClient {
 
     @SneakyThrows
     public void focusMonitor(Monitor monitor) {
-        send("focus_monitor", String.valueOf(monitor.getId())).waitFor(1, TimeUnit.SECONDS);
+        if (getCurrentMonitor().getId() != monitor.getId()) {
+            send("focus_monitor", String.valueOf(monitor.getId())).waitFor(1, TimeUnit.SECONDS);
+        }
         currentMonitor = monitor;
     }
 
