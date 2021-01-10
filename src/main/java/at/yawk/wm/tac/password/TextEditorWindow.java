@@ -48,6 +48,7 @@ class TextEditorWindow {
                 close();
             }
         });
+        window.setLocationByPlatform(true);
     }
 
     public String getText() {
