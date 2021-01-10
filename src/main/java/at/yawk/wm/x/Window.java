@@ -4,11 +4,22 @@ import at.yawk.wm.x.image.LocalImage;
 import java.awt.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 import java.util.Collections;
 import java.util.Set;
 import java.util.function.Consumer;
 import javax.annotation.concurrent.ThreadSafe;
-import org.freedesktop.xcb.*;
+import org.freedesktop.xcb.LibXcb;
+import org.freedesktop.xcb.LibXcbConstants;
+import org.freedesktop.xcb.xcb_config_window_t;
+import org.freedesktop.xcb.xcb_cw_t;
+import org.freedesktop.xcb.xcb_generic_error_t;
+import org.freedesktop.xcb.xcb_get_image_cookie_t;
+import org.freedesktop.xcb.xcb_get_image_reply_t;
+import org.freedesktop.xcb.xcb_image_format_t;
+import org.freedesktop.xcb.xcb_input_focus_t;
+import org.freedesktop.xcb.xcb_prop_mode_t;
+import org.freedesktop.xcb.xcb_window_class_t;
 
 /**
  * @author yawkat
@@ -140,8 +151,35 @@ public class Window extends AbstractResource {
         );
     }
 
+    private void setPropertyCardinal32(String key, int[] cardinal) {
+        ByteBuffer buffer = ByteBuffer.allocateDirect(4 * cardinal.length).order(ByteOrder.nativeOrder());
+        buffer.asIntBuffer().put(IntBuffer.wrap(cardinal));
+        setProperty(
+                key,
+                "CARDINAL",
+                32, cardinal.length,
+                buffer
+        );
+    }
+
     public Window setType(WindowType type) {
         setPropertyAtom("_NET_WM_WINDOW_TYPE", type.value);
+        return this;
+    }
+
+    public Window setStrutPartial(
+            int left, int right, int top, int bottom,
+            int leftStartY, int leftEndY, int rightStartY, int rightEndY,
+            int topStartX, int topEndX, int bottomStartX, int bottomEndX
+    ) {
+        setPropertyCardinal32(
+                "_NET_WM_STRUT_PARTIAL",
+                new int[]{
+                        left, right, top, bottom,
+                        leftStartY, leftEndY, rightStartY, rightEndY,
+                        topStartX, topEndX, bottomStartX, bottomEndX
+                }
+        );
         return this;
     }
 

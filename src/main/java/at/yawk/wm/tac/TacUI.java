@@ -2,9 +2,12 @@ package at.yawk.wm.tac;
 
 import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.hl.Monitor;
-import at.yawk.wm.x.*;
+import at.yawk.wm.x.AbstractResource;
+import at.yawk.wm.x.EventGroup;
 import at.yawk.wm.x.Graphics;
 import at.yawk.wm.x.Window;
+import at.yawk.wm.x.WindowType;
+import at.yawk.wm.x.XcbConnector;
 import at.yawk.wm.x.event.ExposeEvent;
 import at.yawk.wm.x.event.FocusLostEvent;
 import at.yawk.wm.x.event.KeyPressEvent;
@@ -99,6 +102,7 @@ public class TacUI extends AbstractResource implements Modal {
             window.setBackgroundColor(config.getColorBackground())
                     .setBounds(x, y, width, newHeight)
                     .setType(WindowType.DOCK)
+                    .setStrutPartial(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                     .show();
             return; // wait for expose
         }

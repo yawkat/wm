@@ -45,6 +45,10 @@ public class Dock extends AbstractResource {
     public void setBounds(int x, int y, int width, int height) {
         window.setBounds(x, y, width, height);
         rightAnchor.setX(width);
+        window.setStrutPartial(
+                0, 0, height, 0,
+                0, 0, 0, 0, x, x + width, 0, 0
+        );
 
         if (buffer != null) {
             buffer.close();
