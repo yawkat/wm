@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,7 +19,12 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class ApplicationRunner {
     private static final Logger log = LoggerFactory.getLogger(ApplicationRunner.class);
+
+    private final Path runWorkDir = Files.createTempDirectory("wm-run");
     private final AtomicInteger processCounter = new AtomicInteger(0);
+
+    public ApplicationRunner() throws IOException {
+    }
 
     public void run(Command command) {
         try {
@@ -38,6 +45,7 @@ public class ApplicationRunner {
             log.debug("[{}] Final command line: {}", id, line);
 
             Process process = new ProcessBuilder()
+                    .directory(runWorkDir.toFile())
                     .command(line)
                     .redirectError(ProcessBuilder.Redirect.PIPE)
                     .redirectOutput(ProcessBuilder.Redirect.PIPE)
