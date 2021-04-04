@@ -24,8 +24,8 @@ public class TitleWidget extends TextWidget {
     }
 
     @Inject
-    void init(DockConfig config, FontSource fontSource) {
-        setFont(fontSource.getFont(config.getWindowTitleFont()));
+    void init(FontSource fontSource) {
+        setFont(fontSource.getFont(DockConfig.INSTANCE.getWindowTitleFont()));
     }
 
 }

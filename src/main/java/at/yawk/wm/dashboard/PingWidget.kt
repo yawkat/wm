@@ -19,16 +19,15 @@ import javax.inject.Singleton
  */
 class PingWidget @Inject internal constructor(
         val fontSource: FontSource,
-        dashboardConfig: DashboardConfig,
         val cacheHolder: CacheHolder
 ) : FlowCompositeWidget() {
     private val destinationWidgets = HashMap<PingDestination, TextWidget>()
 
     init {
         var last: Positioned = anchor
-        for (destination in dashboardConfig.pingDestinations.map { PingDestination(it.key, it.value) }) {
+        for (destination in DashboardConfig.pingDestinations.map { PingDestination(it.key, it.value) }) {
             val widget = TextWidget()
-            widget.font = fontSource.getFont(dashboardConfig.pingFont)
+            widget.font = fontSource.getFont(DashboardConfig.pingFont)
             widget.after(last, Direction.VERTICAL)
             addWidget(widget)
             destinationWidgets[destination] = widget
@@ -47,10 +46,10 @@ class PingWidget @Inject internal constructor(
     }
 
     @Singleton
-    internal class CacheHolder @Inject constructor(val dashboardConfig: DashboardConfig) {
+    internal class CacheHolder {
         val cache = TimedCache<Map<String, Long?>>(9, TimeUnit.SECONDS) {
             val newPings = HashMap<String, Long?>()
-            for (destination in dashboardConfig.pingDestinations.values) {
+            for (destination in DashboardConfig.pingDestinations.values) {
                 if (!newPings.containsKey(destination)) {
                     try {
                         val start = System.currentTimeMillis()

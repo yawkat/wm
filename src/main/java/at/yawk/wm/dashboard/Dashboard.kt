@@ -17,7 +17,6 @@ import javax.inject.Singleton
 class Dashboard @Inject constructor(
         val monitor: Monitor,
         val desktopManager: DesktopManager,
-        val dockConfig: DockConfig,
         val periodBuilder: PeriodBuilder,
         val animatedWallpaperManager: AnimatedWallpaperManager
 ) : RenderElf {
@@ -88,7 +87,7 @@ class Dashboard @Inject constructor(
 
         fun init() {
             anchor.x = if (origin.isLeft) 0 else window.width
-            anchor.y = if (origin.isTop) dockConfig.height else window.height
+            anchor.y = if (origin.isTop) DockConfig.height else window.height
         }
 
         fun add(widget: Widget) {

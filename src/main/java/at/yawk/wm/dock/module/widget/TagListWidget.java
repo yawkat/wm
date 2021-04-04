@@ -1,5 +1,6 @@
 package at.yawk.wm.dock.module.widget;
 
+import at.yawk.wm.style.FontStyle;
 import at.yawk.wm.ui.Direction;
 import at.yawk.wm.ui.FlowCompositeWidget;
 import at.yawk.wm.ui.TextWidget;
@@ -11,7 +12,6 @@ import at.yawk.wm.hl.HerbstClient;
 import at.yawk.wm.hl.HerbstEventBus;
 import at.yawk.wm.hl.Monitor;
 import at.yawk.wm.hl.Tag;
-import at.yawk.wm.style.FontDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -23,7 +23,6 @@ import javax.inject.Inject;
 public class TagListWidget extends FlowCompositeWidget {
     private final List<TextWidget> tagWidgets = new ArrayList<>();
 
-    @Inject DockConfig config;
     @Inject FontSource fontSource;
     @Inject HerbstClient herbstClient;
     @Inject RenderElf renderElf;
@@ -55,20 +54,20 @@ public class TagListWidget extends FlowCompositeWidget {
                 tagWidgets.add(widget);
             }
 
-            FontDescriptor style;
+            FontStyle style;
             switch (tag.getState()) {
             case SELECTED:
-                style = config.getActiveFont();
+                style = DockConfig.INSTANCE.getActiveFont();
                 break;
             case SELECTED_ELSEWHERE:
-                style = config.getActiveElsewhereFont();
+                style = DockConfig.INSTANCE.getActiveElsewhereFont();
                 break;
             case RUNNING:
             default:
-                style = config.getRunningFont();
+                style = DockConfig.INSTANCE.getRunningFont();
                 break;
             case EMPTY:
-                style = config.getEmptyFont();
+                style = DockConfig.INSTANCE.getEmptyFont();
                 break;
             }
 

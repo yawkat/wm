@@ -7,7 +7,6 @@ import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.dock.module.DockWidget;
 import at.yawk.wm.dock.module.FontSource;
 import at.yawk.wm.dock.module.Periodic;
-import at.yawk.wm.style.FontManager;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,9 +21,7 @@ import javax.inject.Inject;
 public class MemoryWidget extends FlowCompositeWidget {
     private static final Path MEMINFO_PATH = Paths.get("/proc/meminfo");
 
-    @Inject DockConfig dockConfig;
     @Inject FontSource fontSource;
-    @Inject FontManager fontManager;
 
     private TextWidget ram;
     private TextWidget swap;
@@ -70,9 +67,9 @@ public class MemoryWidget extends FlowCompositeWidget {
         float ramUse = memTotal == 0 ? 1 : (float) (memTotal - memFree - buffers - cached) / memTotal;
         float swapUse = swapTotal == 0 ? 1 : (float) (swapTotal - swapFree) / swapTotal;
 
-        ram.setFont(fontSource.getFont(fontManager.compute(dockConfig.getMemoryTransition(), ramUse)));
+        ram.setFont(fontSource.getFont(DockConfig.INSTANCE.getMemoryTransition().computeStyle(ramUse)));
         ram.setText(CpuWidget.formatPercent(ramUse));
-        swap.setFont(fontSource.getFont(fontManager.compute(dockConfig.getSwapTransition(), swapUse)));
+        swap.setFont(fontSource.getFont(DockConfig.INSTANCE.getSwapTransition().computeStyle(swapUse)));
         swap.setText(CpuWidget.formatPercent(swapUse));
 
         if (swapTotal == 0) {

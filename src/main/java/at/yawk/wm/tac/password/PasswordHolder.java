@@ -24,7 +24,6 @@ class PasswordHolder {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(PasswordHolder.class);
     private final LocalStorageProvider storageProvider;
     private final Scheduler scheduler;
-    private final ObjectMapper objectMapper;
     private final String remote;
     /**
      * Password storage timeout in seconds.
@@ -37,11 +36,9 @@ class PasswordHolder {
     private Holder holder = null;
 
     @java.beans.ConstructorProperties({ "storageProvider", "scheduler", "objectMapper", "remote", "timeout" })
-    public PasswordHolder(LocalStorageProvider storageProvider, Scheduler scheduler, ObjectMapper objectMapper,
-                          String remote, int timeout) {
+    public PasswordHolder(LocalStorageProvider storageProvider, Scheduler scheduler, String remote, int timeout) {
         this.storageProvider = storageProvider;
         this.scheduler = scheduler;
-        this.objectMapper = objectMapper;
         this.remote = remote;
         this.timeout = timeout;
     }

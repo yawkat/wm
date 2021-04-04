@@ -1,38 +1,28 @@
 package at.yawk.wm
 
+import at.yawk.paste.client.Config
 import at.yawk.wm.dashboard.*
 import at.yawk.wm.dbus.Dbus
 import at.yawk.wm.dock.module.DockBootstrap
 import at.yawk.wm.dock.module.DockBuilder
-import at.yawk.wm.dock.module.DockConfig
 import at.yawk.wm.hl.HerbstClient
 import at.yawk.wm.hl.Monitor
 import at.yawk.wm.paste.PasteManager
-import at.yawk.wm.style.StyleConfig
-import at.yawk.wm.tac.TacConfig
 import at.yawk.wm.tac.launcher.Launcher
-import at.yawk.wm.tac.launcher.LauncherConfig
-import at.yawk.wm.tac.password.PasswordConfig
 import at.yawk.wm.tac.password.PasswordManager
 import at.yawk.wm.ui.RenderElf
-import at.yawk.wm.wallpaper.animate.AnimatedWallpaperConfig
 import at.yawk.wm.wallpaper.animate.AnimatedWallpaperManager
 import at.yawk.wm.x.GlobalResourceRegistry
 import at.yawk.wm.x.Screen
 import at.yawk.wm.x.XcbConnector
 import at.yawk.wm.x.font.FontCache
-import at.yawk.wm.x.icon.IconConfig
 import at.yawk.wm.x.icon.IconManager
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.inject.AbstractModule
 import com.google.inject.Guice
 import com.google.inject.Module
 import org.freedesktop.xcb.SWIGTYPE_p_xcb_connection_t
-import java.io.BufferedInputStream
-import java.io.IOException
-import java.io.UncheckedIOException
-import java.nio.file.Files
-import java.nio.file.Paths
+import java.net.URL
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadFactory
@@ -124,17 +114,6 @@ private fun start() {
  * @author yawkat
  */
 class Main : AbstractModule() {
-    private val objectMapper = JacksonProvider.createYamlObjectMapper()
-
-    private fun config(): Config {
-        try {
-            BufferedInputStream(Files.newInputStream(Paths.get("config.yml"))).use { i -> return objectMapper.readValue(i, Config::class.java) }
-        } catch (e: IOException) {
-            throw UncheckedIOException(e)
-        }
-
-    }
-
     private fun scheduledExecutor(): Scheduler {
         val threadId = AtomicInteger(0)
         val threadFactory = ThreadFactory { r ->
@@ -150,20 +129,9 @@ class Main : AbstractModule() {
     }
 
     override fun configure() {
-        val config = config()
-
-        bind(Config::class.java).toInstance(config)
-        bind(StyleConfig::class.java).toInstance(config.style)
-        bind(DockConfig::class.java).toInstance(config.dock)
-        bind(TacConfig::class.java).toInstance(config.tac)
-        bind(LauncherConfig::class.java).toInstance(config.launcher)
-        bind(PasswordConfig::class.java).toInstance(config.password)
-        bind(AnimatedWallpaperConfig::class.java).toInstance(config.wallpaper)
-        bind(at.yawk.paste.client.Config::class.java).toInstance(config.paste)
-        bind(IconConfig::class.java).toInstance(config.icon)
-        bind(DashboardConfig::class.java).toInstance(config.dashboard)
-
-        bind(ObjectMapper::class.java).toInstance(objectMapper)
+        bind(at.yawk.paste.client.Config::class.java).toInstance(Config().also {
+            it.remote = URL("https://s.yawk.at")
+        })
 
         val scheduler = scheduledExecutor()
         bind(Scheduler::class.java).toInstance(scheduler)

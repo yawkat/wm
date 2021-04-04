@@ -15,18 +15,16 @@ import javax.inject.Inject;
  */
 @DockWidget(position = DockWidget.Position.RIGHT, priority = 200)
 public class ClockWidget extends TextWidget {
-    private DateTimeFormatter formatter;
     private Clock clock;
 
     @Inject
-    void setup(DockConfig config, FontSource fontSource) {
-        formatter = DateTimeFormatter.ofPattern(config.getClockFormat());
+    void setup(FontSource fontSource) {
         clock = Clock.systemDefaultZone();
-        setFont(fontSource.getFont(config.getClockFont()));
+        setFont(fontSource.getFont(DockConfig.INSTANCE.getClockFont()));
     }
 
     @Periodic(value = 1, render = true)
     void update() {
-        setText(formatter.format(LocalDateTime.now(clock)));
+        setText(DockConfig.INSTANCE.getClockFormat().format(LocalDateTime.now(clock)));
     }
 }

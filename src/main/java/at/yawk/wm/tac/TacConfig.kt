@@ -1,21 +1,21 @@
 package at.yawk.wm.tac
 
-import at.yawk.wm.style.FontDescriptor
-import java.awt.Color
+import at.yawk.wm.style.Color
+import at.yawk.wm.style.StyleConfig
 
 /**
  * @author yawkat
  */
-data class TacConfig(
-        val fontPrimary: FontDescriptor,
-        val fontPrimarySelected: FontDescriptor,
-        val fontSecondary: FontDescriptor,
-        val fontSecondarySelected: FontDescriptor,
+object TacConfig {
+    val fontPrimary = StyleConfig.tacPrimary
+    val fontPrimarySelected = StyleConfig.tacPrimarySelected
+    val fontSecondary = StyleConfig.tacSecondary
+    val fontSecondarySelected = StyleConfig.tacSecondarySelected
 
-        val colorBackground: Color,
-        val colorSelected: Color,
+    val colorBackground = Color.Solarized.base03
+    val colorSelected = Color.Solarized.base02
 
-        val width: Int,
-        val rowHeight: Int,
-        val padding: Int
-)
+    const val width = 400
+    const val rowHeight = 22
+    const val padding = 3
+}

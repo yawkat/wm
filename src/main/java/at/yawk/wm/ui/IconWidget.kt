@@ -1,80 +1,64 @@
-package at.yawk.wm.ui;
+package at.yawk.wm.ui
 
-import at.yawk.wm.style.FontStyle;
-import at.yawk.wm.x.Graphics;
-import at.yawk.wm.x.icon.Icon;
-import java.awt.*;
-import java.util.Objects;
-import javax.annotation.Nullable;
+import at.yawk.wm.style.FontStyle
+import at.yawk.wm.x.Graphics
+import at.yawk.wm.x.icon.LoadedIcon
+import java.awt.Color
+import kotlin.math.min
 
-/**
- * @author yawkat
- */
-public class IconWidget extends Widget {
-    @Nullable private Icon icon;
-    private Color foreground;
-    private Color background;
-    private int targetHeight = -1;
+class IconWidget : Widget() {
+    var icon: LoadedIcon? = null
+        set(value) {
+            if (field != value) {
+                field = value
+                markDirty()
+            }
+        }
+    var foreground: Color? = null
+        set(value) {
+            if (field != value) {
+                field = value
+                markDirty()
+            }
+        }
+    var background: Color? = null
+        set(value) {
+            if (field != value) {
+                field = value
+                markDirty()
+            }
+        }
+    var targetHeight = -1
+        set(value) {
+            if (field != value) {
+                field = value
+                markDirty()
+            }
+        }
 
-    public IconWidget() {}
-
-    public IconWidget(@Nullable Icon icon) {
-        this.icon = icon;
+    fun setColor(style: FontStyle) {
+        this.foreground = style.foreground.awt
+        this.background = style.background.awt
     }
 
-    public void setColor(FontStyle style) {
-        setForeground(style.getForeground());
-        setBackground(style.getBackground());
-    }
-
-    @Override
-    protected void layout(Graphics graphics) {
-        setWidth(icon != null ? icon.getWidth() : 0);
-        if (targetHeight != -1) {
-            setHeight(targetHeight);
+    override fun layout(graphics: Graphics) {
+        width = if (icon != null) icon!!.width else 0
+        height = if (targetHeight != -1) {
+            targetHeight
         } else {
-            setHeight(icon != null ? icon.getHeight() : 0);
+            if (icon != null) icon!!.height else 0
         }
     }
 
-    @Override
-    protected void render(Graphics graphics) {
+    override fun render(graphics: Graphics) {
         if (icon != null) {
-            int x = Math.min(getX(), getX2());
-            int y = Math.min(getY(), getY2());
+            val x = min(x, x2)
+            var y = min(y, y2)
             if (targetHeight != -1) {
                 // center vertically
-                y += (targetHeight - icon.getHeight()) / 2;
+                y += (targetHeight - icon!!.height) / 2
             }
-            graphics.drawPixMap(icon.colorize(foreground, background), x, y);
-        }
-    }
-
-    public void setIcon(@Nullable Icon icon) {
-        if (!Objects.equals(this.icon, icon)) {
-            this.icon = icon;
-            markDirty();
-        }
-    }
-
-    public void setForeground(Color foreground) {
-        if (!Objects.equals(this.foreground, foreground)) {
-            this.foreground = foreground;
-            markDirty();
-        }
-    }
-
-    public void setBackground(Color background) {
-        if (!Objects.equals(this.background, background)) {
-            this.background = background;
-            markDirty();
-        }
-    }
-
-    public void setTargetHeight(int targetHeight) {
-        if (this.targetHeight != targetHeight) {
-            this.targetHeight = targetHeight;
-            markDirty();
+            graphics.drawPixMap(icon!!.colorize(foreground, background), x, y)
         }
     }
 }

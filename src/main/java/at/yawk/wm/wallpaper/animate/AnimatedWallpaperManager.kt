@@ -18,7 +18,6 @@ import javax.inject.Singleton
 class AnimatedWallpaperManager @Inject constructor(
         val connector: XcbConnector,
         val scheduler: Scheduler,
-        val wallpaperConfig: AnimatedWallpaperConfig,
         val herbstClient: HerbstClient,
         val desktopManager: DesktopManager
 ) {
@@ -29,21 +28,21 @@ class AnimatedWallpaperManager @Inject constructor(
 
         var wallpaper: AnimatedWallpaper? = null
 
-        if (wallpaperConfig.show) {
-            if (Files.exists(wallpaperConfig.cache)) {
-                val cacheMod = Files.getLastModifiedTime(wallpaperConfig.cache)
-                val inMod = Files.getLastModifiedTime(wallpaperConfig.input)
+        if (AnimatedWallpaperConfig.show) {
+            if (Files.exists(AnimatedWallpaperConfig.cache)) {
+                val cacheMod = Files.getLastModifiedTime(AnimatedWallpaperConfig.cache)
+                val inMod = Files.getLastModifiedTime(AnimatedWallpaperConfig.input)
                 if (cacheMod.compareTo(inMod) >= 0) {
                     log.info("Found valid cached wallpaper animation")
-                    DataInputStream(Files.newInputStream(wallpaperConfig.cache)).use { `in` -> wallpaper = AnimatedWallpaper.read(`in`) }
+                    DataInputStream(Files.newInputStream(AnimatedWallpaperConfig.cache)).use { `in` -> wallpaper = AnimatedWallpaper.read(`in`) }
                     log.info("Wallpaper loaded to memory")
                 }
             }
 
             if (wallpaper == null) {
                 log.info("Need to compile the wallpaper animation, this may take a while!")
-                wallpaper = AnimationBuilder.loadDirectory(wallpaperConfig.input)
-                DataOutputStream(Files.newOutputStream(wallpaperConfig.cache)).use { out -> wallpaper!!.write(out) }
+                wallpaper = AnimationBuilder.loadDirectory(AnimatedWallpaperConfig.input)
+                DataOutputStream(Files.newOutputStream(AnimatedWallpaperConfig.cache)).use { out -> wallpaper!!.write(out) }
                 log.info("Compilation complete")
             }
         } else {
@@ -54,7 +53,7 @@ class AnimatedWallpaperManager @Inject constructor(
     }
 
     private fun show(wallpaper: AnimatedWallpaper) {
-        animator = Animator(wallpaper, wallpaperConfig.backgroundColor, scheduler, desktopManager.getDesktops())
+        animator = Animator(wallpaper, AnimatedWallpaperConfig.backgroundColor.awt, scheduler, desktopManager.getDesktops())
         animator!!.start()
     }
 

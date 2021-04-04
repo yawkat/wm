@@ -16,7 +16,7 @@ class PasswordEditorWindow extends TextEditorWindow {
 
     public PasswordEditorWindow(PasswordManager manager, at.yawk.password.model.PasswordEntry entry,
                                 boolean needsInsert) {
-        super(manager.fontManager, manager.passwordConfig, entry.getValue());
+        super(entry.getValue());
         this.manager = manager;
         this.entry = entry;
         this.claim = manager.holder.claim();

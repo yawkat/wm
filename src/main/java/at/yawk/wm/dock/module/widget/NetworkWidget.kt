@@ -7,7 +7,6 @@ import at.yawk.wm.dock.module.DockConfig
 import at.yawk.wm.dock.module.DockWidget
 import at.yawk.wm.dock.module.FontSource
 import at.yawk.wm.dock.module.Periodic
-import at.yawk.wm.style.FontManager
 import at.yawk.wm.ui.*
 import at.yawk.wm.x.icon.IconManager
 import java.io.IOException
@@ -22,7 +21,6 @@ import javax.inject.Singleton
 @DockWidget(position = DockWidget.Position.RIGHT, priority = 50)
 class NetworkWidget @Inject internal constructor(
         val iconManager: IconManager,
-        val config: DockConfig,
         val networkManager: NetworkManager,
         val renderElf: RenderElf,
         val cacheHolder: CacheHolder
@@ -33,16 +31,16 @@ class NetworkWidget @Inject internal constructor(
 
 
     @Inject
-    internal fun init(executor: Executor, fontSource: FontSource, fontManager: FontManager) {
-        up.font = fontSource.getFont(config.netUpFont)
+    internal fun init(executor: Executor, fontSource: FontSource) {
+        up.font = fontSource.getFont(DockConfig.netUpFont)
         up.after(anchor, Direction.HORIZONTAL)
         addWidget(up)
 
-        down.font = fontSource.getFont(config.netDownFont)
+        down.font = fontSource.getFont(DockConfig.netDownFont)
         down.after(up, Direction.HORIZONTAL)
         addWidget(down)
 
-        iconWidget.setColor(fontManager.resolve(config.netIconFont))
+        iconWidget.setColor(DockConfig.netIconFont)
         iconWidget.after(down, Direction.HORIZONTAL)
         addWidget(iconWidget)
 
@@ -68,7 +66,7 @@ class NetworkWidget @Inject internal constructor(
     @Periodic(value = 30, render = true)
     internal fun updateOnline() {
         val online = networkManager.connectivity > 1
-        iconWidget.setIcon(iconManager.getIconOrNull(if (online) config.netIconOnline else config.netIconOffline))
+        iconWidget.icon = iconManager.getIconOrNull(if (online) DockConfig.netIconOnline else DockConfig.netIconOffline)
     }
 
     @Singleton

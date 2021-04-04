@@ -6,7 +6,6 @@ import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.dock.module.DockWidget;
 import at.yawk.wm.dock.module.FontSource;
 import at.yawk.wm.dock.module.Periodic;
-import at.yawk.wm.style.FontManager;
 import at.yawk.wm.x.icon.IconManager;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,9 +22,7 @@ import javax.inject.Inject;
 public class CpuWidget extends TextWidget {
     private static final Path STAT_PATH = Paths.get("/proc/stat");
 
-    @Inject DockConfig dockConfig;
     @Inject FontSource fontSource;
-    @Inject FontManager fontManager;
     @Inject IconManager iconManager;
 
     private final MovingAverage cpuUsage = new MovingAverage(0.8);
@@ -34,7 +31,7 @@ public class CpuWidget extends TextWidget {
 
     @Override
     public void init() {
-        setIcon(iconManager.getIconOrNull(dockConfig.getCpuIcon()));
+        setIcon(iconManager.getIconOrNull(DockConfig.INSTANCE.getCpuIcon()));
     }
 
     @Periodic(value = 1, render = true)
@@ -66,8 +63,7 @@ public class CpuWidget extends TextWidget {
 
         // one significant digit precision
         setText(formatPercent(cpuUsage.getAverage()));
-        setFont(fontSource.getFont(fontManager.compute(dockConfig.getCpuTransition(),
-                                                       (float) cpuUsage.getAverage())));
+        setFont(fontSource.getFont(DockConfig.INSTANCE.getCpuTransition().computeStyle((float) cpuUsage.getAverage())));
     }
 
     static String formatPercent(double number) {

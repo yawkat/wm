@@ -5,31 +5,29 @@ import at.yawk.wm.dock.module.DockConfig
 import at.yawk.wm.dock.module.DockWidget
 import at.yawk.wm.dock.module.FontSource
 import at.yawk.wm.dock.module.Periodic
-import at.yawk.wm.style.FontManager
 import at.yawk.wm.ui.*
-import at.yawk.wm.x.icon.Icon
+import at.yawk.wm.x.icon.LoadedIcon
 import at.yawk.wm.x.icon.IconManager
 import java.time.Duration
 import java.util.*
 import java.util.concurrent.Executor
 import javax.inject.Inject
+import kotlin.math.abs
 
 /**
  * @author yawkat
  */
 @DockWidget(position = DockWidget.Position.RIGHT, priority = -100)
 class BatteryWidget @Inject constructor(
-        val config: DockConfig,
         val fontSource: FontSource,
-        val fontManager: FontManager,
         val iconManager: IconManager,
         val power: Power
 ) : FlowCompositeWidget() {
     private val devices = ArrayList<DeviceHolder>()
 
-    private fun findChargeIcon(charging: Boolean, charge: Float): Icon {
-        val iconSet = if (charging) config.chargingIcons else config.dischargingIcons
-        val descriptor = iconSet.minBy { e -> Math.abs(e.key - charge) }!!.value
+    private fun findChargeIcon(charging: Boolean, charge: Float): LoadedIcon {
+        val iconSet = if (charging) DockConfig.chargingIcons else DockConfig.dischargingIcons
+        val descriptor = iconSet.minByOrNull { e -> abs(e.key - charge) }!!.value
         return iconManager.getIcon(descriptor)
     }
 
@@ -96,24 +94,24 @@ class BatteryWidget @Inject constructor(
 
         init {
             duration = TextWidget()
-            duration.font = fontSource.getFont(config.batteryTime)
+            duration.font = fontSource.getFont(DockConfig.batteryTime)
             val anchor = if (devices.isEmpty())
                 anchor
             else
                 devices[devices.size - 1].icon
             duration.after(anchor, Direction.HORIZONTAL)
-            duration.textHeight = config.height
+            duration.textHeight = DockConfig.height
             duration.paddingLeft = 0
 
             percentage = TextWidget()
             percentage.after(duration, Direction.HORIZONTAL)
-            percentage.textHeight = config.height
+            percentage.textHeight = DockConfig.height
             percentage.paddingLeft = 0
 
             icon = IconWidget()
-            icon.setColor(fontManager.resolve(config.batteryTime))
+            icon.setColor(DockConfig.batteryTime)
             icon.after(percentage, Direction.HORIZONTAL)
-            icon.setTargetHeight(config.height)
+            icon.targetHeight = DockConfig.height
 
             addWidget(duration)
             addWidget(percentage)
@@ -122,7 +120,7 @@ class BatteryWidget @Inject constructor(
 
         internal fun updateState(state: BatteryState) {
             percentage.text = Math.round(state.charge * 100).toString() + "%"
-            val transition = fontManager.compute(config.batteryTransition, state.charge)
+            val transition = DockConfig.batteryTransition.computeStyle(state.charge)
             percentage.font = fontSource.getFont(transition)
 
             val durationStr = StringBuilder()
@@ -136,7 +134,7 @@ class BatteryWidget @Inject constructor(
             }
             duration.text = durationStr.toString()
 
-            icon.setIcon(findChargeIcon(state.isCharging, state.charge))
+            icon.icon = findChargeIcon(state.isCharging, state.charge)
         }
 
         internal fun free() {

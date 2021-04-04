@@ -57,9 +57,7 @@ class XkcdWidget @Inject constructor(
 class XkcdLoader @Inject constructor(
         val executor: Executor,
         val xcbConnector: XcbConnector,
-        val dashboardConfig: DashboardConfig,
-        val fontSource: FontSource,
-        val wallpaperConfig: AnimatedWallpaperConfig
+        val fontSource: FontSource
 ) {
     internal var comic: PixMap? = null
     private lateinit var font: GlyphFont
@@ -67,7 +65,7 @@ class XkcdLoader @Inject constructor(
     internal var subscribers = emptyList<() -> Unit>()
 
     fun start() {
-        font = fontSource.getFont(dashboardConfig.xkcdFont)
+        font = fontSource.getFont(DashboardConfig.xkcdFont)
         executor.execute { fetch() }
     }
 
@@ -90,14 +88,14 @@ class XkcdLoader @Inject constructor(
             val hsb = Color.RGBtoHSB((rgb ushr 16) and 0xff, (rgb ushr 8) and 0xff, rgb and 0xff, null)
             val whitePart = hsb[2]
             if (whitePart > 0.99) {
-                dashboardConfig.xkcdWhite.rgb
+                DashboardConfig.xkcdWhite.rgb
             } else if (whitePart < 0.01) {
-                dashboardConfig.xkcdBlack.rgb
+                DashboardConfig.xkcdBlack.rgb
             } else {
                 val blackPart = 1 - whitePart
-                val r = dashboardConfig.xkcdBlack.red * blackPart + dashboardConfig.xkcdWhite.red * whitePart
-                val g = dashboardConfig.xkcdBlack.green * blackPart + dashboardConfig.xkcdWhite.green * whitePart
-                val b = dashboardConfig.xkcdBlack.blue * blackPart + dashboardConfig.xkcdWhite.blue * whitePart
+                val r = DashboardConfig.xkcdBlack.red * blackPart + DashboardConfig.xkcdWhite.red * whitePart
+                val g = DashboardConfig.xkcdBlack.green * blackPart + DashboardConfig.xkcdWhite.green * whitePart
+                val b = DashboardConfig.xkcdBlack.blue * blackPart + DashboardConfig.xkcdWhite.blue * whitePart
                 (r.toInt() shl 16) or (g.toInt() shl 8) or b.toInt()
             }
         }
@@ -136,8 +134,8 @@ class XkcdLoader @Inject constructor(
         val window = xcbConnector.screen.rootWindow
         val pixMap = window.createPixMap(textWidth, localImage.height + textHeight)
         pixMap.createGraphics().use {
-            it.setBackgroundColor(wallpaperConfig.backgroundColor)
-            it.setForegroundColor(wallpaperConfig.backgroundColor)
+            it.setBackgroundColor(AnimatedWallpaperConfig.backgroundColor.awt)
+            it.setForegroundColor(AnimatedWallpaperConfig.backgroundColor.awt)
             it.fillRect(0, 0, pixMap.width, pixMap.height)
 
             val imagePaddingLeft = textWidth - localImage.width

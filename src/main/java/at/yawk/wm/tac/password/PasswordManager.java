@@ -3,54 +3,49 @@ package at.yawk.wm.tac.password;
 import at.yawk.password.MultiFileLocalStorageProvider;
 import at.yawk.wm.Scheduler;
 import at.yawk.wm.Util;
-import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.hl.HerbstClient;
-import at.yawk.wm.style.FontManager;
 import at.yawk.wm.tac.*;
 import at.yawk.wm.x.XcbConnector;
 import at.yawk.wm.x.font.FontCache;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+
+import javax.annotation.Nullable;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-import org.slf4j.Logger;
 
 /**
  * @author yawkat
  */
 public class PasswordManager {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(PasswordManager.class);
-    @Inject TacConfig tacConfig;
-    @Inject DockConfig dockConfig;
-    @Inject PasswordConfig passwordConfig;
     @Inject Scheduler scheduler;
     @Inject ModalRegistry modalRegistry;
     @Inject XcbConnector connector;
     @Inject FontCache fontCache;
-    @Inject FontManager fontManager;
     @Inject HerbstClient herbstClient;
 
     PasswordHolder holder;
 
     @Inject
     void configure() {
-        if (!Files.isDirectory(passwordConfig.getCacheDir())) {
+        if (!Files.isDirectory(PasswordConfig.INSTANCE.getCacheDir())) {
             try {
-                Files.createDirectories(passwordConfig.getCacheDir());
+                Files.createDirectories(PasswordConfig.INSTANCE.getCacheDir());
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
         }
         holder = new PasswordHolder(
-                new MultiFileLocalStorageProvider(passwordConfig.getCacheDir().toFile()),
-                scheduler, new ObjectMapper(),
-                passwordConfig.getRemote(),
-                passwordConfig.getTimeout()
+                new MultiFileLocalStorageProvider(PasswordConfig.INSTANCE.getCacheDir().toFile()),
+                scheduler,
+                PasswordConfig.INSTANCE.getRemote(),
+                PasswordConfig.INSTANCE.getTimeout()
         );
     }
 
@@ -64,8 +59,6 @@ public class PasswordManager {
 
     private void open() {
         TacUI ui = new TacUI(
-                tacConfig,
-                dockConfig,
                 fontCache,
                 connector,
                 herbstClient.getCurrentMonitor()

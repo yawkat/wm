@@ -1,6 +1,7 @@
 package at.yawk.wm.x.icon;
 
 import at.yawk.wm.Util;
+import at.yawk.wm.style.Icon;
 import at.yawk.wm.x.Graphics;
 import at.yawk.wm.x.*;
 import at.yawk.wm.x.image.BufferedLocalImage;
@@ -13,8 +14,10 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -27,11 +30,12 @@ import org.slf4j.Logger;
  */
 @Singleton
 public class IconManager {
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(IconManager.class);
-    @Inject IconConfig config;
-    @Inject Screen screen;
+    private final Path cacheDir = Paths.get(".cache/icon");
+    private final Path baseDir = Paths.get("material-design-icons");
 
-    private Map<IconDescriptor, Integer> descriptorIndices;
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(IconManager.class);
+
+    private final Screen screen;
 
     /**
      * X-offset of individual icons
@@ -43,18 +47,14 @@ public class IconManager {
     private LocalImage image;
     private Map<ColorPair, PixMap> colorMaps = new ConcurrentHashMap<>();
 
+    @Inject
+    public IconManager(Screen screen) {
+        this.screen = screen;
+    }
+
     @SneakyThrows
     public void load() {
-        descriptorIndices = new HashMap<>();
-        Iterator<Map.Entry<IconDescriptor, Path>> iterator = config.getIcons().entrySet().stream()
-                .sorted(Comparator.comparing(e -> e.getKey().getId()))
-                .iterator();
-        int i = 0;
-        while (iterator.hasNext()) {
-            descriptorIndices.put(iterator.next().getKey(), i++);
-        }
-
-        int descriptorCount = config.getIcons().size();
+        int descriptorCount = Icon.values().length;
         descriptorOffsets = new int[descriptorCount];
         descriptorWidths = new short[descriptorCount];
         descriptorHeights = new short[descriptorCount];
@@ -62,8 +62,7 @@ public class IconManager {
         // the stitched map image
         ByteArrayImage mapImage;
 
-        int hash = config.getIcons().hashCode(); // lazy
-        Path cacheFile = config.getCacheDir().resolve(String.format("%08x", hash));
+        Path cacheFile = cacheDir.resolve(String.format("%08x", Icon.Companion.getHASH()));
         if (Files.exists(cacheFile)) {
             log.info("Loading icon cache...");
             ByteBuffer fileBuffer;
@@ -96,14 +95,15 @@ public class IconManager {
         } else {
             log.info("Generating icon cache...");
             LocalImage[] images = new LocalImage[descriptorCount];
-            for (Map.Entry<IconDescriptor, Path> entry : config.getIcons().entrySet()) {
-                int index = descriptorIndices.get(entry.getKey());
-                BufferedImage alphaImage = Util.INSTANCE.loadImage(entry.getValue());
+            Icon[] icons = Icon.values();
+            for (int i = 0; i < icons.length; i++) {
+                Icon icon = icons[i];
+                BufferedImage alphaImage = Util.INSTANCE.loadImage(baseDir.resolve(icon.getSubPath()));
                 BufferedImage maskImage = new BufferedImage(alphaImage.getWidth(),
-                                                            alphaImage.getHeight(),
-                                                            BufferedImage.TYPE_3BYTE_BGR);
+                        alphaImage.getHeight(),
+                        BufferedImage.TYPE_3BYTE_BGR);
                 maskImage.createGraphics().drawImage(alphaImage, 0, 0, null);
-                images[index] = new BufferedLocalImage(maskImage);
+                images[i] = new BufferedLocalImage(maskImage);
             }
 
             int mapWidth = Arrays.stream(images).mapToInt(LocalImage::getWidth).sum();
@@ -153,9 +153,9 @@ public class IconManager {
     }
 
     @Nullable
-    public Icon getIconOrNull(@Nullable IconDescriptor descriptor) {
-        if (descriptor == null) { return null; }
-        return getIcon(descriptor);
+    public LoadedIcon getIconOrNull(@Nullable Icon icon) {
+        if (icon == null) { return null; }
+        return getIcon(icon);
     }
 
     private PixMap getPixMap(Color foreground, Color background) {
@@ -177,10 +177,8 @@ public class IconManager {
         });
     }
 
-    public Icon getIcon(IconDescriptor descriptor) {
-        Integer index = descriptorIndices.get(descriptor);
-        if (index == null) { throw new NoSuchElementException(descriptor.getId()); }
-        return new IconImpl(index);
+    public LoadedIcon getIcon(Icon icon) {
+        return new IconImpl(icon.ordinal());
     }
 
     private static final class ColorPair {
@@ -234,7 +232,7 @@ public class IconManager {
         }
     }
 
-    private class IconImpl implements Icon {
+    private class IconImpl implements LoadedIcon {
         private final int xOffset;
         private final short width;
         private final short height;

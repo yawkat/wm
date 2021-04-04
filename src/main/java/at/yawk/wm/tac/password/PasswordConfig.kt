@@ -1,21 +1,18 @@
 package at.yawk.wm.tac.password
 
-import at.yawk.wm.style.FontDescriptor
-import java.awt.Color
-import java.nio.file.Path
+import at.yawk.wm.style.Color
+import at.yawk.wm.style.StyleConfig
+import java.nio.file.Paths
 
-/**
- * @author yawkat
- */
-data class PasswordConfig(
-        val cacheDir: Path,
+object PasswordConfig {
+        val cacheDir = Paths.get("/home/yawkat/.local/share/password")
         /**
          * Password storage timeout in seconds.
          */
-        val timeout: Int,
-        val remote: String,
-        val editorBackground: Color,
-        val editorFont: FontDescriptor,
-        val editorWidth: Int,
-        val editorHeight: Int
-)
+        val timeout = 600
+        val remote = "https://pw.yawk.at"
+        val editorBackground = Color.Solarized.base03
+        val editorFont = StyleConfig.base0
+        const val editorWidth = 400
+        const val editorHeight = 400
+}

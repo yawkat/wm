@@ -13,6 +13,10 @@ public class StandardFontFactory implements FontFactory {
     public StandardFontFactory() {
     }
 
+    public StandardFontFactory(String name) {
+        this.name = name;
+    }
+
     @Override
     public int getCellSize(FontStyle style) {
         return (int) (style.getSize() * 1.5); // better too large than too small

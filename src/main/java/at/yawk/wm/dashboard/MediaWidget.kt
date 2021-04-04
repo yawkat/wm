@@ -19,7 +19,6 @@ private val log = LoggerFactory.getLogger(MediaWidget::class.java)
  */
 class MediaWidget @Inject constructor(
         val fontSource: FontSource,
-        val dashboardConfig: DashboardConfig,
         val mediaPlayer: MediaPlayer,
         val renderElf: RenderElf,
         val executor: Executor
@@ -29,7 +28,7 @@ class MediaWidget @Inject constructor(
     val album = TextWidget()
 
     init {
-        val font = fontSource.getFont(dashboardConfig.mediaFont)
+        val font = fontSource.getFont(DashboardConfig.mediaFont)
 
         addWidget(title)
         addWidget(artist)

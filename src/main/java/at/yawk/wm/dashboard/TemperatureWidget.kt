@@ -18,11 +18,10 @@ private val TEMPERATURE_PATTERN = "-?\\d+(\\.\\d+)?°C".toPattern()
  */
 class TemperatureWidget @Inject internal constructor(
         val fontSource: FontSource,
-        dashboardConfig: DashboardConfig,
         val cacheHolder: CacheHolder
 ) : TextWidget() {
     init {
-        font = fontSource.getFont(dashboardConfig.temperatureFont)
+        font = fontSource.getFont(DashboardConfig.temperatureFont)
     }
 
     @Periodic(value = 1, unit = TimeUnit.MINUTES, render = true)

@@ -11,11 +11,10 @@ import javax.inject.Inject;
  */
 public class DockPadFeature {
     @Inject HerbstClient herbstClient;
-    @Inject DockConfig dockConfig;
     @Inject Monitor monitor;
 
     @DockStart
     public void init() {
-        herbstClient.pad(monitor, dockConfig.getHeight());
+        herbstClient.pad(monitor, DockConfig.height);
     }
 }

@@ -1,66 +1,64 @@
-package at.yawk.wm.dock.module.widget;
+package at.yawk.wm.dock.module.widget
 
-import at.yawk.wm.ui.Widget;
-import at.yawk.wm.dock.module.DockBuilder;
-import at.yawk.wm.dock.module.DockConfig;
-import at.yawk.wm.dock.module.DockWidget;
-import at.yawk.wm.hl.HerbstClient;
-import at.yawk.wm.hl.Monitor;
-import at.yawk.wm.progress.ProgressManager;
-import at.yawk.wm.progress.ProgressTask;
-import at.yawk.wm.x.Graphics;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import javax.inject.Inject;
+import at.yawk.wm.dock.module.DockBuilder
+import at.yawk.wm.dock.module.DockConfig
+import at.yawk.wm.dock.module.DockWidget
+import at.yawk.wm.hl.HerbstClient
+import at.yawk.wm.hl.Monitor
+import at.yawk.wm.progress.ProgressManager
+import at.yawk.wm.progress.ProgressTask
+import at.yawk.wm.ui.Widget
+import at.yawk.wm.x.Graphics
+import java.util.ArrayList
+import java.util.Collections
+import javax.inject.Inject
+import kotlin.math.roundToInt
 
 /**
  * @author yawkat
  */
-@DockWidget(position = DockWidget.Position.LEFT, priority = Integer.MAX_VALUE)
-public class ProgressWidget extends Widget {
-    private final List<ProgressTask> tasks = Collections.synchronizedList(new ArrayList<>());
-
-    @Inject DockBuilder dock;
-    @Inject DockConfig config;
-    @Inject HerbstClient herbstClient;
-    @Inject Monitor monitor;
-
-    {
-        // we have 0 size in the layout
-        setWidth(0);
-        setHeight(0);
-    }
+@DockWidget(position = DockWidget.Position.LEFT, priority = Int.MAX_VALUE)
+class ProgressWidget @Inject constructor(
+    private val dock: DockBuilder,
+    private val herbstClient: HerbstClient,
+    private val monitor: Monitor
+) : Widget() {
+    private val tasks = Collections.synchronizedList(ArrayList<ProgressTask>())
 
     @Inject
-    void listen(ProgressManager manager) {
-        manager.addTaskCreateListener(task -> {
-            tasks.add(task);
-            task.addChangeListener(() -> {
-                if (!task.isRunning()) {
-                    tasks.remove(task);
+    fun listen(manager: ProgressManager) {
+        manager.addTaskCreateListener { task: ProgressTask ->
+            tasks.add(task)
+            task.addChangeListener {
+                if (!task.isRunning) {
+                    tasks.remove(task)
                 }
-                markDirtyAndRepaint();
-            });
-            markDirtyAndRepaint();
-        });
+                markDirtyAndRepaint()
+            }
+            markDirtyAndRepaint()
+        }
     }
 
-    private void markDirtyAndRepaint() {
-        markDirty();
-        dock.render();
+    private fun markDirtyAndRepaint() {
+        markDirty()
+        dock.render()
     }
 
-    @Override
-    protected void render(Graphics graphics) {
-        if (herbstClient.getCurrentMonitor().getId() == monitor.getId()) {
-            graphics.setForegroundColor(config.getActiveMonitorColor());
-            graphics.fillRect(0, 0, dock.getWindow().getWidth(), 1);
+    override fun render(graphics: Graphics) {
+        if (herbstClient.currentMonitor.id == monitor.id) {
+            graphics.setForegroundColor(DockConfig.activeMonitorColor.awt)
+            graphics.fillRect(0, 0, dock.window.width, 1)
         }
-        graphics.setForegroundColor(config.getProgressColor());
-        int y = 0;
-        for (ProgressTask task : tasks) {
-            graphics.fillRect(0, y, Math.round(dock.getWindow().getWidth() * task.getProgress()), 1);
+        graphics.setForegroundColor(DockConfig.progressColor.awt)
+        val y = 0
+        for (task in tasks) {
+            graphics.fillRect(0, y, (dock.window.width * task.progress).roundToInt(), 1)
         }
+    }
+
+    init {
+        // we have 0 size in the layout
+        width = 0
+        height = 0
     }
 }

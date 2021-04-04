@@ -31,14 +31,10 @@ import org.slf4j.Logger;
 public class Launcher {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(Launcher.class);
-    @Inject TacConfig tacConfig;
-    @Inject DockConfig dockConfig;
-    @Inject LauncherConfig launcherConfig;
     @Inject XcbConnector connector;
     @Inject ModalRegistry modalRegistry;
     @Inject AnimatedWallpaperManager animatedWallpaper;
     @Inject ApplicationRunner applicationRunner;
-    @Inject ObjectMapper objectMapper;
     @Inject FontCache fontCache;
     @Inject HerbstClient herbstClient;
 
@@ -59,8 +55,6 @@ public class Launcher {
         }
 
         TacUI ui = new TacUI(
-                tacConfig,
-                dockConfig,
                 fontCache,
                 connector,
                 herbstClient.getCurrentMonitor()
@@ -118,7 +112,7 @@ public class Launcher {
             };
             customEntries = Arrays.asList(
                     new LauncherEntry(this.ui, new EntryDescriptor(
-                            "shutdown", new Command(launcherConfig.getShutdownCommand()), true), applicationRunner) {
+                            "shutdown", new Command(LauncherConfig.INSTANCE.getShutdownCommand()), true), applicationRunner) {
                         @Override
                         public void onUsed() {
                             ui.close();
@@ -150,7 +144,7 @@ public class Launcher {
                 return;
             }
 
-            Stream<EntryDescriptor> shortcuts = launcherConfig.getShortcuts().entrySet().stream()
+            Stream<EntryDescriptor> shortcuts = LauncherConfig.INSTANCE.getShortcuts().entrySet().stream()
                     .map(e -> new EntryDescriptor(e.getKey(), e.getValue(), true));
             Stream<EntryDescriptor> normal = pathScanner.getApplications().stream()
                     .map(s -> new EntryDescriptor(s, new Command(Collections.singletonList(s)), false));

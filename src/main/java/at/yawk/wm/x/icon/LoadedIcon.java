@@ -6,7 +6,7 @@ import java.awt.*;
 /**
  * @author yawkat
  */
-public interface Icon {
+public interface LoadedIcon {
     PixMapArea colorize(Color foreground, Color background);
 
     int getWidth();
