@@ -24,13 +24,22 @@ import java.util.stream.Stream;
  */
 public class PasswordManager {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(PasswordManager.class);
-    @Inject Scheduler scheduler;
-    @Inject ModalRegistry modalRegistry;
-    @Inject XcbConnector connector;
-    @Inject FontCache fontCache;
-    @Inject HerbstClient herbstClient;
+    private final Scheduler scheduler;
+    private final ModalRegistry modalRegistry;
+    private final XcbConnector connector;
+    private final FontCache fontCache;
+    private final HerbstClient herbstClient;
 
     PasswordHolder holder;
+
+    @Inject
+    public PasswordManager(Scheduler scheduler, ModalRegistry modalRegistry, XcbConnector connector, FontCache fontCache, HerbstClient herbstClient) {
+        this.scheduler = scheduler;
+        this.modalRegistry = modalRegistry;
+        this.connector = connector;
+        this.fontCache = fontCache;
+        this.herbstClient = herbstClient;
+    }
 
     @Inject
     void configure() {

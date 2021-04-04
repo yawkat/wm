@@ -71,9 +71,9 @@ class DockBuilder @Inject constructor(
 
     //////// SETUP ////////
     private fun setupWidgets(bootstrap: DockBootstrap) {
-        val widgets = bootstrap.widgets
+        var widgets = bootstrap.widgets
         log.info("Visiting {} widgets...", widgets.size)
-        widgets.sortWith(Comparator.comparingInt { it.javaClass.getAnnotation(DockWidget::class.java).priority })
+        widgets = widgets.sortedWith(Comparator.comparingInt { it.javaClass.getAnnotation(DockWidget::class.java).priority })
         for (widget in widgets) {
             val widgetClass: Class<out Widget> = widget.javaClass
             val annotation = widgetClass.getAnnotation(DockWidget::class.java)

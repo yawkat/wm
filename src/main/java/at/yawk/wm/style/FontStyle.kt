@@ -8,7 +8,7 @@ data class FontStyle(
     val italic: Boolean,
     val size: Int
 ) {
-    fun getDescriptor(): String? {
+    fun getDescriptor(): String {
         val builder = StringBuilder(family.descriptor)
         builder.append('-').append(java.lang.String.format("%06x", foreground.rgb))
         builder.append('-').append(java.lang.String.format("%06x", background.rgb))

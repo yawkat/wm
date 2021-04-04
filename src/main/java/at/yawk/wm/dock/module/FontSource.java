@@ -5,9 +5,6 @@ import at.yawk.wm.x.font.FontCache;
 import at.yawk.wm.x.font.GlyphFont;
 import com.google.inject.ImplementedBy;
 
-/**
- * @author yawkat
- */
 @ImplementedBy(FontCache.class)
 public interface FontSource {
     GlyphFont getFont(FontStyle style);

@@ -26,10 +26,18 @@ public class PasteManager {
     private PasteClient client;
     private ClipboardHelper clipboardHelper;
 
-    @Inject XcbConnector connector;
-    @Inject ModalRegistry modalRegistry;
-    @Inject ProgressManager progressManager;
-    @Inject HerbstClient herbstClient;
+    private final XcbConnector connector;
+    private final ModalRegistry modalRegistry;
+    private final ProgressManager progressManager;
+    private final HerbstClient herbstClient;
+
+    @Inject
+    public PasteManager(XcbConnector connector, ModalRegistry modalRegistry, ProgressManager progressManager, HerbstClient herbstClient) {
+        this.connector = connector;
+        this.modalRegistry = modalRegistry;
+        this.progressManager = progressManager;
+        this.herbstClient = herbstClient;
+    }
 
     @Inject
     void load(Config pasteConfig) {

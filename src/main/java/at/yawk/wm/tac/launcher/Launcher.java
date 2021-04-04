@@ -31,15 +31,25 @@ import org.slf4j.Logger;
 public class Launcher {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(Launcher.class);
-    @Inject XcbConnector connector;
-    @Inject ModalRegistry modalRegistry;
-    @Inject AnimatedWallpaperManager animatedWallpaper;
-    @Inject ApplicationRunner applicationRunner;
-    @Inject FontCache fontCache;
-    @Inject HerbstClient herbstClient;
+    private final XcbConnector connector;
+    private final ModalRegistry modalRegistry;
+    private final AnimatedWallpaperManager animatedWallpaper;
+    private final ApplicationRunner applicationRunner;
+    private final FontCache fontCache;
+    private final HerbstClient herbstClient;
 
     private final PathScanner pathScanner = new PathScanner();
     private final REPL repl = new REPL();
+
+    @Inject
+    public Launcher(XcbConnector connector, ModalRegistry modalRegistry, AnimatedWallpaperManager animatedWallpaper, ApplicationRunner applicationRunner, FontCache fontCache, HerbstClient herbstClient) {
+        this.connector = connector;
+        this.modalRegistry = modalRegistry;
+        this.animatedWallpaper = animatedWallpaper;
+        this.applicationRunner = applicationRunner;
+        this.fontCache = fontCache;
+        this.herbstClient = herbstClient;
+    }
 
     public void bind() {
         herbstClient.addKeyHandler("Mod4-plus", () -> {

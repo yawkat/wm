@@ -23,12 +23,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Singleton
 public class HerbstClient {
-    @Inject Provider<HerbstEventBus> eventBus;
+    private final HerbstEventBus eventBus;
 
     private Map<String, Runnable> keyHandlers = new HashMap<>();
 
     private Map<Integer, Monitor> monitors = null;
     private Monitor currentMonitor;
+
+    @Inject
+    public HerbstClient(HerbstEventBus eventBus) {
+        this.eventBus = eventBus;
+    }
 
     public Monitor getCurrentMonitor() {
         if (currentMonitor == null) {
@@ -74,17 +79,17 @@ public class HerbstClient {
                     case "tag_changed":
                         currentMonitor = monitors.get(Integer.parseInt(components.get(2)));
                     case "tag_flags":
-                        eventBus.get().post(new TagEvent());
+                        eventBus.post(new TagEvent());
                         break;
                     case "window_title_changed":
                     case "focus_changed":
                         if (components.size() > 2) {
-                            eventBus.get().post(new TitleEvent(components.get(2)));
+                            eventBus.post(new TitleEvent(components.get(2)));
                         }
                         break;
                     case "reload":
                     case "quit_panel":
-                        eventBus.get().post(new ShutdownEvent());
+                        eventBus.post(new ShutdownEvent());
                         break;
                     case "_key_handler":
                         Runnable handler = keyHandlers.get(components.get(1));
