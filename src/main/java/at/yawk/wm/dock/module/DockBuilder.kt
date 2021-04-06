@@ -1,8 +1,8 @@
 package at.yawk.wm.dock.module
 
+import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.PeriodBuilder
 import at.yawk.wm.dock.Dock
-import at.yawk.wm.dock.module.DockBuilder
 import at.yawk.wm.hl.Monitor
 import at.yawk.wm.ui.FlowCompositeWidget
 import at.yawk.wm.ui.IconWidget
@@ -17,22 +17,23 @@ import org.slf4j.LoggerFactory
 import java.util.Comparator
 import java.util.function.Consumer
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * @author yawkat
  */
-@Singleton
+@PerMonitor
 class DockBuilder @Inject constructor(
     private val monitor: Monitor,
     private val screen: Screen,
-    private val globalResourceRegistry: GlobalResourceRegistry,
-    private val periodBuilder: PeriodBuilder
+    private val globalResourceRegistry: GlobalResourceRegistry
 ) : RenderElf {
     private lateinit var dock: Dock
 
+    private lateinit var periodBuilder: PeriodBuilder
+
     fun start(bootstrap: DockBootstrap) {
         log.info("Initializing dock...")
+        this.periodBuilder = bootstrap.periodBuilder
         dock = Dock(screen, DockConfig.background.awt)
         globalResourceRegistry.register(dock)
         dock.setBounds(monitor.x, monitor.y, monitor.width, DockConfig.height)

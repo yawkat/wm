@@ -11,18 +11,19 @@
     </appender>
 
     <appender name="out" class="ch.qos.logback.core.ConsoleAppender">
-        <file>log/wm-${start_time}.log</file>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%5level]: %msg%n</pattern>
         </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
     </appender>
 
     <!-- Log INFO to out, DEBUG to file -->
 
-    <root level="info">
-        <appender-ref ref="out"/>
-    </root>
     <root level="debug">
+        <appender-ref ref="out" />
         <appender-ref ref="file"/>
     </root>
+    <logger name="io.netty.channel.ChannelHandlerMask" level="info"/>
 </configuration>

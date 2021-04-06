@@ -1,5 +1,6 @@
 package at.yawk.wm.dock.module.widget
 
+import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dbus.Power
 import at.yawk.wm.dock.module.DockConfig
 import at.yawk.wm.dock.module.DockWidget
@@ -17,6 +18,7 @@ import kotlin.math.abs
 /**
  * @author yawkat
  */
+@PerMonitor
 @DockWidget(position = DockWidget.Position.RIGHT, priority = -100)
 class BatteryWidget @Inject constructor(
         val fontSource: FontSource,

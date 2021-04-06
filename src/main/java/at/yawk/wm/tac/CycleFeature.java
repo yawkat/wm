@@ -1,8 +1,9 @@
 package at.yawk.wm.tac;
 
 import at.yawk.wm.x.event.KeyPressEvent;
+import org.freedesktop.xcb.LibXcbConstants;
+
 import java.util.List;
-import sun.awt.X11.XKeySymConstants;
 
 /**
  * @author yawkat
@@ -63,10 +64,10 @@ public class CycleFeature extends Feature {
 
     @Override
     public void onKeyPress(KeyPressEvent evt) {
-        if (evt.getSymbol() == XKeySymConstants.XK_Up) { // arrow up
+        if (evt.getSymbol() == LibXcbConstants.XKB_KEY_Up) { // arrow up
             cycle(-1);
             evt.cancel();
-        } else if (evt.getSymbol() == XKeySymConstants.XK_Down) { // arrow down
+        } else if (evt.getSymbol() == LibXcbConstants.XKB_KEY_Down) { // arrow down
             cycle(+1);
             evt.cancel();
         }

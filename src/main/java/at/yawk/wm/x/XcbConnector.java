@@ -9,14 +9,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.freedesktop.xcb.*;
 import org.slf4j.Logger;
 import xcb4j.LibXcbLoader;
 
-/**
- * @author yawkat
- */
 @Singleton
 public class XcbConnector implements Resource {
     static final boolean DEBUG_ERRORS = false;
@@ -40,6 +38,10 @@ public class XcbConnector implements Resource {
     final Map<GlyphFont, FontRenderer> fontRenderers =
             Collections.synchronizedMap(new WeakHashMap<>());
 
+    @Inject
+    XcbConnector() {
+    }
+
     public void open() {
         log.info("Connecting to X server...");
         ByteBuffer ptr = ByteBuffer.allocateDirect(4).order(ByteOrder.nativeOrder());
@@ -57,7 +59,6 @@ public class XcbConnector implements Resource {
         for (int i = 0; i < screenId; i++) {
             LibXcb.xcb_screen_next(itr);
         }
-        System.out.println("screenId: " + screenId);
         screen = new Screen(this, itr.getData());
         log.debug("Screen: width={} height={} depth={}",
                   screen.screen.getWidth_in_pixels(),

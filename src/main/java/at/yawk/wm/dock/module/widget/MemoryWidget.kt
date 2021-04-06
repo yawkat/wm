@@ -1,5 +1,6 @@
 package at.yawk.wm.dock.module.widget
 
+import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dock.module.DockConfig
 import at.yawk.wm.dock.module.DockWidget
 import at.yawk.wm.dock.module.FontSource
@@ -13,9 +14,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import javax.inject.Inject
 
-/**
- * @author yawkat
- */
+@PerMonitor
 @DockWidget(position = DockWidget.Position.RIGHT, priority = 99)
 class MemoryWidget @Inject constructor(private val fontSource: FontSource) : FlowCompositeWidget() {
     private val ram: TextWidget

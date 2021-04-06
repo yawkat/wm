@@ -1,6 +1,7 @@
 package at.yawk.wm.dashboard
 
 import at.yawk.wm.TimedCache
+import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dock.module.FontSource
 import at.yawk.wm.dock.module.Periodic
 import at.yawk.wm.ui.TextWidget
@@ -16,6 +17,7 @@ private val TEMPERATURE_PATTERN = "-?\\d+(\\.\\d+)?°C".toPattern()
 /**
  * @author yawkat
  */
+@PerMonitor
 class TemperatureWidget @Inject internal constructor(
         val fontSource: FontSource,
         val cacheHolder: CacheHolder
@@ -31,7 +33,7 @@ class TemperatureWidget @Inject internal constructor(
     }
 
     @Singleton
-    internal class CacheHolder {
+    internal class CacheHolder @Inject constructor() {
         val cache = TimedCache<String>(50, TimeUnit.SECONDS) {
             Socket().use { socket ->
                 socket.soTimeout = 1000

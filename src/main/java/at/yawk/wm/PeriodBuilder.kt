@@ -1,5 +1,6 @@
 package at.yawk.wm
 
+import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dock.module.Periodic
 import at.yawk.wm.ui.RenderElf
 import java.lang.invoke.MethodHandle
@@ -16,6 +17,7 @@ private val LOOKUP = MethodHandles.lookup()
  * @author yawkat
  */
 @NotThreadSafe
+@PerMonitor
 class PeriodBuilder @Inject constructor(private val renderElf: RenderElf, private val scheduler: Scheduler) {
     /*
      * This class takes periodic tasks and uses dark magic to reduce them to as few

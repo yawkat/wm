@@ -1,5 +1,6 @@
 package at.yawk.wm.dashboard
 
+import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dock.module.FontSource
 import at.yawk.wm.hl.Monitor
 import at.yawk.wm.ui.RenderElf
@@ -21,9 +22,7 @@ import javax.imageio.ImageIO
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * @author yawkat
- */
+@PerMonitor
 class XkcdWidget @Inject constructor(
         val monitor: Monitor,
         val fontSource: FontSource,

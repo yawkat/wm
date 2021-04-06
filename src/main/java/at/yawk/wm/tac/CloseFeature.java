@@ -1,7 +1,7 @@
 package at.yawk.wm.tac;
 
 import at.yawk.wm.x.event.KeyPressEvent;
-import sun.awt.X11.XKeySymConstants;
+import org.freedesktop.xcb.LibXcbConstants;
 
 /**
  * @author yawkat
@@ -16,7 +16,7 @@ class CloseFeature extends Feature {
 
     @Override
     public void onKeyPress(KeyPressEvent evt) {
-        if (evt.getSymbol() == XKeySymConstants.XK_Escape) {
+        if (evt.getSymbol() == LibXcbConstants.XKB_KEY_Escape) {
             ui.close();
             evt.cancel();
         }

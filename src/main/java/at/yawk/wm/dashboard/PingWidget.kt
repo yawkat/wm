@@ -1,6 +1,7 @@
 package at.yawk.wm.dashboard
 
 import at.yawk.wm.TimedCache
+import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dock.module.FontSource
 import at.yawk.wm.dock.module.Periodic
 import at.yawk.wm.ui.Direction
@@ -14,9 +15,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * @author yawkat
- */
+@PerMonitor
 class PingWidget @Inject internal constructor(
         val fontSource: FontSource,
         val cacheHolder: CacheHolder
@@ -46,7 +45,7 @@ class PingWidget @Inject internal constructor(
     }
 
     @Singleton
-    internal class CacheHolder {
+    internal class CacheHolder @Inject constructor() {
         val cache = TimedCache<Map<String, Long?>>(9, TimeUnit.SECONDS) {
             val newPings = HashMap<String, Long?>()
             for (destination in DashboardConfig.pingDestinations.values) {

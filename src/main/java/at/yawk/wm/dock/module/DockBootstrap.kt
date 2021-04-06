@@ -1,5 +1,7 @@
 package at.yawk.wm.dock.module
 
+import at.yawk.wm.PeriodBuilder
+import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dock.module.feature.DockPadFeature
 import at.yawk.wm.dock.module.feature.ScrollTagChange
 import at.yawk.wm.dock.module.widget.BatteryWidget
@@ -14,8 +16,10 @@ import at.yawk.wm.dock.module.widget.TitleWidget
 import at.yawk.wm.ui.Widget
 import javax.inject.Inject
 
+@PerMonitor
 class DockBootstrap @Inject constructor(
     val dock: DockBuilder,
+    val periodBuilder: PeriodBuilder,
 
     batteryWidget: BatteryWidget,
     clockWidget: ClockWidget,

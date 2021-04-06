@@ -1,5 +1,6 @@
 package at.yawk.wm.dock.module.widget
 
+import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.TimedCache
 import at.yawk.wm.Util
 import at.yawk.wm.dbus.NetworkManager
@@ -15,9 +16,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * @author yawkat
- */
+@PerMonitor
 @DockWidget(position = DockWidget.Position.RIGHT, priority = 50)
 class NetworkWidget @Inject internal constructor(
         val iconManager: IconManager,
@@ -70,7 +69,7 @@ class NetworkWidget @Inject internal constructor(
     }
 
     @Singleton
-    internal class CacheHolder {
+    internal class CacheHolder @Inject constructor() {
         val cache = TimedCache<Pair<MovingAverage, MovingAverage>>(500, TimeUnit.MILLISECONDS) { old ->
             val process = ProcessBuilder()
                     .command("nstat", "-t", "1")

@@ -17,9 +17,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
 
-/**
- * @author yawkat
- */
 @Singleton
 public class PasteManager {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(PasteManager.class);

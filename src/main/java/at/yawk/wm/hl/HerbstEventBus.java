@@ -1,20 +1,22 @@
 package at.yawk.wm.hl;
 
+import org.slf4j.Logger;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
-import javax.inject.Singleton;
-import org.slf4j.Logger;
 
-/**
- * @author yawkat
- */
 @Singleton
 public class HerbstEventBus {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(HerbstEventBus.class);
     private final List<ShutdownEvent.Handler> shutdownEventHandlers = new ArrayList<>();
     private final List<TagEvent.Handler> tagEventHandlers = new ArrayList<>();
     private final List<TitleEvent.Handler> titleEventHandlers = new ArrayList<>();
+
+    @Inject
+    public HerbstEventBus() {}
 
     public void addShutdownEventHandler(ShutdownEvent.Handler handler) {
         shutdownEventHandlers.add(handler);

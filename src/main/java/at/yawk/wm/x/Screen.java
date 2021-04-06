@@ -5,11 +5,11 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.Consumer;
 import javax.annotation.concurrent.ThreadSafe;
+import javax.inject.Singleton;
+
 import org.freedesktop.xcb.xcb_screen_t;
 
-/**
- * @author yawkat
- */
+@Singleton
 @ThreadSafe
 public class Screen {
     final XcbConnector connector;

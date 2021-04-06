@@ -6,9 +6,10 @@ import at.yawk.wm.x.event.*;
 import at.yawk.wm.x.image.BufferedLocalImage;
 import at.yawk.wm.x.image.LocalImage;
 import at.yawk.wm.x.image.SubImageView;
+import org.freedesktop.xcb.LibXcbConstants;
+
 import java.util.ArrayList;
 import java.util.List;
-import sun.awt.X11.XKeySymConstants;
 
 /**
  * @author yawkat
@@ -74,7 +75,7 @@ class ScreenshotOverlay implements Modal {
         displayWindow.show();
         displayWindow.acquireFocus();
         displayWindow.addListener(KeyPressEvent.class, evt -> {
-            if (evt.getSymbol() == XKeySymConstants.XK_Escape) {
+            if (evt.getSymbol() == LibXcbConstants.XKB_KEY_Escape) {
                 close();
                 evt.cancel();
             }

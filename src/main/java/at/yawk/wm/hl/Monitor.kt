@@ -1,8 +1,5 @@
 package at.yawk.wm.hl
 
-/**
- * @author yawkat
- */
 data class Monitor(
         val id: Int,
         val x: Int,

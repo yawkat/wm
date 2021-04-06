@@ -1,6 +1,12 @@
 package at.yawk.wm.hl;
 
 import at.yawk.wm.Util;
+import io.netty.util.internal.StringUtil;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -10,16 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
-import javax.xml.bind.DatatypeConverter;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 
-/**
- * @author yawkat
- */
 @Slf4j
 @Singleton
 public class HerbstClient {
@@ -161,7 +158,7 @@ public class HerbstClient {
     public void addKeyHandler(String key, Runnable task) {
         byte[] rb = new byte[32];
         ThreadLocalRandom.current().nextBytes(rb);
-        String token = DatatypeConverter.printHexBinary(rb).toLowerCase();
+        String token = StringUtil.toHexString(rb).toLowerCase();
         keyHandlers.put(token, task);
         send("keybind", key, "emit_hook", "_key_handler", token);
     }

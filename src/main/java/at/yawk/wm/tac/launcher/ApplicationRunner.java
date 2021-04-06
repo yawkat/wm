@@ -1,29 +1,31 @@
 package at.yawk.wm.tac.launcher;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.inject.Singleton;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-/**
- * @author yawkat
- */
 @Singleton
 public class ApplicationRunner {
     private static final Logger log = LoggerFactory.getLogger(ApplicationRunner.class);
 
-    private final Path runWorkDir = Files.createTempDirectory("wm-run");
+    private final Path runWorkDir;
     private final AtomicInteger processCounter = new AtomicInteger(0);
 
-    public ApplicationRunner() throws IOException {
+    @Inject
+    public ApplicationRunner() {
+        try {
+            runWorkDir = Files.createTempDirectory("wm-run");
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     public void run(Command command) {

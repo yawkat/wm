@@ -8,8 +8,8 @@ import java.awt.Dimension
 /**
  * @author yawkat
  */
-open class TextWidget @JvmOverloads constructor(text: String? = "") : Widget() {
-    var text: String? = null
+open class TextWidget @JvmOverloads constructor(text: String = "") : Widget() {
+    var text: String = text
         set(value) {
             if (field != value) {
                 field = value
@@ -92,9 +92,5 @@ open class TextWidget @JvmOverloads constructor(text: String? = "") : Widget() {
         }
         graphics.setFont(font!!)
         graphics.drawText(textStartX, y, text!!)
-    }
-
-    init {
-        this.text = text
     }
 }

@@ -2,7 +2,8 @@ package at.yawk.wm.tac;
 
 import at.yawk.wm.x.event.KeyPressEvent;
 import java.util.stream.Stream;
-import sun.awt.X11.XKeySymConstants;
+
+import org.freedesktop.xcb.LibXcbConstants;
 
 /**
  * @author yawkat
@@ -33,7 +34,7 @@ public class TextFieldFeature extends Feature {
 
     @Override
     public void onKeyPress(KeyPressEvent evt) {
-        if (evt.getSymbol() == XKeySymConstants.XK_BackSpace) {
+        if (evt.getSymbol() == LibXcbConstants.XKB_KEY_BackSpace) {
             if (!text.isEmpty()) {
                 text = text.substring(0, text.length() - 1);
                 update0();

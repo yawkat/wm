@@ -3,14 +3,15 @@ package at.yawk.wm.progress;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * @author yawkat
- */
 @Singleton
 public class ProgressManager {
     private final Collection<Consumer<ProgressTask>> addListeners = new ConcurrentLinkedQueue<>();
+
+    @Inject
+    public ProgressManager() {}
 
     public SettableProgressTask createTask() {
         SimpleProgressTask task = new SimpleProgressTask();

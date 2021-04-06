@@ -1,5 +1,6 @@
 package at.yawk.wm.dock.module.widget
 
+import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dbus.MediaPlayer
 import at.yawk.wm.dock.module.DockConfig.mediaFont
 import at.yawk.wm.dock.module.DockWidget
@@ -9,6 +10,7 @@ import at.yawk.wm.ui.FlowCompositeWidget
 import at.yawk.wm.ui.IconWidget
 import javax.inject.Inject
 
+@PerMonitor
 @DockWidget(position = DockWidget.Position.RIGHT, priority = 210)
 class MediaWidget @Inject constructor(
     private val mediaPlayer: MediaPlayer,

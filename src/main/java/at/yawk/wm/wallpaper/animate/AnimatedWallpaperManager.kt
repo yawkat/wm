@@ -11,9 +11,6 @@ import java.util.concurrent.Future
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * @author yawkat
- */
 @Singleton
 class AnimatedWallpaperManager @Inject constructor(
         val connector: XcbConnector,

@@ -1,32 +1,19 @@
 package at.yawk.wm.tac.launcher;
 
 import at.yawk.wm.Util;
-import at.yawk.wm.dock.module.DockConfig;
 import at.yawk.wm.hl.HerbstClient;
-import at.yawk.wm.tac.CycleFeature;
-import at.yawk.wm.tac.ModalRegistry;
-import at.yawk.wm.tac.TacConfig;
-import at.yawk.wm.tac.TacUI;
-import at.yawk.wm.tac.TextFieldFeature;
-import at.yawk.wm.tac.UseFeature;
+import at.yawk.wm.tac.*;
 import at.yawk.wm.wallpaper.animate.AnimatedWallpaperManager;
 import at.yawk.wm.x.XcbConnector;
 import at.yawk.wm.x.font.FontCache;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.UncheckedIOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.slf4j.Logger;
 
-/**
- * @author yawkat
- */
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.io.UncheckedIOException;
+import java.util.*;
+import java.util.stream.Stream;
+
 @Singleton
 public class Launcher {
 

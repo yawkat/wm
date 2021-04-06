@@ -1,10 +1,18 @@
 package at.yawk.wm
 
 import at.yawk.paste.client.Config
-import at.yawk.wm.dashboard.*
+import at.yawk.wm.dashboard.Dashboard
+import at.yawk.wm.dashboard.DashboardBootstrap
+import at.yawk.wm.dashboard.DesktopManager
+import at.yawk.wm.dashboard.XkcdLoader
 import at.yawk.wm.dbus.Dbus
+import at.yawk.wm.dbus.MediaPlayer
+import at.yawk.wm.dbus.NetworkManager
+import at.yawk.wm.dbus.Power
+import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dock.module.DockBootstrap
 import at.yawk.wm.dock.module.DockBuilder
+import at.yawk.wm.dock.module.FontSource
 import at.yawk.wm.hl.HerbstClient
 import at.yawk.wm.hl.Monitor
 import at.yawk.wm.paste.PasteManager
@@ -12,25 +20,26 @@ import at.yawk.wm.tac.launcher.Launcher
 import at.yawk.wm.tac.password.PasswordManager
 import at.yawk.wm.ui.RenderElf
 import at.yawk.wm.wallpaper.animate.AnimatedWallpaperManager
-import at.yawk.wm.x.GlobalResourceRegistry
-import at.yawk.wm.x.Screen
 import at.yawk.wm.x.XcbConnector
 import at.yawk.wm.x.font.FontCache
 import at.yawk.wm.x.icon.IconManager
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.inject.AbstractModule
-import com.google.inject.Guice
-import com.google.inject.Module
-import org.freedesktop.xcb.SWIGTYPE_p_xcb_connection_t
+import dagger.Binds
+import dagger.BindsInstance
+import dagger.Component
+import dagger.Module
+import dagger.Provides
+import dagger.Subcomponent
+import io.netty.buffer.ByteBufAllocator
 import java.net.URL
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger
+import javax.inject.Singleton
 
-private val log = org.slf4j.LoggerFactory.getLogger(Main::class.java)
+private val log = org.slf4j.LoggerFactory.getLogger("at.yawk.wm.Main")
 
-fun main(args: Array<String>) {
+fun main() {
     log.info("--------------------------------------------------------------------------------")
     log.info("Logging initialized, starting up...")
     try {
@@ -43,7 +52,6 @@ fun main(args: Array<String>) {
 
     // wait until interrupt
     val o = Object()
-    //noinspection SynchronizationOnLocalVariableOrMethodParameter
     synchronized (o) {
         o.wait()
     }
@@ -51,90 +59,168 @@ fun main(args: Array<String>) {
 }
 
 private fun start() {
-    var injector = Guice.createInjector(Main())
-
-    // connect to dbus
-    val dbus = Dbus()
-    dbus.connect()
+    val mainModule = MainModule()
+    val mainComponent = DaggerMainComponent.builder().mainModule(mainModule).build()
 
     // connect to X11
-    val connector = injector.getInstance(XcbConnector::class.java)
+    val connector = mainComponent.connector()
     connector.open()
-
-    injector = injector.createChildInjector(Module { binder ->
-        binder.bind(GlobalResourceRegistry::class.java).toInstance(connector.globalResourceRegistry())
-        binder.bind(Screen::class.java).toInstance(connector.screen)
-        binder.bind(SWIGTYPE_p_xcb_connection_t::class.java).toInstance(connector.connection)
-    }, dbus)
+    mainModule.connector = connector
 
     // connect to herbstluftwm
-    val herbstClient = injector.getInstance(HerbstClient::class.java)
+    val herbstClient = mainComponent.herbstClient()
     herbstClient.listen()
 
     // initialize icon manager and font cache
-    injector.getInstance(IconManager::class.java).load()
-    injector.getInstance(FontCache::class.java)
+    mainComponent.iconManager().load()
 
     val monitors = herbstClient.listMonitors()
 
     // start dock
     for (monitor in monitors) {
-        injector.createChildInjector(Module {
-            it.bind(Monitor::class.java).toInstance(monitor)
-            it.bind(RenderElf::class.java).to(DockBuilder::class.java)
-        }).getInstance(DockBootstrap::class.java).startDock()
+        val monitorContext = mainComponent.dockBuilder().create(monitor)
+        monitorContext.dockBootstrap().startDock()
     }
 
     // initialize desktop for wallpaper and dashboard
-    injector.getInstance(DesktopManager::class.java).init()
+    mainComponent.desktopManager().init()
 
     // start wallpaper
-    injector.getInstance(AnimatedWallpaperManager::class.java).start()
+    mainComponent.animatedWallpaperManager().start()
 
     // initialize tac uis
-    injector.getInstance(Launcher::class.java).bind()
-    injector.getInstance(PasteManager::class.java).bind()
-    injector.getInstance(PasswordManager::class.java).bind()
+    mainComponent.launcher().bind()
+    mainComponent.pasteManager().bind()
+    mainComponent.passwordManager().bind()
 
-    val xkcdLoader = injector.getInstance(XkcdLoader::class.java)
+    val xkcdLoader = mainComponent.xkcdLoader()
 
     // start dashboard
     for (monitor in monitors) {
-        injector.createChildInjector(Module {
-            it.bind(Monitor::class.java).toInstance(monitor)
-            it.bind(RenderElf::class.java).to(Dashboard::class.java)
-        }).getInstance(Dashboard::class.java).start()
+        val monitorContext = mainComponent.dashboardBuilder().create(monitor)
+        monitorContext.dashboard().start()
     }
+
+    // connect to dbus
+    val dbus = Dbus()
+    dbus.connect()
+    mainModule.setDbus(dbus)
 
     // load xkcd
     xkcdLoader.start()
 }
 
-/**
- * @author yawkat
- */
-class Main : AbstractModule() {
-    private fun scheduledExecutor(): Scheduler {
-        val threadId = AtomicInteger(0)
-        val threadFactory = ThreadFactory { r ->
-            val thread = Thread(r)
-            thread.priority = Thread.MIN_PRIORITY
-            thread.name = "Pool thread #" + threadId.incrementAndGet()
-            thread
-        }
-
-        val scheduledService = Executors.newScheduledThreadPool(1, threadFactory)
-        val immediateService = Executors.newCachedThreadPool(threadFactory)
-        return Scheduler(scheduledService, immediateService)
+private fun scheduledExecutor(): Scheduler {
+    val threadId = AtomicInteger(0)
+    val threadFactory = ThreadFactory { r ->
+        val thread = Thread(r)
+        thread.priority = Thread.MIN_PRIORITY
+        thread.name = "Pool thread #" + threadId.incrementAndGet()
+        thread
     }
 
-    override fun configure() {
-        bind(at.yawk.paste.client.Config::class.java).toInstance(Config().also {
-            it.remote = URL("https://s.yawk.at")
-        })
+    val scheduledService = Executors.newScheduledThreadPool(1, threadFactory)
+    val immediateService = Executors.newCachedThreadPool(threadFactory)
+    return Scheduler(scheduledService, immediateService)
+}
 
-        val scheduler = scheduledExecutor()
-        bind(Scheduler::class.java).toInstance(scheduler)
-        bind(Executor::class.java).toInstance(scheduler)
+@Singleton
+@Component(modules = [MainModule::class])
+private interface MainComponent {
+    fun connector(): XcbConnector
+    fun herbstClient(): HerbstClient
+    fun iconManager(): IconManager
+    fun desktopManager(): DesktopManager
+    fun animatedWallpaperManager(): AnimatedWallpaperManager
+    fun launcher(): Launcher
+    fun pasteManager(): PasteManager
+    fun passwordManager(): PasswordManager
+    fun xkcdLoader(): XkcdLoader
+
+    fun dockBuilder(): DockComponent.Factory
+    fun dashboardBuilder(): DashboardComponent.Factory
+
+    @Component.Builder
+    interface Builder {
+        fun mainModule(mainModule: MainModule): Builder
+        fun build(): MainComponent
     }
+}
+
+@Subcomponent(modules = [DockModule::class])
+@PerMonitor
+private interface DockComponent {
+    fun dockBootstrap(): DockBootstrap
+
+    @Subcomponent.Factory
+    interface Factory {
+        fun create(@BindsInstance monitor: Monitor): DockComponent
+    }
+}
+
+@Subcomponent(modules = [DashboardModule::class])
+@PerMonitor
+private interface DashboardComponent {
+    fun dashboard(): DashboardBootstrap
+
+    @Subcomponent.Factory
+    interface Factory {
+        fun create(@BindsInstance monitor: Monitor): DashboardComponent
+    }
+}
+
+@Module(subcomponents = [DockComponent::class, DashboardComponent::class])
+private class MainModule {
+    private val scheduler = scheduledExecutor()
+    @get:Provides
+    val pasteConfig = Config().also {
+        it.remote = URL("https://s.yawk.at")
+    }
+    lateinit var connector: XcbConnector
+
+    private val mediaPlayer = MediaPlayer.LateInit()
+    private val networkManager = NetworkManager.LateInit()
+    private val power = Power.LateInit()
+
+    fun setDbus(dbus: Dbus) {
+        mediaPlayer.setDelegate(dbus.mediaPlayer())
+        networkManager.setDelegate(dbus.networkManager())
+        power.setDelegate(dbus.power())
+    }
+
+    @Provides
+    fun mediaPlayer(): MediaPlayer = mediaPlayer
+
+    @Provides
+    fun networkManager(): NetworkManager = networkManager
+
+    @Provides
+    fun power(): Power = power
+
+    @Provides
+    fun scheduler(): Scheduler = scheduler
+
+    @Provides
+    fun executor(): Executor = scheduler
+
+    @Provides
+    fun screen() = connector.screen!!
+
+    @Provides
+    fun globalResourceRegistry() = connector.globalResourceRegistry()!!
+
+    @Provides
+    fun fontSource(fontCache: FontCache): FontSource = fontCache
+}
+
+@Module
+private interface DockModule {
+    @Binds
+    fun renderElf(dock: DockBuilder): RenderElf
+}
+
+@Module
+private interface DashboardModule {
+    @Binds
+    fun renderElf(dashboard: Dashboard): RenderElf
 }

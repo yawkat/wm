@@ -2,6 +2,7 @@ package at.yawk.wm.dashboard
 
 import at.yawk.dbus.protocol.`object`.DbusObject
 import at.yawk.wm.dbus.MediaPlayer
+import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dock.module.FontSource
 import at.yawk.wm.ui.Direction
 import at.yawk.wm.ui.FlowCompositeWidget
@@ -14,9 +15,7 @@ import javax.inject.Inject
 
 private val log = LoggerFactory.getLogger(MediaWidget::class.java)
 
-/**
- * @author yawkat
- */
+@PerMonitor
 class MediaWidget @Inject constructor(
         val fontSource: FontSource,
         val mediaPlayer: MediaPlayer,

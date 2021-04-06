@@ -1,5 +1,6 @@
 package at.yawk.wm.dock.module.widget
 
+import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dock.module.DockBuilder
 import at.yawk.wm.dock.module.DockConfig
 import at.yawk.wm.dock.module.DockWidget
@@ -14,9 +15,7 @@ import java.util.Collections
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
-/**
- * @author yawkat
- */
+@PerMonitor
 @DockWidget(position = DockWidget.Position.LEFT, priority = Int.MAX_VALUE)
 class ProgressWidget @Inject constructor(
     private val dock: DockBuilder,

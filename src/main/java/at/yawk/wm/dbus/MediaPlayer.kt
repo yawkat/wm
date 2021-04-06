@@ -1,41 +1,80 @@
-package at.yawk.wm.dbus;
+package at.yawk.wm.dbus
 
-import at.yawk.dbus.client.annotation.*;
-import at.yawk.dbus.protocol.object.DbusObject;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import at.yawk.dbus.client.annotation.Call
+import at.yawk.dbus.client.annotation.Destination
+import at.yawk.dbus.client.annotation.SessionBus
+import at.yawk.dbus.client.annotation.ObjectPath
+import java.util.concurrent.TimeUnit
+import at.yawk.dbus.client.annotation.GetProperty
+import at.yawk.dbus.client.annotation.Interface
+import at.yawk.dbus.client.annotation.Listener
+import at.yawk.dbus.client.annotation.Member
+import at.yawk.dbus.client.annotation.Timeout
+import at.yawk.dbus.protocol.`object`.DbusObject
 
-/**
- * @author yawkat
- */
 @SessionBus
 @Destination("org.mpris.MediaPlayer2.spotify")
 @ObjectPath("/org/mpris/MediaPlayer2")
 @Interface("org.mpris.MediaPlayer2.Player")
 @Timeout(value = 1, unit = TimeUnit.SECONDS)
-public interface MediaPlayer {
+interface MediaPlayer {
     @Call
     @Member("PlayPause")
-    void playPause();
+    fun playPause()
 
     @Call
     @Member("Stop")
-    void stop();
+    fun stop()
 
     @Call
     @Member("Previous")
-    void previous();
+    fun previous()
 
     @Call
     @Member("Next")
-    void next();
+    operator fun next()
 
-    @GetProperty
-    @Member("Metadata")
-    Map<String, DbusObject> getMetadata();
+    @get:Member("Metadata")
+    @get:GetProperty
+    val metadata: Map<String, DbusObject>
 
     @Interface("org.freedesktop.DBus.Properties")
     @Member("PropertiesChanged")
     @Listener
-    void onPropertiesChanged(Runnable listener);
+    fun onPropertiesChanged(listener: Runnable)
+
+    class LateInit : MediaPlayer {
+        @Volatile
+        private var _delegate: MediaPlayer? = null
+        private var onPropertiesChanged = listOf<Runnable>()
+
+        @Synchronized
+        fun setDelegate(delegate: MediaPlayer) {
+            require(_delegate == null)
+            _delegate = delegate
+            onPropertiesChanged.forEach { delegate.onPropertiesChanged(it) }
+            onPropertiesChanged = emptyList()
+        }
+
+        override fun playPause() {
+            _delegate?.playPause()
+        }
+
+        override fun stop() {
+            _delegate?.stop()}
+
+        override fun previous() {
+            _delegate?.previous()}
+
+        override fun next() {
+            _delegate?.next()}
+
+        override val metadata: Map<String, DbusObject>
+            get() = _delegate?.metadata ?: emptyMap()
+
+        @Synchronized
+        override fun onPropertiesChanged(listener: Runnable) {
+            onPropertiesChanged = onPropertiesChanged + listener
+        }
+    }
 }

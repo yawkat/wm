@@ -1,6 +1,7 @@
 package at.yawk.wm.dashboard
 
 import at.yawk.wm.PeriodBuilder
+import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dock.module.DockConfig
 import at.yawk.wm.hl.Monitor
 import at.yawk.wm.ui.*
@@ -13,11 +14,10 @@ import javax.inject.Singleton
 /**
  * @author yawkat
  */
-@Singleton
+@PerMonitor
 class Dashboard @Inject constructor(
         val monitor: Monitor,
         val desktopManager: DesktopManager,
-        val periodBuilder: PeriodBuilder,
         val animatedWallpaperManager: AnimatedWallpaperManager
 ) : RenderElf {
 
@@ -38,12 +38,12 @@ class Dashboard @Inject constructor(
         bottomRight.init()
     }
 
-    @Inject
     fun initWidgets(
             temperatureWidget: TemperatureWidget,
             mediaWidget: MediaWidget,
             pingWidget: PingWidget,
-            xkcdWidget: XkcdWidget
+            xkcdWidget: XkcdWidget,
+            periodBuilder: PeriodBuilder
     ) {
         bottomLeft.add(temperatureWidget)
         bottomLeft.add(pingWidget)

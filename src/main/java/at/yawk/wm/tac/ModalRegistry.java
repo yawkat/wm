@@ -1,13 +1,14 @@
 package at.yawk.wm.tac;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * @author yawkat
- */
 @Singleton
 public class ModalRegistry {
     private Modal currentModal = null;
+
+    @Inject
+    public ModalRegistry() {}
 
     public synchronized void onOpen(Modal modal) {
         closeCurrent();

@@ -25,9 +25,6 @@ import javax.inject.Singleton;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 
-/**
- * @author yawkat
- */
 @Singleton
 public class IconManager {
     private final Path cacheDir = Paths.get(".cache/icon");

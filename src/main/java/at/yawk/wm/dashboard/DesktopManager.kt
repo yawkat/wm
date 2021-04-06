@@ -5,13 +5,10 @@ import at.yawk.wm.hl.Monitor
 import at.yawk.wm.x.EventGroup
 import at.yawk.wm.x.WindowType
 import at.yawk.wm.x.XcbConnector
-import java.util.*
+import java.util.HashMap
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * @author yawkat
- */
 @Singleton
 class DesktopManager @Inject constructor(
         val herbstClient: HerbstClient,

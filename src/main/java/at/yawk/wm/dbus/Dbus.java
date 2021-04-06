@@ -1,35 +1,24 @@
 package at.yawk.wm.dbus;
 
 import at.yawk.dbus.client.DbusClient;
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import javax.inject.Singleton;
 import org.slf4j.Logger;
 
 /**
  * @author yawkat
  */
-@Singleton
-public class Dbus extends AbstractModule {
+public class Dbus {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(Dbus.class);
     private final DbusClient client = new DbusClient();
 
-    @Override
-    protected void configure() {
-    }
-
-    @Provides
-    MediaPlayer mediaPlayer() {
+    public MediaPlayer mediaPlayer() {
         return implement(MediaPlayer.class);
     }
 
-    @Provides
-    NetworkManager networkManager() {
+    public NetworkManager networkManager() {
         return implement(NetworkManager.class);
     }
 
-    @Provides
-    Power power() {
+    public Power power() {
         return implement(Power.class);
     }
 
