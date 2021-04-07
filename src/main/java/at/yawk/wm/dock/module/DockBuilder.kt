@@ -85,7 +85,6 @@ class DockBuilder @Inject constructor(
                 addRight(widget)
             }
             widget.init()
-            periodBuilder.scan(widget)
         }
         periodBuilder.flush()
     }

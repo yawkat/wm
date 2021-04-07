@@ -1,24 +1,25 @@
 package at.yawk.wm.dashboard
 
+import at.yawk.wm.PeriodBuilder
 import at.yawk.wm.TimedCache
 import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dock.module.FontSource
-import at.yawk.wm.dock.module.Periodic
 import at.yawk.wm.ui.Direction
 import at.yawk.wm.ui.FlowCompositeWidget
 import at.yawk.wm.ui.Positioned
 import at.yawk.wm.ui.TextWidget
 import java.io.IOException
 import java.net.InetAddress
-import java.util.*
+import java.util.HashMap
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @PerMonitor
 class PingWidget @Inject internal constructor(
-        val fontSource: FontSource,
-        val cacheHolder: CacheHolder
+    fontSource: FontSource,
+    private val cacheHolder: CacheHolder,
+    periodBuilder: PeriodBuilder
 ) : FlowCompositeWidget() {
     private val destinationWidgets = HashMap<PingDestination, TextWidget>()
 
@@ -33,12 +34,13 @@ class PingWidget @Inject internal constructor(
 
             last = widget
         }
+
+        periodBuilder.submit(::update, TimeUnit.SECONDS.toMillis(10).toInt(), render = true)
     }
 
-    @Periodic(value = 10, unit = TimeUnit.SECONDS, render = true)
-    fun update() {
+    private fun update() {
         val pings = cacheHolder.cache.get()
-        destinationWidgets.forEach { destination, widget ->
+        destinationWidgets.forEach { (destination, widget) ->
             val ping = pings[destination.host]
             widget.text = destination.name + ": " + (if (ping != null) "$ping ms" else "Timeout")
         }

@@ -1,22 +1,23 @@
 package at.yawk.wm.dock.module.widget
 
+import at.yawk.wm.PeriodBuilder
 import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dock.module.DockConfig
 import at.yawk.wm.dock.module.DockWidget
 import at.yawk.wm.dock.module.FontSource
-import at.yawk.wm.dock.module.Periodic
 import at.yawk.wm.dock.module.widget.CpuWidget.Companion.formatPercent
 import at.yawk.wm.ui.Direction
 import at.yawk.wm.ui.FlowCompositeWidget
 import at.yawk.wm.ui.TextWidget
-import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @PerMonitor
 @DockWidget(position = DockWidget.Position.RIGHT, priority = 99)
-class MemoryWidget @Inject constructor(private val fontSource: FontSource) : FlowCompositeWidget() {
+class MemoryWidget @Inject constructor(private val fontSource: FontSource, periodBuilder: PeriodBuilder) :
+    FlowCompositeWidget() {
     private val swap = TextWidget().also {
         it.after(anchor, Direction.HORIZONTAL)
         addWidget(it)
@@ -28,11 +29,10 @@ class MemoryWidget @Inject constructor(private val fontSource: FontSource) : Flo
 
     init {
         updateTextValues(0.0F, 0.0F, 0)
+        periodBuilder.submit(::update, TimeUnit.SECONDS.toMillis(1).toInt(), render = true)
     }
 
-    @Periodic(value = 1, render = true)
-    @Throws(IOException::class)
-    fun update() {
+    private fun update() {
         var memTotal: Long = 0
         var memFree: Long = 0
         var buffers: Long = 0

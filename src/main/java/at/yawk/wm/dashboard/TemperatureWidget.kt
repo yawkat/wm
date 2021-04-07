@@ -1,9 +1,9 @@
 package at.yawk.wm.dashboard
 
+import at.yawk.wm.PeriodBuilder
 import at.yawk.wm.TimedCache
 import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dock.module.FontSource
-import at.yawk.wm.dock.module.Periodic
 import at.yawk.wm.ui.TextWidget
 import java.io.InputStreamReader
 import java.net.InetSocketAddress
@@ -14,19 +14,17 @@ import javax.inject.Singleton
 
 private val TEMPERATURE_PATTERN = "-?\\d+(\\.\\d+)?°C".toPattern()
 
-/**
- * @author yawkat
- */
 @PerMonitor
 class TemperatureWidget @Inject internal constructor(
-        val fontSource: FontSource,
-        val cacheHolder: CacheHolder
+    fontSource: FontSource,
+    private val cacheHolder: CacheHolder,
+    periodBuilder: PeriodBuilder
 ) : TextWidget() {
     init {
         font = fontSource.getFont(DashboardConfig.temperatureFont)
+        periodBuilder.submit(::refresh, TimeUnit.MINUTES.toMillis(1).toInt(), render = true)
     }
 
-    @Periodic(value = 1, unit = TimeUnit.MINUTES, render = true)
     fun refresh() {
         text = "Error"
         text = cacheHolder.cache.get()

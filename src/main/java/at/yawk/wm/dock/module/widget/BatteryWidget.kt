@@ -1,29 +1,32 @@
 package at.yawk.wm.dock.module.widget
 
-import at.yawk.wm.di.PerMonitor
+import at.yawk.wm.PeriodBuilder
 import at.yawk.wm.dbus.Power
+import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dock.module.DockConfig
 import at.yawk.wm.dock.module.DockWidget
 import at.yawk.wm.dock.module.FontSource
-import at.yawk.wm.dock.module.Periodic
-import at.yawk.wm.ui.*
-import at.yawk.wm.x.icon.LoadedIcon
+import at.yawk.wm.ui.Direction
+import at.yawk.wm.ui.FlowCompositeWidget
+import at.yawk.wm.ui.IconWidget
+import at.yawk.wm.ui.RenderElf
+import at.yawk.wm.ui.TextWidget
 import at.yawk.wm.x.icon.IconManager
+import at.yawk.wm.x.icon.LoadedIcon
 import java.time.Duration
-import java.util.*
+import java.util.ArrayList
 import java.util.concurrent.Executor
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.abs
 
-/**
- * @author yawkat
- */
 @PerMonitor
 @DockWidget(position = DockWidget.Position.RIGHT, priority = -100)
 class BatteryWidget @Inject constructor(
-        val fontSource: FontSource,
-        val iconManager: IconManager,
-        val power: Power
+    val fontSource: FontSource,
+    val iconManager: IconManager,
+    val power: Power,
+    periodBuilder: PeriodBuilder
 ) : FlowCompositeWidget() {
     private val devices = ArrayList<DeviceHolder>()
 
@@ -60,8 +63,12 @@ class BatteryWidget @Inject constructor(
             return listOf(BatteryState(charge = charge, isCharging = charging, remaining = remaining))
         }
 
-    @Periodic(30)
-    @Synchronized internal fun updateBattery() {
+    init {
+        periodBuilder.submit(::updateBattery, TimeUnit.SECONDS.toMillis(30).toInt(), render = false)
+    }
+
+    @Synchronized
+    private fun updateBattery() {
         val batteries = batteries
 
         var deviceIterator: MutableIterator<DeviceHolder>? = devices.iterator()

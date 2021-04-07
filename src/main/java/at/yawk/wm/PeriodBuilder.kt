@@ -1,21 +1,13 @@
 package at.yawk.wm
 
 import at.yawk.wm.di.PerMonitor
-import at.yawk.wm.dock.module.Periodic
 import at.yawk.wm.ui.RenderElf
-import java.lang.invoke.MethodHandle
-import java.lang.invoke.MethodHandles
-import java.lang.reflect.Method
-import java.util.*
+import java.util.ArrayList
+import java.util.HashSet
 import java.util.concurrent.TimeUnit
 import javax.annotation.concurrent.NotThreadSafe
 import javax.inject.Inject
 
-private val LOOKUP = MethodHandles.lookup()
-
-/**
- * @author yawkat
- */
 @NotThreadSafe
 @PerMonitor
 class PeriodBuilder @Inject constructor(private val renderElf: RenderElf, private val scheduler: Scheduler) {
@@ -28,23 +20,7 @@ class PeriodBuilder @Inject constructor(private val renderElf: RenderElf, privat
 
     private val buckets = HashSet<Bucket>()
 
-    fun scan(o: Any) {
-        for (method in o.javaClass.declaredMethods) {
-            method.isAccessible = true
-            scan(o, method)
-        }
-    }
-
-    fun scan(o: Any, method: Method) {
-        val periodic = method.getAnnotation(Periodic::class.java)
-        if (periodic != null) {
-            submit(LOOKUP.unreflect(method).bindTo(o),
-                    Math.toIntExact(periodic.unit.toMillis(periodic.value.toLong())),
-                    periodic.render)
-        }
-    }
-
-    private fun submit(task: MethodHandle, interval: Int, render: Boolean) {
+    fun submit(task: () -> Unit, interval: Int, render: Boolean) {
         val node = Node(task, render)
         for (bucket in buckets) {
             if (bucket.interval % interval == 0) {
@@ -116,18 +92,18 @@ class PeriodBuilder @Inject constructor(private val renderElf: RenderElf, privat
         internal fun initialRun() = nodes.forEach { it.run() }
     }
 
-    private class Node(private val handle: MethodHandle, private val render: Boolean) {
+    private class Node(private val handle: () -> Unit, private val render: Boolean) {
 
         var tickInterval = 1
         var i = 0
 
-        internal fun run(): Boolean {
+        fun run(): Boolean {
             val run = i == 0
             if (run) {
                 try {
-                    PeriodBuilderInvoker.invokeVoid(handle)
+                    handle()
                 } catch (t: Throwable) {
-                    log.error("Error while executing " + handle, t)
+                    log.error("Error while executing $handle", t)
                 }
 
             }

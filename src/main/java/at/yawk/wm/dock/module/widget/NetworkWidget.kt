@@ -1,16 +1,19 @@
 package at.yawk.wm.dock.module.widget
 
-import at.yawk.wm.di.PerMonitor
+import at.yawk.wm.PeriodBuilder
 import at.yawk.wm.TimedCache
 import at.yawk.wm.Util
 import at.yawk.wm.dbus.NetworkManager
+import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dock.module.DockConfig
 import at.yawk.wm.dock.module.DockWidget
 import at.yawk.wm.dock.module.FontSource
-import at.yawk.wm.dock.module.Periodic
-import at.yawk.wm.ui.*
+import at.yawk.wm.ui.Direction
+import at.yawk.wm.ui.FlowCompositeWidget
+import at.yawk.wm.ui.IconWidget
+import at.yawk.wm.ui.RenderElf
+import at.yawk.wm.ui.TextWidget
 import at.yawk.wm.x.icon.IconManager
-import java.io.IOException
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -19,15 +22,20 @@ import javax.inject.Singleton
 @PerMonitor
 @DockWidget(position = DockWidget.Position.RIGHT, priority = 50)
 class NetworkWidget @Inject internal constructor(
-        val iconManager: IconManager,
-        val networkManager: NetworkManager,
-        val renderElf: RenderElf,
-        val cacheHolder: CacheHolder
+    val iconManager: IconManager,
+    private val networkManager: NetworkManager,
+    val renderElf: RenderElf,
+    private val cacheHolder: CacheHolder,
+    periodBuilder: PeriodBuilder
 ) : FlowCompositeWidget() {
     private val down = TextWidget()
     private val iconWidget: IconWidget = IconWidget()
     private val up: TextWidget = TextWidget()
 
+    init {
+        periodBuilder.submit(::update, TimeUnit.SECONDS.toMillis(1).toInt(), render = true)
+        periodBuilder.submit(::updateOnline, TimeUnit.SECONDS.toMillis(30).toInt(), render = true)
+    }
 
     @Inject
     internal fun init(executor: Executor, fontSource: FontSource) {
@@ -54,16 +62,13 @@ class NetworkWidget @Inject internal constructor(
         }
     }
 
-    @Periodic(value = 1, render = true)
-    @Throws(IOException::class)
-    internal fun update() {
+    private fun update() {
         val (downAverage, upAverage) = cacheHolder.cache.get()
         down.text = format(downAverage.average)
         up.text = format(upAverage.average)
     }
 
-    @Periodic(value = 30, render = true)
-    internal fun updateOnline() {
+    private fun updateOnline() {
         val online = networkManager.connectivity > 1
         iconWidget.icon = iconManager.getIconOrNull(if (online) DockConfig.netIconOnline else DockConfig.netIconOffline)
     }

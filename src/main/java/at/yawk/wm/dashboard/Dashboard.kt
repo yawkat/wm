@@ -56,7 +56,6 @@ class Dashboard @Inject constructor(
 
         widgets.forEach { it.init() }
 
-        widgets.forEach { periodBuilder.scan(it) }
         periodBuilder.flush()
     }
 
