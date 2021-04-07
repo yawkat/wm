@@ -26,6 +26,7 @@ class TagListWidget @Inject constructor(
 ) : FlowCompositeWidget() {
 
     private val tagWidgets: MutableList<TextWidget> = ArrayList()
+
     override fun init() {
         update()
         herbstEventBus.addTagEventHandler { update() }

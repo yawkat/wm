@@ -17,8 +17,18 @@ import javax.inject.Inject
 @PerMonitor
 @DockWidget(position = DockWidget.Position.RIGHT, priority = 99)
 class MemoryWidget @Inject constructor(private val fontSource: FontSource) : FlowCompositeWidget() {
-    private val ram: TextWidget
-    private val swap: TextWidget
+    private val swap = TextWidget().also {
+        it.after(anchor, Direction.HORIZONTAL)
+        addWidget(it)
+    }
+    private val ram = TextWidget().also {
+        it.after(swap, Direction.HORIZONTAL)
+        addWidget(it)
+    }
+
+    init {
+        updateTextValues(0.0F, 0.0F, 0)
+    }
 
     @Periodic(value = 1, render = true)
     @Throws(IOException::class)
@@ -48,6 +58,10 @@ class MemoryWidget @Inject constructor(private val fontSource: FontSource) : Flo
         }
         val ramUse: Float = if (memTotal == 0L) 1F else (memTotal - memFree - buffers - cached).toFloat() / memTotal
         val swapUse: Float = if (swapTotal == 0L) 1F else (swapTotal - swapFree).toFloat() / swapTotal
+        updateTextValues(ramUse, swapUse, swapTotal)
+    }
+
+    private fun updateTextValues(ramUse: Float, swapUse: Float, swapTotal: Long) {
         ram.font = fontSource.getFont(DockConfig.memoryTransition.computeStyle(ramUse))
         ram.text = formatPercent(ramUse.toDouble())
         swap.font = fontSource.getFont(DockConfig.swapTransition.computeStyle(swapUse))
@@ -76,14 +90,5 @@ class MemoryWidget @Inject constructor(private val fontSource: FontSource) : Flo
             }
             return amount
         }
-    }
-
-    init {
-        swap = TextWidget()
-        swap.after(anchor, Direction.HORIZONTAL)
-        addWidget(swap)
-        ram = TextWidget()
-        ram.after(swap, Direction.HORIZONTAL)
-        addWidget(ram)
     }
 }

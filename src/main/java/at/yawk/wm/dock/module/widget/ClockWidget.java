@@ -19,10 +19,7 @@ public class ClockWidget extends TextWidget {
     private Clock clock;
 
     @Inject
-    public ClockWidget() {}
-
-    @Inject
-    void setup(FontSource fontSource) {
+    public ClockWidget(FontSource fontSource) {
         clock = Clock.systemDefaultZone();
         setFont(fontSource.getFont(DockConfig.INSTANCE.getClockFont()));
     }

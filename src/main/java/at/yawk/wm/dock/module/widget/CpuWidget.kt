@@ -24,6 +24,10 @@ class CpuWidget @Inject constructor(
     private var lastTime: Long = 0
     private var lastShares: Long = 0
 
+    init {
+        updateTextValue()
+    }
+
     override fun init() {
         icon = iconManager.getIconOrNull(cpuIcon)
     }
@@ -58,6 +62,10 @@ class CpuWidget @Inject constructor(
         lastTime = now
 
         // one significant digit precision
+        updateTextValue()
+    }
+
+    private fun updateTextValue() {
         text = formatPercent(cpuUsage.average)
         font = fontSource.getFont(cpuTransition.computeStyle(cpuUsage.average.toFloat()))
     }
