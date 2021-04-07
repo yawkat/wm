@@ -1,7 +1,7 @@
 package at.yawk.wm.style
 
 data class FontStyle(
-    val family: FontFactory,
+    val family: String,
     val foreground: Color,
     val background: Color,
     val bold: Boolean,
@@ -9,7 +9,7 @@ data class FontStyle(
     val size: Int
 ) {
     fun getDescriptor(): String {
-        val builder = StringBuilder(family.descriptor)
+        val builder = StringBuilder(family)
         builder.append('-').append(java.lang.String.format("%06x", foreground.rgb))
         builder.append('-').append(java.lang.String.format("%06x", background.rgb))
         if (bold) {

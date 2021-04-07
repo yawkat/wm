@@ -5,16 +5,11 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import org.freedesktop.xcb.SWIGTYPE_p_xcb_connection_t;
-import org.freedesktop.xcb.xcb_format_t;
 
-/**
- * @author yawkat
- */
 public class FontRenderer extends AbstractResource {
     private final GlyphFont manager;
 
     private final SWIGTYPE_p_xcb_connection_t connection;
-    private final xcb_format_t format;
     private final int rootDrawable;
     private final short depth;
 
@@ -22,11 +17,9 @@ public class FontRenderer extends AbstractResource {
             Collections.synchronizedMap(new IdentityHashMap<>());
 
     @java.beans.ConstructorProperties({ "manager", "connection", "format", "rootDrawable", "depth" })
-    public FontRenderer(GlyphFont manager, SWIGTYPE_p_xcb_connection_t connection, xcb_format_t format, int
-            rootDrawable, short depth) {
+    public FontRenderer(GlyphFont manager, SWIGTYPE_p_xcb_connection_t connection, int rootDrawable, short depth) {
         this.manager = manager;
         this.connection = connection;
-        this.format = format;
         this.rootDrawable = rootDrawable;
         this.depth = depth;
     }
@@ -37,7 +30,7 @@ public class FontRenderer extends AbstractResource {
 
     private GlyphRenderer getHandler(char c) {
         GlyphFile file = getFile(c);
-        return handlerMap.computeIfAbsent(file, f -> new GlyphRenderer(connection, format, rootDrawable, depth, f));
+        return handlerMap.computeIfAbsent(file, f -> new GlyphRenderer(connection, rootDrawable, depth, f));
     }
 
     public int getCharWidth(char c) {

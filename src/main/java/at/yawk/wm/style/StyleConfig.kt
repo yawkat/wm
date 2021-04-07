@@ -13,7 +13,7 @@ object StyleConfig {
         italic = false,
         bold = false,
         size = 14,
-        family = StandardFontFactory("Source Code Pro")
+        family = "Source Code Pro"
     )
     val base03 = base.copy(foreground = Color.Solarized.base03)
     val base02 = base.copy(foreground = Color.Solarized.base02)
@@ -35,9 +35,9 @@ object StyleConfig {
     val tacPrimarySelected = tacPrimary.copy(background = Color.Solarized.base02)
     val tacSecondarySelected = tacSecondary.copy(background = Color.Solarized.base02)
 
-    val dashboardMain = base01.copy(size = 50, family = StandardFontFactory("DejaVu Sans Light"))
+    val dashboardMain = base01.copy(size = 50, family = "DejaVu Sans Light")
     val dashboardMedia = dashboardMain.copy(size = 30)
-    val dashboardXkcd = dashboardMain.copy(size = 16, family = StandardFontFactory("DejaVu Sans"))
+    val dashboardXkcd = dashboardMain.copy(size = 16, family = "DejaVu Sans")
 
     val fontCacheDir: Path = Paths.get(".cache/font/")
 }

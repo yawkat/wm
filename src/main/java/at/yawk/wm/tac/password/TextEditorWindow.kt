@@ -1,5 +1,6 @@
 package at.yawk.wm.tac.password
 
+import at.yawk.wm.x.font.AwtGlyphFileFactory
 import java.awt.BorderLayout
 import java.awt.Dialog
 import java.awt.Dimension
@@ -61,7 +62,7 @@ internal open class TextEditorWindow {
         field.setText(text)
         field.setBackground(PasswordConfig.editorBackground.awt)
         val style = PasswordConfig.editorFont
-        field.setFont(style.family.createFont(style))
+        field.setFont(AwtGlyphFileFactory.getFont(style))
         field.setForeground(style.foreground.awt)
         field.setSelectedTextColor(PasswordConfig.editorBackground.awt)
         field.setSelectionColor(style.foreground.awt)

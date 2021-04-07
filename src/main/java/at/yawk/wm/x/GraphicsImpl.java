@@ -9,9 +9,6 @@ import org.freedesktop.xcb.LibXcb;
 import org.freedesktop.xcb.xcb_gc_t;
 import org.freedesktop.xcb.xcb_rectangle_t;
 
-/**
- * @author yawkat
- */
 @NotThreadSafe
 class GraphicsImpl extends AbstractResource implements Graphics {
     private final int containerDrawableId;
@@ -101,9 +98,8 @@ class GraphicsImpl extends AbstractResource implements Graphics {
                 f -> new FontRenderer(
                         f,
                         connector.connection,
-                        connector.format,
                         connector.getScreen().screen.getRoot(),
-                        (short) connector.getScreen().screen.getRoot_depth()
+                        connector.getScreen().screen.getRoot_depth()
                 )
         );
         return this;

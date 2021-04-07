@@ -12,6 +12,6 @@ class FontCache @Inject constructor() : FontSource {
     private val styleMap: MutableMap<FontStyle, GlyphFont> = HashMap<FontStyle, GlyphFont>()
 
     override fun getFont(style: FontStyle): GlyphFont {
-        return styleMap.computeIfAbsent(style) { s: FontStyle? -> GlyphFont(s, StyleConfig.fontCacheDir) }
+        return styleMap.computeIfAbsent(style) { s: FontStyle -> GlyphFont(s, StyleConfig.fontCacheDir) }
     }
 }
