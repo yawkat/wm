@@ -19,6 +19,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val showOnline = false
+
 @PerMonitor
 @DockWidget(position = DockWidget.Position.RIGHT, priority = 50)
 class NetworkWidget @Inject internal constructor(
@@ -34,7 +36,9 @@ class NetworkWidget @Inject internal constructor(
 
     init {
         periodBuilder.submit(::update, TimeUnit.SECONDS.toMillis(1).toInt(), render = true)
-        periodBuilder.submit(::updateOnline, TimeUnit.SECONDS.toMillis(30).toInt(), render = true)
+        if (showOnline) {
+            periodBuilder.submit(::updateOnline, TimeUnit.SECONDS.toMillis(30).toInt(), render = true)
+        }
     }
 
     @Inject
@@ -47,17 +51,19 @@ class NetworkWidget @Inject internal constructor(
         down.after(up, Direction.HORIZONTAL)
         addWidget(down)
 
-        iconWidget.setColor(DockConfig.netIconFont)
-        iconWidget.after(down, Direction.HORIZONTAL)
-        addWidget(iconWidget)
-
         down.paddingLeft = 2
         up.paddingLeft = 0
 
-        networkManager.onStateChanged {
-            executor.execute {
-                updateOnline()
-                renderElf.render()
+        if (showOnline) {
+            iconWidget.setColor(DockConfig.netIconFont)
+            iconWidget.after(down, Direction.HORIZONTAL)
+            addWidget(iconWidget)
+
+            networkManager.onStateChanged {
+                executor.execute {
+                    updateOnline()
+                    renderElf.render()
+                }
             }
         }
     }
