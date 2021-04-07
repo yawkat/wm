@@ -1,0 +1,564 @@
+[
+  {
+    "name": "io.netty.channel.epoll.NativeStaticallyReferencedJniMethods",
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "io.netty.channel.epoll.Native",
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "io.netty.channel.epoll.LinuxSocket",
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "io.netty.channel.epoll.NativeDatagramPacketArray$NativeDatagramPacket",
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "io.netty.channel.unix.PeerCredentials",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "io.netty.channel.DefaultFileRegion",
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.nio.channels.FileChannel",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "io.netty.channel.unix.ErrorsStaticallyReferencedJniMethods",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "io.netty.channel.ChannelException",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.nio.channels.ClosedChannelException",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.net.PortUnreachableException",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "io.netty.channel.unix.FileDescriptor",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "io.netty.channel.unix.LimitsStaticallyReferencedJniMethods",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "io.netty.channel.unix.Socket",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "io.netty.channel.unix.DatagramSocketAddress",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "io.netty.channel.unix.Buffer",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.nio.DirectByteBuffer",
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.nio.ByteBuffer",
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.nio.MappedByteBuffer",
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.nio.Buffer",
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.net.InetSocketAddress",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.freedesktop.xcb.xcb_generic_error_t",
+    "allDeclaredFields": true
+  },
+  {
+    "name": "java.lang.OutOfMemoryError",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.io.IOException",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.lang.RuntimeException",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.lang.IndexOutOfBoundsException",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.lang.ArithmeticException",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.lang.IllegalArgumentException",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.lang.NullPointerException",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.lang.RuntimeException",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.lang.UnknownError",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "java.lang.IllegalStateException",
+    "allPublicConstructors": true
+  },
+  {
+    "name": "sun.java2d.Disposer",
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.image.ColorModel",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.image.IndexColorModel",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.image.DirectColorModel",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.awt.image.Raster",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.image.SampleModel",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.image.SinglePixelPackedSampleModel",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.awt.image.ByteComponentRaster",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.AlphaComposite",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.Color",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.Component",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.Font",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.Insets",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.Rectangle",
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.event.KeyEvent",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.event.InputEvent",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.geom.AffineTransform",
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.geom.GeneralPath",
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.geom.Path2D",
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.geom.Path2D$Float",
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.geom.Point2D$Float",
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.geom.Rectangle2D$Float",
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.awt.SunHints",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.awt.SunToolkit",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.awt.X11.XBaseWindow",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.awt.X11.XRootWindow",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.awt.X11.XContentWindow",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.awt.X11.XDialogPeer",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.awt.X11.XErrorHandlerUtil",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.awt.X11.XFramePeer",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.awt.X11.XToolkit",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.awt.X11.XWindow",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.awt.X11GraphicsConfig",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.awt.X11GraphicsDevice",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.awt.X11InputMethodBase",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.font.CharToGlyphMapper",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.font.Font2D",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.font.FontStrike",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.font.FreetypeFontScaler",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.font.GlyphList",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.font.GlyphLayout$GVData",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.font.PhysicalStrike",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.font.StrikeMetrics",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.font.TrueTypeFont",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.font.Type1Font",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.java2d.Disposer",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.java2d.SunGraphics2D",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.java2d.SunGraphicsEnvironment",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.awt.GraphicsEnvironment",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.java2d.SurfaceData",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.java2d.loops.Blit",
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.java2d.loops.BlitBg",
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.java2d.loops.CompositeType",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.java2d.loops.DrawGlyphList",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.java2d.loops.DrawGlyphListAA",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.java2d.loops.DrawGlyphListLCD",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.java2d.loops.DrawLine",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.java2d.loops.DrawParallelogram",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.java2d.loops.DrawPath",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.java2d.loops.DrawPolygons",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.java2d.loops.DrawRect",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.java2d.loops.FillParallelogram",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.java2d.loops.FillPath",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.java2d.loops.FillRect",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.java2d.loops.FillSpans",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.java2d.loops.MaskBlit",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.java2d.loops.MaskFill",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.java2d.loops.ScaledBlit",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.java2d.loops.TransformHelper",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.java2d.loops.GraphicsPrimitive",
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "sun.java2d.loops.GraphicsPrimitiveMgr",
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "sun.java2d.loops.SurfaceType",
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "sun.java2d.loops.XORComposite",
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "sun.java2d.pipe.Region",
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "sun.java2d.pipe.RegionIterator",
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "sun.java2d.xr.XRBackendNative",
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "sun.java2d.xr.XRSurfaceData",
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "java.awt.image.BufferedImage",
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "java.awt.AWTEvent",
+    "allDeclaredFields" : true
+  },
+  {
+    "name": "sun.java2d.InvalidPipeException",
+    "allDeclaredFields" : true,
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.NullSurfaceData",
+    "allDeclaredFields" : true,
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.awt.image.BufImgSurfaceData$ICMColorData",
+    "allDeclaredFields" : true,
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.awt.image.IntegerComponentRaster",
+    "allDeclaredFields" : true,
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "java.lang.Thread",
+    "allDeclaredFields" : true,
+    "allDeclaredMethods" : true,
+    "allDeclaredConstructors" : true
+  }
+]

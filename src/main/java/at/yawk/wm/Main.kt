@@ -29,7 +29,6 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
-import io.netty.buffer.ByteBufAllocator
 import java.net.URL
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors

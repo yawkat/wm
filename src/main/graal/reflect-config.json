@@ -1,0 +1,351 @@
+[
+  {
+    "name": "at.yawk.password.model.DecryptedBlob",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "at.yawk.password.model.PasswordBlob",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "at.yawk.password.model.PasswordEntry",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "at.yawk.paste.client.RsaKeyPair",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "at.yawk.paste.model.PasteData",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "at.yawk.paste.model.ImagePasteData",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "at.yawk.paste.model.TextPasteData",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "at.yawk.paste.model.SVGPasteData",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "at.yawk.paste.model.VideoPasteData",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "at.yawk.paste.model.URLPasteData",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueProducerFields",
+    "fields": [
+      {"name": "producerIndex", "allowUnsafeAccess": true}
+    ]
+  },
+  {
+    "name": "io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueConsumerFields",
+    "fields": [
+      {"name": "consumerIndex", "allowUnsafeAccess": true}
+    ]
+  },
+  {
+    "name": "io.netty.channel.epoll.EpollDomainSocketChannel",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "io.netty.buffer.AbstractByteBufAllocator",
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "io.netty.util.ReferenceCountUtil",
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "java.nio.DirectByteBuffer",
+    "allDeclaredMethods" : true,
+    "allDeclaredFields" : true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "ch.qos.logback.core.rolling.RollingFileAppender",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "ch.qos.logback.core.rolling.TimeBasedRollingPolicy",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "ch.qos.logback.core.ConsoleAppender",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "ch.qos.logback.core.rolling.helper.DateTokenConverter",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "ch.qos.logback.classic.encoder.PatternLayoutEncoder",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "ch.qos.logback.classic.pattern.DateConverter",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "ch.qos.logback.classic.pattern.LoggerConverter",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "ch.qos.logback.classic.pattern.ThreadConverter",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "ch.qos.logback.classic.pattern.MessageConverter",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "ch.qos.logback.classic.pattern.LineSeparatorConverter",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "ch.qos.logback.classic.pattern.LevelConverter",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "ch.qos.logback.classic.filter.ThresholdFilter",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "at.yawk.wm.dbus.MediaPlayer",
+    "allPublicMethods": true
+  },
+  {
+    "name": "at.yawk.wm.dbus.Power",
+    "allPublicMethods": true
+  },
+  {
+    "name": "at.yawk.wm.dbus.NetworkManager",
+    "allPublicMethods": true
+  },
+  {
+    "name": "sun.awt.X11.XToolkit",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.awt.X11FontManager",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.awt.X11GraphicsEnvironment",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.marlin.DMarlinRenderingEngine",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.SetDrawLineANY",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.SetFillRectANY",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.SetFillPathANY",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.SetFillSpansANY",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.SetDrawLineANY",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.SetDrawPolygonsANY",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.SetDrawPathANY",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.SetDrawRectANY",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.XorFillRectANY",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.XorFillPathANY",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.XorFillSpansANY",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.XorDrawLineANY",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.XorDrawPolygonsANY",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.XorDrawPathANY",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.XorDrawRectANY",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.XorDrawGlyphListANY",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.XorDrawGlyphListAAANY",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.OpaqueCopyAnyToArgb",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.XorCopyArgbToAny",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "sun.java2d.loops.OpaqueCopyArgbToAny",
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name": "javax.swing.plaf.basic.BasicPanelUI",
+    "allDeclaredMethods" : true
+  },
+  {
+    "name": "javax.swing.plaf.basic.BasicTextAreaUI",
+    "allDeclaredMethods" : true
+  },
+  {
+    "name": "javax.swing.plaf.basic.MetalRootPaneUI",
+    "allDeclaredMethods" : true
+  },
+  {
+    "name": "java.awt.event.KeyEvent",
+    "allDeclaredFields" : true
+  },
+  {
+    "name": "java.awt.Image",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "java.util.List",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "java.io.Reader",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "java.io.InputStream",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "java.lang.String",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "java.nio.ByteBuffer",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "java.nio.CharBuffer",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "java.rmi.Remote",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "java.rmi.MarshalledObject",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "javax.swing.plaf.multi.MultiRootPaneUI",
+    "allDeclaredMethods" : true
+  },
+  {
+    "name": "javax.swing.plaf.basic.BasicRootPaneUI",
+    "allDeclaredMethods" : true
+  },
+  {
+    "name": "javax.swing.plaf.metal.MetalRootPaneUI",
+    "allDeclaredMethods" : true
+  },
+  {
+    "name": "javax.swing.plaf.synth.SynthRootPaneUI",
+    "allDeclaredMethods" : true
+  },
+  {
+    "name": "javax.swing.plaf.basic.BasicPanelUI",
+    "allDeclaredMethods" : true
+  },
+  {
+    "name": "javax.swing.plaf.basic.BasicTextAreaUI",
+    "allDeclaredMethods" : true
+  },
+  {
+    "name": "[C"
+  },
+  {
+    "name": "[B"
+  }
+]

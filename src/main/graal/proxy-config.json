@@ -1,0 +1,5 @@
+[
+    ["at.yawk.wm.dbus.MediaPlayer"],
+    ["at.yawk.wm.dbus.NetworkManager"],
+    ["at.yawk.wm.dbus.Power"]
+]

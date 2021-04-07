@@ -83,6 +83,12 @@
             <version>2.0.2</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.graalvm.sdk</groupId>
+            <artifactId>graal-sdk</artifactId>
+            <version>${graal.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Test -->
         <dependency>
@@ -152,38 +158,39 @@
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.3</version>
-
+                <groupId>org.graalvm.nativeimage</groupId>
+                <artifactId>native-image-maven-plugin</artifactId>
+                <version>${graal.version}</version>
                 <executions>
                     <execution>
-                        <phase>package</phase>
                         <goals>
-                            <goal>shade</goal>
+                            <goal>native-image</goal>
                         </goals>
+                        <phase>package</phase>
                     </execution>
                 </executions>
-
                 <configuration>
-                    <createDependencyReducedPom>false</createDependencyReducedPom>
-                    <shadedArtifactAttached>true</shadedArtifactAttached>
-                    <shadedClassifierName>shaded</shadedClassifierName>
-                    <transformers>
-                        <transformer
-                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                            <mainClass>at.yawk.wm.MainKt</mainClass>
-                        </transformer>
-                    </transformers>
-                    <filters>
-                        <filter>
-                            <artifact>*:*</artifact>
-                            <excludes>
-                                <exclude>META-INF/*.SF</exclude>
-                                <exclude>META-INF/*.DSA</exclude>
-                                <exclude>META-INF/*.RSA</exclude>
-                            </excludes>
-                        </filter>
-                    </filters>
+                    <skip>false</skip>
+                    <imageName>wm</imageName>
+                    <mainClass>at.yawk.wm.MainKt</mainClass>
+                    <buildArgs>
+                        <arg>-Djava.awt.headless=false</arg>
+                        <arg>--no-fallback</arg>
+                        <arg>--allow-incomplete-classpath</arg>
+                        <arg>--report-unsupported-elements-at-runtime</arg>
+                        <arg>--enable-http</arg>
+                        <arg>--enable-https</arg>
+                        <arg>--initialize-at-build-time=io.netty.util.internal.shaded.org.jctools</arg>
+                        <arg>--initialize-at-build-time=ch.qos.logback</arg>
+                        <arg>-H:+JNI</arg>
+                        <arg>-H:IncludeResources=.*.so$</arg>
+                        <arg>-H:IncludeResources=logback.xml$</arg>
+                        <arg>-H:JNIConfigurationFiles=${project.basedir}/src/main/graal/jni-config.json</arg>
+                        <arg>-H:ReflectionConfigurationFiles=${project.basedir}/src/main/graal/reflect-config.json</arg>
+                        <arg>-H:DynamicProxyConfigurationFiles=${project.basedir}/src/main/graal/proxy-config.json</arg>
+                        <arg>-H:SerializationConfigurationFiles=${project.basedir}/src/main/graal/serialization-config.json</arg>
+                        <arg>-H:AdditionalLinkerOptions=${project.basedir}/src/main/graal/add.a</arg>
+                    </buildArgs>
                 </configuration>
             </plugin>
         </plugins>
