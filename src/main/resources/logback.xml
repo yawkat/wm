@@ -1,4 +1,5 @@
 <configuration>
+    <!-- todo: how do we init this at runtime?
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>log/wm.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -9,6 +10,7 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%25.25logger{25}] [%-20.20t] [%-5level]: %msg%n</pattern>
         </encoder>
     </appender>
+    -->
 
     <appender name="out" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -23,7 +25,7 @@
 
     <root level="debug">
         <appender-ref ref="out" />
-        <appender-ref ref="file"/>
+        <!--<appender-ref ref="file"/>-->
     </root>
     <logger name="io.netty.channel.ChannelHandlerMask" level="info"/>
 </configuration>

@@ -150,7 +150,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
 
                 <configuration>
                     <source>11</source>
@@ -180,8 +179,16 @@
                         <arg>--report-unsupported-elements-at-runtime</arg>
                         <arg>--enable-http</arg>
                         <arg>--enable-https</arg>
-                        <arg>--initialize-at-build-time=io.netty.util.internal.shaded.org.jctools</arg>
                         <arg>--initialize-at-build-time=ch.qos.logback</arg>
+                        <arg>--initialize-at-build-time=at.yawk</arg>
+                        <arg>--initialize-at-build-time=org.slf4j</arg>
+                        <arg>--initialize-at-build-time=javax.xml</arg>
+                        <arg>--initialize-at-build-time=jdk.xml.internal</arg>
+                        <arg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.util</arg>
+                        <arg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.impl</arg>
+                        <arg>--initialize-at-build-time=com.sun.xml.internal.stream.util</arg>
+                        <arg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.xni</arg>
+                        <arg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.utils</arg>
                         <arg>-H:+JNI</arg>
                         <arg>-H:IncludeResources=.*.so$</arg>
                         <arg>-H:IncludeResources=logback.xml$</arg>

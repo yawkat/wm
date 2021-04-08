@@ -21,7 +21,6 @@ public class XcbConnector implements Resource {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(XcbConnector.class);
 
-    static { LibXcbLoader.load(); }
 
     private final GlobalResourceRegistry globalResourceRegistry = new GlobalResourceRegistry();
 
@@ -40,6 +39,8 @@ public class XcbConnector implements Resource {
 
     @Inject
     XcbConnector() {
+        // do this in the constructor so that it happens at runtime with native-image
+        LibXcbLoader.load();
     }
 
     public void open() {

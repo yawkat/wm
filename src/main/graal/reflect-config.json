@@ -50,37 +50,6 @@
     "allPublicMethods": true
   },
   {
-    "name": "io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueProducerFields",
-    "fields": [
-      {"name": "producerIndex", "allowUnsafeAccess": true}
-    ]
-  },
-  {
-    "name": "io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueConsumerFields",
-    "fields": [
-      {"name": "consumerIndex", "allowUnsafeAccess": true}
-    ]
-  },
-  {
-    "name": "io.netty.channel.epoll.EpollDomainSocketChannel",
-    "allPublicConstructors": true,
-    "allPublicMethods": true
-  },
-  {
-    "name": "io.netty.buffer.AbstractByteBufAllocator",
-    "allDeclaredMethods": true
-  },
-  {
-    "name": "io.netty.util.ReferenceCountUtil",
-    "allDeclaredMethods": true
-  },
-  {
-    "name": "java.nio.DirectByteBuffer",
-    "allDeclaredMethods" : true,
-    "allDeclaredFields" : true,
-    "allDeclaredConstructors": true
-  },
-  {
     "name": "ch.qos.logback.core.rolling.RollingFileAppender",
     "allPublicConstructors": true,
     "allPublicMethods": true
