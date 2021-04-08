@@ -189,7 +189,8 @@
                         <arg>-H:ReflectionConfigurationFiles=${project.basedir}/src/main/graal/reflect-config.json</arg>
                         <arg>-H:DynamicProxyConfigurationFiles=${project.basedir}/src/main/graal/proxy-config.json</arg>
                         <arg>-H:SerializationConfigurationFiles=${project.basedir}/src/main/graal/serialization-config.json</arg>
-                        <arg>-H:AdditionalLinkerOptions=${project.basedir}/src/main/graal/add.a</arg>
+                        <arg>-H:CLibraryPath=${project.basedir}/src/main/graal</arg>
+                        <arg>-H:AdditionalLinkerOptions=@${project.basedir}/src/main/graal/add.ld</arg>
                     </buildArgs>
                 </configuration>
             </plugin>

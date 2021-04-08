@@ -1,0 +1,3 @@
+-Wl,-Bstatic
+-l:add.o
+-Wl,-Bdynamic
