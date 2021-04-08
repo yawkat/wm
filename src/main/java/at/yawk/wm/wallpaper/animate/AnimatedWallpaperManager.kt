@@ -9,21 +9,22 @@ import java.io.DataOutputStream
 import java.nio.file.Files
 import java.util.concurrent.Future
 import javax.inject.Inject
+import javax.inject.Provider
 import javax.inject.Singleton
 
 @Singleton
 class AnimatedWallpaperManager @Inject constructor(
         val connector: XcbConnector,
-        val scheduler: Scheduler,
+        val scheduler: Provider<Scheduler>,
         val herbstClient: HerbstClient,
         val desktopManager: DesktopManager
 ) {
     private var animator: Animator? = null
 
-    fun start() {
-        log.info("Initializing wallpaper...")
+    private lateinit var wallpaper: AnimatedWallpaper
 
-        var wallpaper: AnimatedWallpaper? = null
+    fun load() {
+        log.info("Initializing wallpaper...")
 
         if (AnimatedWallpaperConfig.show) {
             if (Files.exists(AnimatedWallpaperConfig.cache)) {
@@ -36,21 +37,27 @@ class AnimatedWallpaperManager @Inject constructor(
                 }
             }
 
-            if (wallpaper == null) {
+            if (!::wallpaper.isInitialized) {
                 log.info("Need to compile the wallpaper animation, this may take a while!")
                 wallpaper = AnimationBuilder.loadDirectory(AnimatedWallpaperConfig.input)
-                DataOutputStream(Files.newOutputStream(AnimatedWallpaperConfig.cache)).use { out -> wallpaper!!.write(out) }
+                DataOutputStream(Files.newOutputStream(AnimatedWallpaperConfig.cache)).use { out ->
+                    wallpaper.write(out)
+                }
                 log.info("Compilation complete")
             }
         } else {
             wallpaper = AnimatedWallpaper(Frame.EMPTY_FRAME, FrameAnimation.EMPTY, FrameAnimation.EMPTY)
         }
 
-        show(wallpaper!!)
+    }
+
+    fun show() {
+        show(wallpaper)
     }
 
     private fun show(wallpaper: AnimatedWallpaper) {
-        animator = Animator(wallpaper, AnimatedWallpaperConfig.backgroundColor.awt, scheduler, desktopManager.getDesktops())
+        animator =
+            Animator(wallpaper, AnimatedWallpaperConfig.backgroundColor.awt, scheduler.get(), desktopManager.getDesktops())
         animator!!.start()
     }
 

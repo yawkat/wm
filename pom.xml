@@ -173,6 +173,8 @@
                     <imageName>wm</imageName>
                     <mainClass>at.yawk.wm.MainKt</mainClass>
                     <buildArgs>
+                        <arg>-DmaterializePath=${project.basedir}/material-design-icons</arg>
+
                         <arg>-Djava.awt.headless=false</arg>
                         <arg>--no-fallback</arg>
                         <arg>--allow-incomplete-classpath</arg>
@@ -189,6 +191,8 @@
                         <arg>--initialize-at-build-time=com.sun.xml.internal.stream.util</arg>
                         <arg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.xni</arg>
                         <arg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.utils</arg>
+                        <arg>--initialize-at-build-time=com.fasterxml.jackson</arg>
+                        <arg>--initialize-at-build-time=org.msgpack</arg>
                         <arg>-H:+JNI</arg>
                         <arg>-H:IncludeResources=.*.so$</arg>
                         <arg>-H:IncludeResources=logback.xml$</arg>
@@ -198,6 +202,7 @@
                         <arg>-H:SerializationConfigurationFiles=${project.basedir}/src/main/graal/serialization-config.json</arg>
                         <arg>-H:CLibraryPath=${project.basedir}/src/main/graal</arg>
                         <arg>-H:AdditionalLinkerOptions=@${project.basedir}/src/main/graal/add.ld</arg>
+                        <arg>-H:+ReportExceptionStackTraces</arg>
                     </buildArgs>
                 </configuration>
             </plugin>

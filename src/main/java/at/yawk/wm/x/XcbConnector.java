@@ -1,5 +1,6 @@
 package at.yawk.wm.x;
 
+import at.yawk.wm.Util;
 import at.yawk.wm.x.font.FontRenderer;
 import at.yawk.wm.x.font.GlyphFont;
 import java.lang.reflect.Proxy;
@@ -21,8 +22,7 @@ public class XcbConnector implements Resource {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(XcbConnector.class);
 
-
-    private final GlobalResourceRegistry globalResourceRegistry = new GlobalResourceRegistry();
+    private final GlobalResourceRegistry globalResourceRegistry;
 
     SWIGTYPE_p_xcb_connection_t connection;
     xcb_setup_t setup;
@@ -38,12 +38,15 @@ public class XcbConnector implements Resource {
             Collections.synchronizedMap(new WeakHashMap<>());
 
     @Inject
-    XcbConnector() {
-        // do this in the constructor so that it happens at runtime with native-image
-        LibXcbLoader.load();
+    XcbConnector(GlobalResourceRegistry globalResourceRegistry) {
+        this.globalResourceRegistry = globalResourceRegistry;
     }
 
     public void open() {
+        Util.requireRuntime();
+        // do this in the constructor so that it happens at runtime with native-image
+        LibXcbLoader.load();
+
         log.info("Connecting to X server...");
         ByteBuffer ptr = ByteBuffer.allocateDirect(4).order(ByteOrder.nativeOrder());
         connection = LibXcb.xcb_connect(null, ptr);

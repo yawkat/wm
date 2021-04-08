@@ -8,31 +8,35 @@ import at.yawk.wm.x.image.BufferedLocalImage;
 import at.yawk.wm.x.image.ByteArrayImage;
 import at.yawk.wm.x.image.LocalImage;
 import at.yawk.wm.x.image.SubImageView;
+import lombok.SneakyThrows;
+import org.slf4j.Logger;
+
+import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
-import java.util.List;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import lombok.SneakyThrows;
-import org.slf4j.Logger;
 
 @Singleton
 public class IconManager {
     private final Path cacheDir = Paths.get(".cache/icon");
-    private final Path baseDir = Paths.get("material-design-icons");
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(IconManager.class);
 
-    private final Screen screen;
+    private final XcbConnector xcbConnector;
+
+    private final Map<Icon, byte[]> imageData = new EnumMap<>(Icon.class);
 
     /**
      * X-offset of individual icons
@@ -42,15 +46,34 @@ public class IconManager {
     private short[] descriptorHeights;
 
     private LocalImage image;
-    private Map<ColorPair, PixMap> colorMaps = new ConcurrentHashMap<>();
+    private final Map<ColorPair, PixMap> colorMaps = new ConcurrentHashMap<>();
 
     @Inject
-    public IconManager(Screen screen) {
-        this.screen = screen;
+    public IconManager(XcbConnector xcbConnector) {
+        this.xcbConnector = xcbConnector;
     }
 
     @SneakyThrows
     public void load() {
+        Util.requireBuildTime();
+
+        // property set by build script for native-image
+        // can't use ImageIO at build time :(
+        var baseDir = Paths.get(System.getProperty("materializePath", "./material-design-icons"));
+        for (Icon icon : Icon.values()) {
+            var path = baseDir
+                    .resolve("png")
+                    .resolve(icon.getCategory())
+                    .resolve(icon.getId())
+                    .resolve("materialiconstwotone/18dp/1x/twotone_" + icon.getId() + "_black_18dp.png");
+            imageData.put(icon, Files.readAllBytes(path));
+        }
+    }
+
+    @SneakyThrows
+    public void render() {
+        Util.requireRuntime();
+
         int descriptorCount = Icon.values().length;
         descriptorOffsets = new int[descriptorCount];
         descriptorWidths = new short[descriptorCount];
@@ -61,7 +84,7 @@ public class IconManager {
 
         Path cacheFile = cacheDir.resolve(String.format("%08x", Icon.Companion.getHASH()));
         if (Files.exists(cacheFile)) {
-            log.info("Loading icon cache...");
+            log.info("Loading icon cache from {}...", cacheFile);
             ByteBuffer fileBuffer;
             try (SeekableByteChannel channel = Files.newByteChannel(cacheFile)) {
                 fileBuffer = ByteBuffer.allocateDirect(Math.toIntExact(channel.size()));
@@ -90,26 +113,28 @@ public class IconManager {
             }
             mapImage = new ByteArrayImage(mapWidth, mapHeight, pixelData, 0, 3);
         } else {
-            log.info("Generating icon cache...");
-            LocalImage[] images = new LocalImage[descriptorCount];
-            Icon[] icons = Icon.values();
-            for (int i = 0; i < icons.length; i++) {
-                Icon icon = icons[i];
-                BufferedImage alphaImage = Util.INSTANCE.loadImage(baseDir.resolve(icon.getSubPath()));
+            log.info("Generating icon cache to {}...", cacheFile);
+            Map<Icon, LocalImage> localImages = new EnumMap<>(Icon.class);
+            for (Map.Entry<Icon, byte[]> entry : imageData.entrySet()) {
+                var alphaImage = ImageIO.read(new ByteArrayInputStream(entry.getValue()));
                 BufferedImage maskImage = new BufferedImage(alphaImage.getWidth(),
                         alphaImage.getHeight(),
                         BufferedImage.TYPE_3BYTE_BGR);
-                maskImage.createGraphics().drawImage(alphaImage, 0, 0, null);
-                images[i] = new BufferedLocalImage(maskImage);
+                Graphics2D graphics = maskImage.createGraphics();
+                graphics.setBackground(Color.WHITE);
+                graphics.clearRect(0, 0, alphaImage.getWidth(), alphaImage.getHeight());
+                graphics.drawImage(alphaImage, 0, 0, null);
+                localImages.put(entry.getKey(), new BufferedLocalImage(maskImage));
             }
+            imageData.clear();
 
-            int mapWidth = Arrays.stream(images).mapToInt(LocalImage::getWidth).sum();
-            int mapHeight = Arrays.stream(images).mapToInt(LocalImage::getHeight).max().getAsInt();
+            int mapWidth = localImages.values().stream().mapToInt(LocalImage::getWidth).sum();
+            int mapHeight = localImages.values().stream().mapToInt(LocalImage::getHeight).max().getAsInt();
             mapImage = ByteArrayImage.TYPE.createImage(mapWidth, mapHeight);
 
             int x = 0;
-            for (int j = 0; j < images.length; j++) {
-                LocalImage sourceImage = images[j];
+            for (int j = 0; j < Icon.values().length; j++) {
+                LocalImage sourceImage = localImages.get(Icon.values()[j]);
                 SubImageView targetView = new SubImageView(mapImage,
                                                            x,
                                                            0,
@@ -159,14 +184,14 @@ public class IconManager {
         return colorMaps.computeIfAbsent(new ColorPair(foreground, background), p -> {
             LocalImage colorized;
 
-            if (!foreground.equals(Color.WHITE) || !background.equals(Color.BLACK)) {
+            if (!foreground.equals(Color.BLACK) || !background.equals(Color.WHITE)) {
                 colorized = image.copy();
-                colorized.apply(new ColorizingPixelTransformer(foreground, background));
+                colorized.apply(new ColorizingPixelTransformer(background, foreground));
             } else {
                 colorized = image;
             }
 
-            PixMap map = screen.getRootWindow().createPixMap(colorized.getWidth(), colorized.getHeight());
+            PixMap map = xcbConnector.getScreen().getRootWindow().createPixMap(colorized.getWidth(), colorized.getHeight());
             try (Graphics graphics = map.createGraphics()) {
                 graphics.putImage(0, 0, colorized);
             }

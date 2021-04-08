@@ -59,12 +59,11 @@ class XkcdLoader @Inject constructor(
         val fontSource: FontSource
 ) {
     internal var comic: PixMap? = null
-    private lateinit var font: GlyphFont
+    private var font: GlyphFont = fontSource.getFont(DashboardConfig.xkcdFont)
 
     internal var subscribers = emptyList<() -> Unit>()
 
     fun start() {
-        font = fontSource.getFont(DashboardConfig.xkcdFont)
         executor.execute { fetch() }
     }
 

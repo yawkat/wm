@@ -11,8 +11,8 @@ import at.yawk.wm.ui.RenderElf
 import at.yawk.wm.ui.TextWidget
 import at.yawk.wm.ui.Widget
 import at.yawk.wm.x.GlobalResourceRegistry
-import at.yawk.wm.x.Screen
 import at.yawk.wm.x.Window
+import at.yawk.wm.x.XcbConnector
 import org.slf4j.LoggerFactory
 import java.util.Comparator
 import java.util.function.Consumer
@@ -24,7 +24,7 @@ import javax.inject.Inject
 @PerMonitor
 class DockBuilder @Inject constructor(
     private val monitor: Monitor,
-    private val screen: Screen,
+    private val xcbConnector: XcbConnector,
     private val globalResourceRegistry: GlobalResourceRegistry
 ) : RenderElf {
     private lateinit var dock: Dock
@@ -34,7 +34,7 @@ class DockBuilder @Inject constructor(
     fun start(bootstrap: DockBootstrap) {
         log.info("Initializing dock...")
         this.periodBuilder = bootstrap.periodBuilder
-        dock = Dock(screen, DockConfig.background.awt)
+        dock = Dock(xcbConnector.screen, DockConfig.background.awt)
         globalResourceRegistry.register(dock)
         dock.setBounds(monitor.x, monitor.y, monitor.width, DockConfig.height)
         setupWidgets(bootstrap)

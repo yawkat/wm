@@ -20,8 +20,6 @@ private fun locked(runnable: Runnable): Runnable {
 
 /**
  * Wrapper for [ScheduledExecutorService] that logs task exceptions and never fails.
-
- * @author yawkat
  */
 class Scheduler(
         // we use a scheduled service for timing and then delegate execution to a cached thread pool

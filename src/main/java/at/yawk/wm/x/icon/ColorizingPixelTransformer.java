@@ -6,8 +6,6 @@ import java.awt.*;
 /**
  * {@link PixelTransformer} implementation that colors a greyscale image to a given foreground and background color.
  * White areas will take the foreground color, Dark areas the background color.
- *
- * @author yawkat
  */
 class ColorizingPixelTransformer implements PixelTransformer {
     // bg and fg color values, 0x0 - 0xff

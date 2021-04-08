@@ -1,10 +1,10 @@
 package at.yawk.wm.hl;
 
 import at.yawk.wm.Util;
-import io.netty.util.internal.StringUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.*;
@@ -27,6 +27,9 @@ public class HerbstClient {
     private Map<Integer, Monitor> monitors = null;
     private Monitor currentMonitor;
 
+    @Nullable
+    private List<String[]> delayUntilRuntimeCommands = new ArrayList<>();
+
     @Inject
     public HerbstClient(HerbstEventBus eventBus) {
         this.eventBus = eventBus;
@@ -40,7 +43,20 @@ public class HerbstClient {
         return currentMonitor;
     }
 
+    public void runDelayedCommands() {
+        Util.requireRuntime();
+
+        List<String[]> commands = this.delayUntilRuntimeCommands;
+        this.delayUntilRuntimeCommands = null;
+        assert commands != null;
+        for (String[] command : commands) {
+            send(command);
+        }
+    }
+
     private Process openProcess(String... action) throws IOException {
+        Util.requireRuntime();
+
         List<String> command = new ArrayList<>(action.length + 1);
         command.add("herbstclient");
         command.addAll(Arrays.asList(action));
@@ -48,8 +64,12 @@ public class HerbstClient {
     }
 
     @SneakyThrows
-    private Process send(String... action) {
-        return openProcess(action);
+    private void send(String... action) {
+        if (delayUntilRuntimeCommands == null || !Util.getInBuildTime()) {
+            openProcess(action);
+        } else {
+            delayUntilRuntimeCommands.add(action);
+        }
     }
 
     private InputStream stream(String... action) throws IOException {
@@ -141,7 +161,7 @@ public class HerbstClient {
     @SneakyThrows
     public void focusMonitor(Monitor monitor) {
         if (getCurrentMonitor().getId() != monitor.getId()) {
-            send("focus_monitor", String.valueOf(monitor.getId())).waitFor(1, TimeUnit.SECONDS);
+            openProcess("focus_monitor", String.valueOf(monitor.getId())).waitFor(1, TimeUnit.SECONDS);
         }
         currentMonitor = monitor;
     }
@@ -158,7 +178,7 @@ public class HerbstClient {
     public void addKeyHandler(String key, Runnable task) {
         byte[] rb = new byte[32];
         ThreadLocalRandom.current().nextBytes(rb);
-        String token = StringUtil.toHexString(rb).toLowerCase();
+        String token = Base64.getEncoder().encodeToString(rb);
         keyHandlers.put(token, task);
         send("keybind", key, "emit_hook", "_key_handler", token);
     }

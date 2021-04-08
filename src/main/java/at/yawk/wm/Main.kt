@@ -42,7 +42,7 @@ fun main() {
     log.info("--------------------------------------------------------------------------------")
     log.info("Logging initialized, starting up...")
     try {
-        start()
+        Main.runtime()
         log.info("Startup complete.")
     } catch (t: Throwable) {
         log.error("Error during startup", t)
@@ -57,56 +57,63 @@ fun main() {
     System.exit(0)
 }
 
-private fun start() {
+private object Main {
     val mainModule = MainModule()
     val mainComponent = DaggerMainComponent.builder().mainModule(mainModule).build()
-
-    // connect to X11
-    val connector = mainComponent.connector()
-    connector.open()
-    mainModule.connector = connector
-
-    // connect to herbstluftwm
     val herbstClient = mainComponent.herbstClient()
-    herbstClient.listen()
+    val iconManager = mainComponent.iconManager()
 
-    // initialize icon manager and font cache
-    mainComponent.iconManager().load()
+    init {
+        // initialize tac uis
+        mainComponent.launcher().bind()
+        mainComponent.pasteManager().bind()
+        mainComponent.passwordManager().bind()
 
-    val monitors = herbstClient.listMonitors()
-
-    // start dock
-    for (monitor in monitors) {
-        val monitorContext = mainComponent.dockBuilder().create(monitor)
-        monitorContext.dockBootstrap().startDock()
+        iconManager.load()
     }
 
-    // initialize desktop for wallpaper and dashboard
-    mainComponent.desktopManager().init()
+    fun runtime() {
+        Util.emulateAtBuildTime = false
 
-    // start wallpaper
-    mainComponent.animatedWallpaperManager().start()
+        // connect to X11
+        mainComponent.connector().open()
 
-    // initialize tac uis
-    mainComponent.launcher().bind()
-    mainComponent.pasteManager().bind()
-    mainComponent.passwordManager().bind()
+        // connect to herbstluftwm
+        herbstClient.listen()
+        herbstClient.runDelayedCommands()
 
-    val xkcdLoader = mainComponent.xkcdLoader()
+        iconManager.render()
 
-    // start dashboard
-    for (monitor in monitors) {
-        val monitorContext = mainComponent.dashboardBuilder().create(monitor)
-        monitorContext.dashboard().start()
+        val monitors = herbstClient.listMonitors()
+        // start dock
+        for (monitor in monitors) {
+            val monitorContext = mainComponent.dockBuilder().create(monitor)
+            monitorContext.dockBootstrap().startDock()
+        }
+
+        // initialize desktop for wallpaper and dashboard
+        mainComponent.desktopManager().init()
+
+        // start wallpaper
+        mainComponent.animatedWallpaperManager().load()
+        mainComponent.animatedWallpaperManager().show()
+
+        val xkcdLoader = mainComponent.xkcdLoader()
+
+        // start dashboard
+        for (monitor in monitors) {
+            val monitorContext = mainComponent.dashboardBuilder().create(monitor)
+            monitorContext.dashboard().start()
+        }
+
+        // connect to dbus
+        val dbus = Dbus()
+        dbus.connect()
+        mainModule.setDbus(dbus)
+
+        // load xkcd
+        xkcdLoader.start()
     }
-
-    // connect to dbus
-    val dbus = Dbus()
-    dbus.connect()
-    mainModule.setDbus(dbus)
-
-    // load xkcd
-    xkcdLoader.start()
 }
 
 private fun scheduledExecutor(): Scheduler {
@@ -175,13 +182,12 @@ private class MainModule {
     val pasteConfig = Config().also {
         it.remote = URL("https://s.yawk.at")
     }
-    lateinit var connector: XcbConnector
-
     private val mediaPlayer = MediaPlayer.LateInit()
     private val networkManager = NetworkManager.LateInit()
     private val power = Power.LateInit()
 
     fun setDbus(dbus: Dbus) {
+        Util.requireRuntime()
         mediaPlayer.setDelegate(dbus.mediaPlayer())
         networkManager.setDelegate(dbus.networkManager())
         power.setDelegate(dbus.power())
@@ -197,16 +203,15 @@ private class MainModule {
     fun power(): Power = power
 
     @Provides
-    fun scheduler(): Scheduler = scheduler
+    fun scheduler(): Scheduler {
+        return scheduler
+    }
 
     @Provides
-    fun executor(): Executor = scheduler
-
-    @Provides
-    fun screen() = connector.screen!!
-
-    @Provides
-    fun globalResourceRegistry() = connector.globalResourceRegistry()!!
+    fun executor(): Executor {
+        Util.requireRuntime()
+        return scheduler
+    }
 
     @Provides
     fun fontSource(fontCache: FontCache): FontSource = fontCache
