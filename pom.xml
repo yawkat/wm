@@ -193,6 +193,7 @@
                         <arg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.utils</arg>
                         <arg>--initialize-at-build-time=com.fasterxml.jackson</arg>
                         <arg>--initialize-at-build-time=org.msgpack</arg>
+                        <arg>--initialize-at-build-time=kotlin</arg>
                         <arg>-H:+JNI</arg>
                         <arg>-H:IncludeResources=.*.so$</arg>
                         <arg>-H:IncludeResources=logback.xml$</arg>
