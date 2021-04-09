@@ -62,12 +62,13 @@ private object Main {
     val mainComponent = DaggerMainComponent.builder().mainModule(mainModule).build()
     val herbstClient = mainComponent.herbstClient()
     val iconManager = mainComponent.iconManager()
+    val passwordManager = mainComponent.passwordManager()
 
     init {
         // initialize tac uis
         mainComponent.launcher().bind()
         mainComponent.pasteManager().bind()
-        mainComponent.passwordManager().bind()
+        passwordManager.bind()
 
         iconManager.load()
     }
@@ -77,6 +78,8 @@ private object Main {
 
         // connect to X11
         mainComponent.connector().open()
+
+        passwordManager.configure()
 
         // connect to herbstluftwm
         herbstClient.listen()

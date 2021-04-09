@@ -7,11 +7,11 @@ import at.yawk.wm.hl.HerbstClient;
 import at.yawk.wm.tac.*;
 import at.yawk.wm.x.XcbConnector;
 import at.yawk.wm.x.font.FontCache;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -19,9 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-/**
- * @author yawkat
- */
+@Singleton
 public class PasswordManager {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(PasswordManager.class);
     private final Scheduler scheduler;
@@ -41,8 +39,8 @@ public class PasswordManager {
         this.herbstClient = herbstClient;
     }
 
-    @Inject
-    void configure() {
+    public void configure() {
+        Util.requireRuntime();
         if (!Files.isDirectory(PasswordConfig.INSTANCE.getCacheDir())) {
             try {
                 Files.createDirectories(PasswordConfig.INSTANCE.getCacheDir());
