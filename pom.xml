@@ -12,7 +12,7 @@
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
         <kotlin.version>1.4.32</kotlin.version>
         <graal.version>21.0.0.2</graal.version>
-        <jackson.version>2.12.2</jackson.version>
+        <jackson.version>2.12.7.1</jackson.version>
         <dagger.version>2.33</dagger.version>
     </properties>
 
