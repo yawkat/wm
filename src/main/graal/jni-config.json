@@ -452,5 +452,22 @@
     "allDeclaredFields" : true,
     "allDeclaredMethods" : true,
     "allDeclaredConstructors" : true
+  },
+  {
+  "name": "com.sun.imageio.plugins.jpeg.JPEGImageWriter",
+  "allDeclaredMethods": true
+  },
+  {"name": "javax.imageio.plugins.jpeg.JPEGQTable", "allDeclaredFields": true},
+  {
+    "name": "java.lang.System",
+    "methods": [
+      {"name": "load", "parameterTypes": ["java.lang.String"]}
+    ]
+  },
+  {
+    "name": "java.lang.ClassLoader",
+    "methods": [
+      {"name": "getPlatformClassLoader", "parameterTypes": []}
+    ]
   }
 ]

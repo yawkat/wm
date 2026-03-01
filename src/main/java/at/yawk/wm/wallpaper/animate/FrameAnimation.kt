@@ -2,7 +2,7 @@ package at.yawk.wm.wallpaper.animate
 
 import java.io.DataInput
 import java.io.DataOutput
-import java.util.*
+import java.util.ArrayList
 
 /**
  * @author yawkat

@@ -5,7 +5,6 @@ import at.yawk.password.client.ClientValue;
 import at.yawk.password.client.PasswordClient;
 import at.yawk.password.model.PasswordBlob;
 import at.yawk.wm.Scheduler;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;

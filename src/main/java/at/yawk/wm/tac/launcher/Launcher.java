@@ -144,7 +144,11 @@ public class Launcher {
             Stream<EntryDescriptor> shortcuts = LauncherConfig.INSTANCE.getShortcuts().entrySet().stream()
                     .map(e -> new EntryDescriptor(e.getKey(), e.getValue(), true));
             Stream<EntryDescriptor> normal = pathScanner.getApplications().stream()
-                    .map(s -> new EntryDescriptor(s, new Command(Collections.singletonList(s)), false));
+                    .map(path -> new EntryDescriptor(
+                            path.getFileName().toString(),
+                            new Command(Collections.singletonList(path.toString())),
+                            false
+                    ));
 
             Stream<LauncherEntry> entryStream = Stream.concat(
                     Stream.concat(shortcuts.map(this::getLauncherEntry),

@@ -27,6 +27,9 @@ object AwtGlyphFileFactory : GlyphFileFactory {
         startInclusive: Char,
         endInclusive: Char
     ): GlyphFile {
+        require(cellWidth > 0)
+        require(cellHeight > 0)
+
         val font = getFont(style)
 
         val nChars = endInclusive - startInclusive + 1
@@ -49,8 +52,7 @@ object AwtGlyphFileFactory : GlyphFileFactory {
             RenderingHints.VALUE_TEXT_ANTIALIAS_ON
         )
         val metrics = gfx.fontMetrics
-        var c = startInclusive
-        while (c <= endInclusive) {
+        for (c in startInclusive..endInclusive) {
             val s = c.toString()
             val lineMetrics = metrics.getLineMetrics(s, gfx)
             val x = (c - startInclusive) * cellWidth
@@ -61,8 +63,8 @@ object AwtGlyphFileFactory : GlyphFileFactory {
                 gfx.clearRect(x + cellWidth, 0, width - cellWidth, cellHeight.toInt())
             }
             data[headerPos] = width.toByte()
-            data[headerPos + 1] = lineMetrics.height.toByte()
-            data[headerPos + 2] = lineMetrics.ascent.toByte()
+            data[headerPos + 1] = lineMetrics.height.toInt().toByte()
+            data[headerPos + 2] = lineMetrics.ascent.toInt().toByte()
             if (DEBUG_LINES) {
                 gfx.color = Color.WHITE
                 gfx.drawLine(x + cellWidth - 1, 0, x + cellWidth - 1, cellHeight.toInt())
@@ -76,7 +78,6 @@ object AwtGlyphFileFactory : GlyphFileFactory {
                 // reset color
                 gfx.color = style.foreground.awt
             }
-            c++
         }
         gfx.dispose()
         val pixels = image.getRGB(0, 0, nChars * cellWidth, cellHeight.toInt(), null, 0, nChars * cellWidth)

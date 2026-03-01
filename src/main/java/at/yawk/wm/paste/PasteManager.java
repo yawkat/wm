@@ -9,8 +9,9 @@ import at.yawk.wm.progress.ProgressManager;
 import at.yawk.wm.progress.SettableProgressTask;
 import at.yawk.wm.tac.ModalRegistry;
 import at.yawk.wm.x.XcbConnector;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.awt.*;
+import tools.jackson.databind.json.JsonMapper;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import javax.inject.Inject;
@@ -38,7 +39,7 @@ public class PasteManager {
 
     @Inject
     void load(Config pasteConfig) {
-        client = new PasteClient(pasteConfig, new ObjectMapper());
+        client = new PasteClient(pasteConfig, JsonMapper.builder().build());
         clipboardHelper = new ClipboardHelper(pasteConfig);
     }
 

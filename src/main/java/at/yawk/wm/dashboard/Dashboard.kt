@@ -4,7 +4,14 @@ import at.yawk.wm.PeriodBuilder
 import at.yawk.wm.di.PerMonitor
 import at.yawk.wm.dock.module.DockConfig
 import at.yawk.wm.hl.Monitor
-import at.yawk.wm.ui.*
+import at.yawk.wm.ui.Anchor
+import at.yawk.wm.ui.Direction
+import at.yawk.wm.ui.DirectionalWidgetChain
+import at.yawk.wm.ui.LayoutManager
+import at.yawk.wm.ui.Origin
+import at.yawk.wm.ui.RenderElf
+import at.yawk.wm.ui.RenderPass
+import at.yawk.wm.ui.Widget
 import at.yawk.wm.wallpaper.animate.AnimatedWallpaperManager
 import at.yawk.wm.x.Graphics
 import at.yawk.wm.x.event.ExposeEvent

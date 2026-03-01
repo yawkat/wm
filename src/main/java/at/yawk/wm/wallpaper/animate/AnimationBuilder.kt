@@ -4,7 +4,7 @@ import at.yawk.wm.Util
 import java.awt.image.BufferedImage
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.*
+import java.util.ArrayList
 import java.util.regex.Pattern
 
 private val EMPTY_FRAME = Frame(x = 0, y = 0, width = 0, height = 0, data = ByteArray(0))

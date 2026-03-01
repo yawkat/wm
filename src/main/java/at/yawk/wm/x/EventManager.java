@@ -172,7 +172,11 @@ class EventManager implements Runnable {
             List<Consumer<?>> l = m.get(context);
             if (l != null) {
                 for (Consumer handler : l) {
-                    handler.accept(event);
+                    try {
+                        handler.accept(event);
+                    } catch (Exception e) {
+                        log.error("Failed to handle event {}", event, e);
+                    }
                     if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
                         break;
                     }

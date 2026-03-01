@@ -2,7 +2,7 @@ package at.yawk.wm.x
 
 import at.yawk.wm.x.font.GlyphFont
 import at.yawk.wm.x.image.LocalImage
-import java.awt.*
+import java.awt.Color
 
 /**
  * @author yawkat

@@ -10,10 +10,8 @@
 
     <properties>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
-        <kotlin.version>1.4.32</kotlin.version>
-        <graal.version>21.0.0.2</graal.version>
-        <jackson.version>2.12.2</jackson.version>
-        <dagger.version>2.33</dagger.version>
+        <kotlin.version>2.1.10</kotlin.version>
+        <dagger.version>2.59.2</dagger.version>
     </properties>
 
     <dependencies>
@@ -30,16 +28,6 @@
             <version>0.0.1</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-kotlin</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
             <groupId>at.yawk.password</groupId>
             <artifactId>client</artifactId>
             <version>1.0-SNAPSHOT</version>
@@ -50,9 +38,14 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.17</version>
+        </dependency>
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
+            <version>1.5.16</version>
         </dependency>
         <dependency>
             <groupId>at.yawk.dbus</groupId>
@@ -62,7 +55,7 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.13.1</version>
+            <version>1.18.3</version>
         </dependency>
         <dependency>
             <groupId>com.google.dagger</groupId>
@@ -74,7 +67,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>1.18.40</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -83,18 +76,12 @@
             <version>2.0.2</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.graalvm.sdk</groupId>
-            <artifactId>graal-sdk</artifactId>
-            <version>${graal.version}</version>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- Test -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>6.9.6</version>
+            <version>7.10.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -107,10 +94,7 @@
                 <version>${kotlin.version}</version>
 
                 <configuration>
-                    <args>
-                        <arg>-Xinline-classes</arg>
-                    </args>
-                    <jvmTarget>11</jvmTarget>
+                    <jvmTarget>21</jvmTarget>
                 </configuration>
 
                 <executions>
@@ -152,18 +136,18 @@
                 <artifactId>maven-compiler-plugin</artifactId>
 
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.graalvm.nativeimage</groupId>
-                <artifactId>native-image-maven-plugin</artifactId>
-                <version>${graal.version}</version>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>0.10.6</version>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>native-image</goal>
+                            <goal>compile-no-fork</goal>
                         </goals>
                         <phase>package</phase>
                     </execution>
@@ -173,37 +157,39 @@
                     <imageName>wm</imageName>
                     <mainClass>at.yawk.wm.MainKt</mainClass>
                     <buildArgs>
-                        <arg>-DmaterializePath=${project.basedir}/material-design-icons</arg>
+                        <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
+                        <buildArg>-DmaterializePath=${project.basedir}/material-design-icons</buildArg>
 
-                        <arg>-Djava.awt.headless=false</arg>
-                        <arg>--no-fallback</arg>
-                        <arg>--allow-incomplete-classpath</arg>
-                        <arg>--report-unsupported-elements-at-runtime</arg>
-                        <arg>--enable-http</arg>
-                        <arg>--enable-https</arg>
-                        <arg>--initialize-at-build-time=ch.qos.logback</arg>
-                        <arg>--initialize-at-build-time=at.yawk</arg>
-                        <arg>--initialize-at-build-time=org.slf4j</arg>
-                        <arg>--initialize-at-build-time=javax.xml</arg>
-                        <arg>--initialize-at-build-time=jdk.xml.internal</arg>
-                        <arg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.util</arg>
-                        <arg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.impl</arg>
-                        <arg>--initialize-at-build-time=com.sun.xml.internal.stream.util</arg>
-                        <arg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.xni</arg>
-                        <arg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.utils</arg>
-                        <arg>--initialize-at-build-time=com.fasterxml.jackson</arg>
-                        <arg>--initialize-at-build-time=org.msgpack</arg>
-                        <arg>--initialize-at-build-time=kotlin</arg>
-                        <arg>-H:+JNI</arg>
-                        <arg>-H:IncludeResources=.*.so$</arg>
-                        <arg>-H:IncludeResources=logback.xml$</arg>
-                        <arg>-H:JNIConfigurationFiles=${project.basedir}/src/main/graal/jni-config.json</arg>
-                        <arg>-H:ReflectionConfigurationFiles=${project.basedir}/src/main/graal/reflect-config.json</arg>
-                        <arg>-H:DynamicProxyConfigurationFiles=${project.basedir}/src/main/graal/proxy-config.json</arg>
-                        <arg>-H:SerializationConfigurationFiles=${project.basedir}/src/main/graal/serialization-config.json</arg>
-                        <arg>-H:CLibraryPath=${project.basedir}/src/main/graal</arg>
-                        <arg>-H:AdditionalLinkerOptions=@${project.basedir}/src/main/graal/add.ld</arg>
-                        <arg>-H:+ReportExceptionStackTraces</arg>
+                        <buildArg>-Djava.awt.headless=false</buildArg>
+                        <buildArg>--no-fallback</buildArg>
+                        <buildArg>--report-unsupported-elements-at-runtime</buildArg>
+                        <buildArg>--enable-http</buildArg>
+                        <buildArg>--enable-https</buildArg>
+                        <buildArg>--initialize-at-build-time=ch.qos.logback</buildArg>
+                        <buildArg>--initialize-at-build-time=at.yawk</buildArg>
+                        <buildArg>--initialize-at-build-time=org.slf4j</buildArg>
+                        <buildArg>--initialize-at-build-time=javax.xml</buildArg>
+                        <buildArg>--initialize-at-build-time=jdk.xml.internal</buildArg>
+                        <buildArg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.util</buildArg>
+                        <buildArg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.impl</buildArg>
+                        <buildArg>--initialize-at-build-time=com.sun.xml.internal.stream.util</buildArg>
+                        <buildArg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.xni</buildArg>
+                        <buildArg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.utils</buildArg>
+                        <buildArg>--initialize-at-build-time=com.fasterxml.jackson</buildArg>
+                        <buildArg>--initialize-at-build-time=tools.jackson</buildArg>
+                        <buildArg>--initialize-at-build-time=org.msgpack</buildArg>
+                        <buildArg>--initialize-at-build-time=kotlin</buildArg>
+                        <buildArg>-H:IncludeResources=.*.so$</buildArg>
+                        <buildArg>-H:IncludeResources=logback.xml$</buildArg>
+                        <buildArg>-H:JNIConfigurationFiles=${project.basedir}/src/main/graal/jni-config.json</buildArg>
+                        <buildArg>-H:ReflectionConfigurationFiles=${project.basedir}/src/main/graal/reflect-config.json</buildArg>
+                        <buildArg>-H:DynamicProxyConfigurationFiles=${project.basedir}/src/main/graal/proxy-config.json</buildArg>
+                        <buildArg>-H:SerializationConfigurationFiles=${project.basedir}/src/main/graal/serialization-config.json</buildArg>
+                        <buildArg>-H:CLibraryPath=${project.basedir}/src/main/graal</buildArg>
+                        <buildArg>-H:NativeLinkerOption=-Wl,-Bstatic</buildArg>
+                        <buildArg>-H:NativeLinkerOption=-l:add.o</buildArg>
+                        <buildArg>-H:NativeLinkerOption=-Wl,-Bdynamic</buildArg>
+                        <buildArg>-H:+ReportExceptionStackTraces</buildArg>
                     </buildArgs>
                 </configuration>
             </plugin>

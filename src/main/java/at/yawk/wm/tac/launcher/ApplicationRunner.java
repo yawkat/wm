@@ -1,5 +1,6 @@
 package at.yawk.wm.tac.launcher;
 
+import at.yawk.wm.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,20 +17,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ApplicationRunner {
     private static final Logger log = LoggerFactory.getLogger(ApplicationRunner.class);
 
-    private final Path runWorkDir;
+    private Path runWorkDir;
     private final AtomicInteger processCounter = new AtomicInteger(0);
 
     @Inject
-    public ApplicationRunner() {
-        try {
-            runWorkDir = Files.createTempDirectory("wm-run");
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
+    ApplicationRunner() {}
 
-    public void run(Command command) {
+    public synchronized void run(Command command) {
+        Util.requireRuntime();
         try {
+            if (runWorkDir == null) {
+                runWorkDir = Files.createTempDirectory("wm-run");
+            }
+
             int id = processCounter.incrementAndGet();
             log.info("[{}] Executing {}", id, command);
 
@@ -55,7 +55,7 @@ public class ApplicationRunner {
 
             logStream(id, "out", process.getInputStream());
             logStream(id, "err", process.getErrorStream());
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.warn("Failed to run command {}", command, e);
         }
     }

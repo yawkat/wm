@@ -71,7 +71,7 @@ class XkcdLoader @Inject constructor(
         val document = Jsoup.connect("https://xkcd.com/").get()
         val imageTag = document.select("#comic img").first()
 
-        val title = imageTag.attr("title")
+        val title = imageTag?.attr("title") ?: return
         val url = imageTag.absUrl("src")
 
         // copy to get ARGB

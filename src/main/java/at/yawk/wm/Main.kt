@@ -135,7 +135,7 @@ private fun scheduledExecutor(): Scheduler {
 
 @Singleton
 @Component(modules = [MainModule::class])
-private interface MainComponent {
+internal interface MainComponent {
     fun connector(): XcbConnector
     fun herbstClient(): HerbstClient
     fun iconManager(): IconManager
@@ -158,7 +158,7 @@ private interface MainComponent {
 
 @Subcomponent(modules = [DockModule::class])
 @PerMonitor
-private interface DockComponent {
+internal interface DockComponent {
     fun dockBootstrap(): DockBootstrap
 
     @Subcomponent.Factory
@@ -169,7 +169,7 @@ private interface DockComponent {
 
 @Subcomponent(modules = [DashboardModule::class])
 @PerMonitor
-private interface DashboardComponent {
+internal interface DashboardComponent {
     fun dashboard(): DashboardBootstrap
 
     @Subcomponent.Factory
@@ -179,7 +179,7 @@ private interface DashboardComponent {
 }
 
 @Module(subcomponents = [DockComponent::class, DashboardComponent::class])
-private class MainModule {
+internal class MainModule {
     private val scheduler = scheduledExecutor()
     @get:Provides
     val pasteConfig = Config().also {
@@ -221,13 +221,13 @@ private class MainModule {
 }
 
 @Module
-private interface DockModule {
+internal interface DockModule {
     @Binds
     fun renderElf(dock: DockBuilder): RenderElf
 }
 
 @Module
-private interface DashboardModule {
+internal interface DashboardModule {
     @Binds
     fun renderElf(dashboard: Dashboard): RenderElf
 }

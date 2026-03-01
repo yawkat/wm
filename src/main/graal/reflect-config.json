@@ -50,6 +50,11 @@
     "allPublicMethods": true
   },
   {
+	"name": "com.sun.imageio.plugins.jpeg.JPEGImageWriter",
+	"allDeclaredConstructors": true,
+	"allDeclaredMethods": true
+  },
+  {
     "name": "ch.qos.logback.core.rolling.RollingFileAppender",
     "allPublicConstructors": true,
     "allPublicMethods": true
