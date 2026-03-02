@@ -5,9 +5,6 @@ import java.awt.BorderLayout
 import java.awt.Dialog
 import java.awt.Dimension
 import java.awt.Frame
-import java.awt.Graphics
-import java.awt.Graphics2D
-import java.awt.RenderingHints
 import java.awt.Window
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
@@ -48,17 +45,7 @@ internal open class TextEditorWindow {
 
     init {
         val size = Dimension(PasswordConfig.editorWidth, PasswordConfig.editorHeight)
-        field = object : JTextArea() {
-            override fun paintComponent(g: Graphics) {
-                if (g is Graphics2D) {
-                    g.setRenderingHint(
-                        RenderingHints.KEY_TEXT_ANTIALIASING,
-                        RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HBGR
-                    )
-                }
-                super.paintComponent(g)
-            }
-        }
+        field = JTextArea()
         field.setText(text)
         field.setBackground(PasswordConfig.editorBackground.awt)
         val style = PasswordConfig.editorFont

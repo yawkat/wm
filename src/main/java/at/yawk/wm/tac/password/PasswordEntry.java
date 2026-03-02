@@ -2,7 +2,7 @@ package at.yawk.wm.tac.password;
 
 import at.yawk.wm.tac.Entry;
 import at.yawk.wm.tac.EntryState;
-import java.awt.*;
+import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 
 /**

@@ -179,6 +179,11 @@
                         <buildArg>--initialize-at-build-time=tools.jackson</buildArg>
                         <buildArg>--initialize-at-build-time=org.msgpack</buildArg>
                         <buildArg>--initialize-at-build-time=kotlin</buildArg>
+                        <buildArg>--initialize-at-run-time=sun.font</buildArg>
+                        <buildArg>--initialize-at-run-time=sun.java2d</buildArg>
+                        <buildArg>--initialize-at-run-time=sun.awt</buildArg>
+                        <buildArg>--initialize-at-run-time=java.awt</buildArg>
+                        <buildArg>--initialize-at-run-time=javax.swing</buildArg>
                         <buildArg>-H:IncludeResources=.*.so$</buildArg>
                         <buildArg>-H:IncludeResources=logback.xml$</buildArg>
                         <buildArg>-H:JNIConfigurationFiles=${project.basedir}/src/main/graal/jni-config.json</buildArg>
@@ -190,6 +195,7 @@
                         <buildArg>-H:NativeLinkerOption=-l:add.o</buildArg>
                         <buildArg>-H:NativeLinkerOption=-Wl,-Bdynamic</buildArg>
                         <buildArg>-H:+ReportExceptionStackTraces</buildArg>
+
                     </buildArgs>
                 </configuration>
             </plugin>

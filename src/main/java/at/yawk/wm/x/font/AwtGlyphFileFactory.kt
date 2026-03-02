@@ -7,6 +7,7 @@ import java.awt.Font
 import java.awt.GraphicsEnvironment
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
+import java.io.File
 
 object AwtGlyphFileFactory : GlyphFileFactory {
     private const val DEBUG_LINES = false
@@ -26,10 +27,48 @@ object AwtGlyphFileFactory : GlyphFileFactory {
         return Font(style.family, flags, style.size)
     }
 
+    private val log = org.slf4j.LoggerFactory.getLogger(AwtGlyphFileFactory::class.java)
+
+    /**
+     * Resolve a font at runtime by loading the font file directly via fc-match.
+     * This bypasses GraalVM native-image's broken font subsystem where Font constructor
+     * bakes font mappings at build time, causing metrics to return 0.
+     */
     private fun resolveRuntimeFont(family: String, flags: Int, size: Int): Font? {
-        val ge = GraphicsEnvironment.getLocalGraphicsEnvironment()
-        val match = ge.allFonts.firstOrNull { it.family == family } ?: return null
-        return match.deriveFont(flags, size.toFloat())
+        try {
+            val process = ProcessBuilder("fc-match", family, "--format=%{file}")
+                .redirectErrorStream(true)
+                .start()
+            val fontPath = process.inputStream.bufferedReader().readText().trim()
+            process.waitFor()
+
+            if (fontPath.isBlank()) {
+                log.warn("resolveRuntimeFont: fc-match returned empty for family='{}'", family)
+                return null
+            }
+
+            val fontFile = File(fontPath)
+            if (!fontFile.exists()) {
+                log.warn("resolveRuntimeFont: font file does not exist: {}", fontPath)
+                return null
+            }
+
+            val format = if (fontPath.endsWith(".otf", ignoreCase = true) || fontPath.endsWith(".ttf", ignoreCase = true)) {
+                Font.TRUETYPE_FONT
+            } else {
+                Font.TYPE1_FONT
+            }
+            val baseFont = Font.createFont(format, fontFile)
+            val ge = GraphicsEnvironment.getLocalGraphicsEnvironment()
+            ge.registerFont(baseFont)
+            val derived = baseFont.deriveFont(flags, size.toFloat())
+            log.info("resolveRuntimeFont: family='{}' -> file={} -> derived={}", family, fontPath, derived)
+
+            return derived
+        } catch (e: Exception) {
+            log.warn("resolveRuntimeFont: failed for family='{}'", family, e)
+            return null
+        }
     }
 
     override fun renderRange(
