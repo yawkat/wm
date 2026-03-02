@@ -1,8 +1,10 @@
 package at.yawk.wm.x.font
 
+import at.yawk.wm.Util
 import at.yawk.wm.style.FontStyle
 import java.awt.Color
 import java.awt.Font
+import java.awt.GraphicsEnvironment
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
 
@@ -17,7 +19,17 @@ object AwtGlyphFileFactory : GlyphFileFactory {
         if (style.italic) {
             flags = flags or Font.ITALIC
         }
+        if (!Util.inBuildTime) {
+            val resolved = resolveRuntimeFont(style.family, flags, style.size)
+            if (resolved != null) return resolved
+        }
         return Font(style.family, flags, style.size)
+    }
+
+    private fun resolveRuntimeFont(family: String, flags: Int, size: Int): Font? {
+        val ge = GraphicsEnvironment.getLocalGraphicsEnvironment()
+        val match = ge.allFonts.firstOrNull { it.family == family } ?: return null
+        return match.deriveFont(flags, size.toFloat())
     }
 
     override fun renderRange(
