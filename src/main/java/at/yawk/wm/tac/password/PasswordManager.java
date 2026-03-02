@@ -46,7 +46,6 @@ public class PasswordManager {
     }
 
     public void configure() {
-        Util.requireRuntime();
         if (!Files.isDirectory(PasswordConfig.INSTANCE.getCacheDir())) {
             try {
                 Files.createDirectories(PasswordConfig.INSTANCE.getCacheDir());

@@ -1,0 +1,24 @@
+{
+  "resources": {
+    "includes": [
+      {"pattern": "\\QMETA-INF/services/java.awt.im.spi.InputMethodDescriptor\\E"},
+      {"pattern": "\\QMETA-INF/services/java.lang.System$LoggerFinder\\E"},
+      {"pattern": "\\QMETA-INF/services/java.net.spi.InetAddressResolverProvider\\E"},
+      {"pattern": "\\QMETA-INF/services/java.time.zone.ZoneRulesProvider\\E"}
+    ]
+  },
+  "bundles": [
+    {
+      "name": "com.sun.swing.internal.plaf.basic.resources.basic",
+      "classNames": ["com.sun.swing.internal.plaf.basic.resources.basic"]
+    },
+    {
+      "name": "com.sun.swing.internal.plaf.metal.resources.metal",
+      "classNames": ["com.sun.swing.internal.plaf.metal.resources.metal"]
+    },
+    {
+      "name": "sun.awt.resources.awt",
+      "classNames": ["sun.awt.resources.awt"]
+    }
+  ]
+}

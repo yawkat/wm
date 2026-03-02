@@ -1,6 +1,5 @@
 package at.yawk.wm.x;
 
-import at.yawk.wm.Util;
 import at.yawk.wm.x.font.FontRenderer;
 import at.yawk.wm.x.font.GlyphFont;
 import java.lang.reflect.Proxy;
@@ -43,8 +42,6 @@ public class XcbConnector implements Resource {
     }
 
     public void open() {
-        Util.requireRuntime();
-        // do this in the constructor so that it happens at runtime with native-image
         LibXcbLoader.load();
 
         log.info("Connecting to X server...");

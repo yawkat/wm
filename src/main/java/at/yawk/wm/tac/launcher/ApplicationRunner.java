@@ -1,12 +1,14 @@
 package at.yawk.wm.tac.launcher;
 
-import at.yawk.wm.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -24,7 +26,6 @@ public class ApplicationRunner {
     ApplicationRunner() {}
 
     public synchronized void run(Command command) {
-        Util.requireRuntime();
         try {
             if (runWorkDir == null) {
                 runWorkDir = Files.createTempDirectory("wm-run");

@@ -1,6 +1,5 @@
 package at.yawk.wm.x.font
 
-import at.yawk.wm.Util
 import at.yawk.wm.style.FontStyle
 import java.awt.Color
 import java.awt.Font
@@ -20,11 +19,8 @@ object AwtGlyphFileFactory : GlyphFileFactory {
         if (style.italic) {
             flags = flags or Font.ITALIC
         }
-        if (!Util.inBuildTime) {
-            val resolved = resolveRuntimeFont(style.family, flags, style.size)
-            if (resolved != null) return resolved
-        }
-        return Font(style.family, flags, style.size)
+        return resolveRuntimeFont(style.family, flags, style.size)
+            ?: Font(style.family, flags, style.size)
     }
 
     private val log = org.slf4j.LoggerFactory.getLogger(AwtGlyphFileFactory::class.java)

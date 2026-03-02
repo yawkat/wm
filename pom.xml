@@ -166,19 +166,7 @@
                         <buildArg>--enable-http</buildArg>
                         <buildArg>--enable-https</buildArg>
                         <buildArg>--initialize-at-build-time=ch.qos.logback</buildArg>
-                        <buildArg>--initialize-at-build-time=at.yawk</buildArg>
                         <buildArg>--initialize-at-build-time=org.slf4j</buildArg>
-                        <buildArg>--initialize-at-build-time=javax.xml</buildArg>
-                        <buildArg>--initialize-at-build-time=jdk.xml.internal</buildArg>
-                        <buildArg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.util</buildArg>
-                        <buildArg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.impl</buildArg>
-                        <buildArg>--initialize-at-build-time=com.sun.xml.internal.stream.util</buildArg>
-                        <buildArg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.xni</buildArg>
-                        <buildArg>--initialize-at-build-time=com.sun.org.apache.xerces.internal.utils</buildArg>
-                        <buildArg>--initialize-at-build-time=com.fasterxml.jackson</buildArg>
-                        <buildArg>--initialize-at-build-time=tools.jackson</buildArg>
-                        <buildArg>--initialize-at-build-time=org.msgpack</buildArg>
-                        <buildArg>--initialize-at-build-time=kotlin</buildArg>
                         <buildArg>--initialize-at-run-time=sun.font</buildArg>
                         <buildArg>--initialize-at-run-time=sun.java2d</buildArg>
                         <buildArg>--initialize-at-run-time=sun.awt</buildArg>
@@ -190,6 +178,7 @@
                         <buildArg>-H:ReflectionConfigurationFiles=${project.basedir}/src/main/graal/reflect-config.json</buildArg>
                         <buildArg>-H:DynamicProxyConfigurationFiles=${project.basedir}/src/main/graal/proxy-config.json</buildArg>
                         <buildArg>-H:SerializationConfigurationFiles=${project.basedir}/src/main/graal/serialization-config.json</buildArg>
+                        <buildArg>-H:ResourceConfigurationFiles=${project.basedir}/src/main/graal/resource-config.json</buildArg>
                         <buildArg>-H:CLibraryPath=${project.basedir}/src/main/graal</buildArg>
                         <buildArg>-H:NativeLinkerOption=-Wl,-Bstatic</buildArg>
                         <buildArg>-H:NativeLinkerOption=-l:add.o</buildArg>

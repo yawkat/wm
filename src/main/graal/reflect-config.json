@@ -231,7 +231,7 @@
     "allDeclaredMethods" : true
   },
   {
-    "name": "javax.swing.plaf.basic.MetalRootPaneUI",
+    "name": "javax.swing.plaf.metal.MetalRootPaneUI",
     "allDeclaredMethods" : true
   },
   {
@@ -321,5 +321,16 @@
   },
   {
     "name": "[B"
+  },
+  {
+    "name": "java.awt.SequencedEvent"
+  },
+  {
+    "name": "java.util.concurrent.atomic.AtomicBoolean",
+    "allDeclaredFields": true
+  },
+  {
+    "name": "java.util.concurrent.atomic.Striped64",
+    "allDeclaredFields": true
   }
 ]

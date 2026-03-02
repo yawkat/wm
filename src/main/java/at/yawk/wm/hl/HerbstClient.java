@@ -44,8 +44,6 @@ public class HerbstClient {
     }
 
     public void runDelayedCommands() {
-        Util.requireRuntime();
-
         List<String[]> commands = this.delayUntilRuntimeCommands;
         this.delayUntilRuntimeCommands = null;
         assert commands != null;
@@ -55,8 +53,6 @@ public class HerbstClient {
     }
 
     private Process openProcess(String... action) throws IOException {
-        Util.requireRuntime();
-
         List<String> command = new ArrayList<>(action.length + 1);
         command.add("herbstclient");
         command.addAll(Arrays.asList(action));
@@ -65,7 +61,7 @@ public class HerbstClient {
 
     @SneakyThrows
     private void send(String... action) {
-        if (delayUntilRuntimeCommands == null || !Util.getInBuildTime()) {
+        if (delayUntilRuntimeCommands == null) {
             openProcess(action);
         } else {
             delayUntilRuntimeCommands.add(action);

@@ -1,9 +1,11 @@
 package at.yawk.wm.x.icon;
 
-import at.yawk.wm.Util;
 import at.yawk.wm.style.Icon;
 import at.yawk.wm.x.Graphics;
-import at.yawk.wm.x.*;
+import at.yawk.wm.x.PixMap;
+import at.yawk.wm.x.PixMapArea;
+import at.yawk.wm.x.XcbConnector;
+import at.yawk.wm.x.ZFormatImage;
 import at.yawk.wm.x.image.BufferedLocalImage;
 import at.yawk.wm.x.image.ByteArrayImage;
 import at.yawk.wm.x.image.LocalImage;
@@ -15,7 +17,8 @@ import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;
@@ -55,10 +58,6 @@ public class IconManager {
 
     @SneakyThrows
     public void load() {
-        Util.requireBuildTime();
-
-        // property set by build script for native-image
-        // can't use ImageIO at build time :(
         var baseDir = Paths.get(System.getProperty("materializePath", "./material-design-icons"));
         for (Icon icon : Icon.values()) {
             var path = baseDir
@@ -72,8 +71,6 @@ public class IconManager {
 
     @SneakyThrows
     public void render() {
-        Util.requireRuntime();
-
         int descriptorCount = Icon.values().length;
         descriptorOffsets = new int[descriptorCount];
         descriptorWidths = new short[descriptorCount];

@@ -49,6 +49,12 @@ fun main() {
         System.setProperty("java.home", javaHome.toString())
     }
 
+    // Disable XRender and server pixmaps for native-image Swing text rendering.
+    // The XRender pipeline segfaults in XlibWrapper.XEventsQueued under GraalVM native-image,
+    // causing invisible text in Swing components. Forcing the raster pipeline fixes this.
+    System.setProperty("sun.java2d.xrender", "false")
+    System.setProperty("sun.java2d.pmoffscreen", "false")
+
     log.info("--------------------------------------------------------------------------------")
     log.info("Logging initialized, starting up...")
     try {
@@ -74,17 +80,12 @@ private object Main {
     val iconManager = mainComponent.iconManager()
     val passwordManager = mainComponent.passwordManager()
 
-    init {
-        // initialize tac uis
+    fun runtime() {
         mainComponent.launcher().bind()
         mainComponent.pasteManager().bind()
         passwordManager.bind()
 
         iconManager.load()
-    }
-
-    fun runtime() {
-        Util.emulateAtBuildTime = false
 
         // connect to X11
         mainComponent.connector().open()
@@ -200,7 +201,6 @@ internal class MainModule {
     private val power = Power.LateInit()
 
     fun setDbus(dbus: Dbus) {
-        Util.requireRuntime()
         mediaPlayer.setDelegate(dbus.mediaPlayer())
         networkManager.setDelegate(dbus.networkManager())
         power.setDelegate(dbus.power())
@@ -222,7 +222,6 @@ internal class MainModule {
 
     @Provides
     fun executor(): Executor {
-        Util.requireRuntime()
         return scheduler
     }
 

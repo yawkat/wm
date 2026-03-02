@@ -1,6 +1,5 @@
 package at.yawk.wm
 
-import org.graalvm.nativeimage.ImageInfo
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -103,18 +102,4 @@ object Util {
         return buf.toString("UTF-8")
     }
 
-    var emulateAtBuildTime = true
-
-    val inBuildTime: Boolean
-        @JvmStatic get() = if (ImageInfo.inImageCode()) ImageInfo.inImageBuildtimeCode() else emulateAtBuildTime
-
-    @JvmStatic
-    fun requireRuntime() {
-        check(!inBuildTime) { "Must only be run at runtime" }
-    }
-
-    @JvmStatic
-    fun requireBuildTime() {
-        check(inBuildTime) { "Must only be run at build time" }
-    }
 }

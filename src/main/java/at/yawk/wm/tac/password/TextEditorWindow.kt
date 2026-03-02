@@ -10,6 +10,8 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import javax.swing.JDialog
 import javax.swing.JTextArea
+import javax.swing.SwingUtilities
+import javax.swing.UIManager
 
 internal open class TextEditorWindow {
     val window: Window
@@ -23,12 +25,14 @@ internal open class TextEditorWindow {
     }
 
     fun show() {
-        window.isVisible = true
+        SwingUtilities.invokeLater { window.isVisible = true }
     }
 
     open fun close() {
-        field.text = "" // clear text
-        window.dispose()
+        SwingUtilities.invokeLater {
+            field.text = ""
+            window.dispose()
+        }
     }
 
     fun setTitle(title: String?) {
@@ -44,12 +48,14 @@ internal open class TextEditorWindow {
     }
 
     init {
+        initSwing()
         val size = Dimension(PasswordConfig.editorWidth, PasswordConfig.editorHeight)
+        val style = PasswordConfig.editorFont
+        val font = AwtGlyphFileFactory.getFont(style)
         field = JTextArea()
         field.setText(text)
         field.setBackground(PasswordConfig.editorBackground.awt)
-        val style = PasswordConfig.editorFont
-        field.setFont(AwtGlyphFileFactory.getFont(style))
+        field.setFont(font)
         field.setForeground(style.foreground.awt)
         field.setSelectedTextColor(PasswordConfig.editorBackground.awt)
         field.setSelectionColor(style.foreground.awt)
@@ -66,5 +72,24 @@ internal open class TextEditorWindow {
             }
         })
         window.isLocationByPlatform = true
+    }
+
+    companion object {
+        private val log = org.slf4j.LoggerFactory.getLogger(TextEditorWindow::class.java)
+        private var swingInitialized = false
+
+        @Synchronized
+        private fun initSwing() {
+            if (!swingInitialized) {
+                swingInitialized = true
+                log.info("Initializing Swing: DISPLAY={}", System.getenv("DISPLAY"))
+                try {
+                    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName())
+                    log.info("Set cross-platform LookAndFeel successfully")
+                } catch (e: Exception) {
+                    log.warn("Failed to set cross-platform LookAndFeel", e)
+                }
+            }
+        }
     }
 }
