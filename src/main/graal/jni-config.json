@@ -469,5 +469,20 @@
     "methods": [
       {"name": "getPlatformClassLoader", "parameterTypes": []}
     ]
+  },
+  {
+    "name": "sun.font.FontConfigManager$FontConfigInfo",
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.font.FontConfigManager$FcCompFont",
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "sun.font.FontConfigManager$FontConfigFont",
+    "allDeclaredFields": true,
+    "allDeclaredConstructors": true
   }
 ]
