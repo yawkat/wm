@@ -30,6 +30,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
 import java.net.URL
+import java.nio.file.Files
+import java.nio.file.Path
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadFactory
@@ -39,6 +41,14 @@ import javax.inject.Singleton
 private val log = org.slf4j.LoggerFactory.getLogger("at.yawk.wm.Main")
 
 fun main() {
+    // Set up java.home for AWT FontConfiguration in native image.
+    // AWT needs a java.home with lib/ directory to initialize fonts via system fontconfig.
+    if (System.getProperty("java.home") == null) {
+        val javaHome = Path.of(System.getProperty("java.io.tmpdir", "/tmp"), "graalvm-awt-fonts")
+        Files.createDirectories(javaHome.resolve("lib"))
+        System.setProperty("java.home", javaHome.toString())
+    }
+
     log.info("--------------------------------------------------------------------------------")
     log.info("Logging initialized, starting up...")
     try {
